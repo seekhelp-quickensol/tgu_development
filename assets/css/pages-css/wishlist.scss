@@ -1,0 +1,130 @@
+/*
+Cart Area Style
+======================================================*/
+.wishlist-area {
+	.cart-controller {
+		background-color: var(--white-color);
+		border: 1px solid #ebebeb;
+		border-bottom: none;
+	}
+	.trash {
+		text-align: center !important;
+		.remove {
+			color: #ed1d24;
+			font-size: 20px;
+			&:hover {
+				color: #ed1d24;
+			}
+		}
+	}
+	.product-thumbnail {
+		width: 130px;
+	}
+	.cart-table {
+		text-align: center;
+		table {
+			margin-bottom: 0;
+			thead {
+				tr {
+					border-style: none;
+					th {
+						border: none;
+						color: var(--heading-color);
+						font-size: 16px;
+						font-weight: 700;
+						padding: 20px 30px;
+					}
+				}
+			}
+			tbody {
+				tr {
+					td {
+						vertical-align: middle;
+						border: none;
+						border-bottom: 1px solid #dedede;
+						white-space: nowrap;
+						padding: 15px 30px;
+						a {
+							color: var(--heading-color);
+							font-weight: 700;
+							&:hover {
+								color: var(--main-color);
+							}
+						}
+						&.product-quantity {
+							width: 145px;
+							padding: 0;
+							.input-counter {
+								position: relative;
+								input {
+									height: 45px;
+									color: var(--heading-color);
+									outline: 0;
+									display: block;
+									border: none;
+									background-color: #f8f8f8;
+									text-align: center;
+									width: 100%;
+									font-size: 15px;
+									font-weight: 700;
+									border-top: 1px solid #dedede;
+									border-bottom: 1px solid #dedede;
+									&::placeholder {
+										color: var(--heading-color);
+									}
+								}
+								.minus-btn {
+									position: absolute;
+									top: 0;
+									left: 0;
+									background-color: transparent;
+									cursor: pointer;
+									color: var(--heading-color);
+									width: 40px;
+									height: 100%;
+									line-height: 48px;
+									transition: var(--transition);
+									border: 1px solid #dedede;
+									i {
+										font-weight: 700;
+									}
+									&:hover {
+										color: var(--white-color);
+										background-color: var(--main-color);
+									}
+								}
+								.plus-btn {
+									position: absolute;
+									top: 0;
+									right: 0;
+									background-color: transparent;
+									cursor: pointer;
+									color: var(--heading-color);
+									width: 40px;
+									height: 100%;
+									line-height: 48px;
+									transition: var(--transition);
+									border: 1px solid #dedede;
+									i {
+										font-weight: 700;
+									}
+									&:hover {
+										color: var(--white-color);
+										background-color: var(--main-color);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+    .table>thead {
+        background: #dedede;
+    }
+    .cart-table table tbody tr td .default-btn {
+        color: var(--white-color);
+        display: block;
+    }
+}

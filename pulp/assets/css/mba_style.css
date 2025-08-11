@@ -1,0 +1,522 @@
+:root {
+    /* --primary-color: #f28c1f; */
+    --primary-color: #0062cc;
+    --blue-dark: #084298;
+    /* --secondary-color: ; */
+    --black: #212529;
+}
+
+
+@media(max-width: 761px) {
+    main .heading-wrapper {
+      position: static;
+    }
+    main .heading-wrapper > span:first-child, main .heading-wrapper > h1 {
+      width: 100%;
+    }
+    main .heading-para {
+      width: 100%;
+      clip-path: none;
+    }
+    main .heading-para p {
+      width: 100%;
+    }
+    section .recruiters-content {
+      max-width: 100%;
+      padding: 10px;
+    }
+    main .facilities-ul li {
+      font-size: 12px;
+    }
+    main .heading-wrapper h1 {
+      color: #005ed2;
+    }
+    main .heading-wrapper h1 + span {
+      color: black;
+    }
+    
+  }
+  @media (max-width: 480px) {
+    #btu-brand-div {
+      display: none;
+    }
+  }
+  
+  @media(max-width: 991px) {
+    #navbarSupportedContent > ul:first-child {
+      padding: 15px !important;
+    }
+    #program-btn ul {
+      display: block !important;
+      position: static !important;
+    }
+    #program1, #program2, #program3, #program4 {
+      background-color: #003372;
+    }
+    main .feature-box {
+      position: static;
+      justify-content: center;
+      display: flex;
+    }
+    main .feature-box .row > div {
+      background-color: #005ed2;
+    }
+  
+  
+  }
+  
+  #img-cont {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+  }
+  #img-cont img {
+    max-width: 300px;
+  }
+  
+  #navbarSupportedContent {
+    z-index: 99;
+  }
+  div#navbarSupportedContent > ul {
+    width: 100%;
+    max-width: 700px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 50%);
+    box-shadow: inset 0 0 6px rgb(0 0 0 / 50%);
+  }
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
+    box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
+    border-radius: 10px;
+  }
+  
+  a {
+    text-decoration: none !important;
+  }
+  
+  #site-header {
+    height: fit-content;
+  }
+  .fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+  }
+  
+  h1,h2,h3,h4,h5,h6 {
+    color: #253858;
+  }
+  
+  @media (min-width: 992px) {
+    .navbar-expand-lg {
+      -ms-flex-flow: row nowrap;
+      flex-flow: row nowrap;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+    }
+  
+    .navbar {
+      position: relative;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+    }
+  }
+  @media (min-width: 992px) {
+    .navbar-expand-lg {
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+    }
+  }
+  .wrap-courses-nav.dmc {
+    display: none;
+  }
+  .wrap-courses-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    /* width: 250px; */
+    background-color: #dee2e6;
+    padding: 25px;
+    display: flex;
+    /* padding-top: 60px; */
+  }
+  .navbar .navbar-brand {
+    margin: 0;
+    padding: 0;
+    font-size: 26px;
+    color: var(--logo-color);
+    font-weight: 600;
+  }
+  .navbar-nav {
+    background: var(--primary-color);
+    color: #fff;
+  }
+  .navbar-nav a {
+    color: #fff;
+  }
+  
+  .navbar-nav a:hover {
+    background: #0062cc;
+    color: #fff;
+  }
+  
+  a.bir_logo:hover {
+    text-decoration: none;
+  }
+  .bir_logo h4 {
+    /* padding-left: 98px; */
+    font-size: 23px;
+    font-weight: 700;
+    color: #05549e;
+    text-transform: uppercase;
+    /* margin-top: 13px; */
+    margin-bottom: 0px;
+  }
+  .bir_logo p {
+    font-size: 18px;
+    /* padding-left: 98px; */
+    color: #05549e;
+    margin: 0;
+    letter-spacing: 1.4px;
+    line-height: 20px;
+  }
+  .bir_logo div {
+    margin-left: 8px;
+  }
+  #navbarTogglerDemo02 .navbar-nav {
+    width: 600px;
+  }
+  
+  /* footer */
+  footer {
+    background-color: #f8f9fa;
+  }
+  footer p, footer h3, footer ul a {
+    color: var(--black);
+  }
+  footer h3 {
+    /* color: #fff; */
+    font-size: 21px;
+    margin-bottom: 20px;
+  }
+  footer p {
+    /* color: #fff; */
+    font-size: 15px;
+  }
+  footer ul li {
+    list-style: none;
+    font-size: 16px;
+    line-height: 29px;
+  }
+  footer ul {
+    margin: 0;
+    padding: 0;
+  }
+  .uni_section_footer_btm {
+    padding: 0px 15px;
+    background: #003372;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    font-size: 12px;
+    margin-top: 25px;
+  }
+  .address_uni h5 {
+    font-size: 15px;
+  }
+  .about_bir + div {
+    max-width: 300px;
+  }
+  /* footer */
+  
+  /* card section */
+  .member-of {
+    text-align: center;
+    /* margin: 15px; */
+  }
+  .member-of h5 {
+    font-size: 1rem;
+  }
+  .member-of img {
+    width: 100px;
+    margin: 15px auto 0;
+  }
+  /* card section */
+  
+  h2 {
+    font-weight: 600 !important;
+    font-size: 24px !important;
+  }
+  
+  /* recruiters-content  */
+  .recruiters-content p {
+    color: #232323;
+    font-size: 16px;
+    margin-bottom: 60px;
+    font-weight: 500;
+  }
+  .recruiters-content {
+    text-align: center;
+    max-width: 50%;
+    margin: auto;
+  }
+  
+  /* recruiters  */
+  
+  /* facilities */
+  .facilities-ul {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style-type: none;
+  }
+  .facilities-ul li {
+    text-align: center;
+    color: #262424;
+    margin: 15px;
+    text-transform: uppercase;
+    font-size: 15px;
+    margin-bottom: 35px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .facilities-ul li img {
+    display: block;
+    margin: auto;
+    margin-bottom: auto;
+    filter: gray;
+    -webkit-filter: grayscale(100);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    filter: grayscale(0%);
+    margin-bottom: 25px;
+  }
+  /* facilities */
+  
+  /* footer social */
+  .footer_social li a {
+    padding: 6px 12px;
+    margin: 5px;
+    border: 1px solid #aaa;
+    border-radius: 14px;
+  }
+  /* footer social */
+  
+  /* heading-wrapper */
+  header {
+    position: relative;
+  }
+  .heading-wrapper {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    padding: 12px 0;
+    /* transform: translateY(-50%); */
+    z-index: 2;
+    color: #fff;
+  }
+  .heading-wrapper h1 {
+    color: #ffc107;
+    font-weight: 900;
+    /* width: 70%; */
+    /* background: #ef7113; */
+    /* clip-path: polygon(0 0, 100% 0%, 98% 100%, 0% 100%); */
+    font-size: 30px !important;
+    padding: 14px 14px;
+    text-decoration: underline;
+  }
+  
+  .heading-para {
+    background-color: #0062cc;
+    /* clip-path: polygon(0px 0px, 98.52% -4.21%, 95.75% 120.41%, 0% 100%); */
+    /* width: 95%; */
+  }
+  .heading-para p {
+    font-size: 24px;
+    width: 88%;
+  }
+  main .heading-wrapper > span {
+    /* top: 44%; */
+  /* clip-path: polygon(0px 0px, 98.52% -4.21%, 95.75% 120.41%, 0% 100%); */
+  /* background: var(--primary-color); */
+  display: block;
+  /* width: 80%; */
+  padding: 14px 14px 20px 15px;
+  color: #e9ecef;
+  /* font-weight: 600;
+  font-size: 20px; */
+  /* letter-spacing: 3px;
+  text-transform: uppercase; */
+  }
+  
+  /* heading-wrapper */
+  
+  /* floating cta */
+  .fixed-cta {
+    position: fixed;
+    bottom: 4%;
+    right: 0%;
+    width: 142px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 999999;
+  }
+  .fixed-cta div:first-child {
+    display: flex;
+    align-items: center;
+  }
+  #cta-apply-fixed {
+    padding: 5px 10px;
+    background-color: var(--blue-dark);
+    color: white;
+    /* clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); */
+    /* border-radius: 15px; */
+    /* border: 1px solid white; */
+  }
+  #cta-apply-fixed:hover {
+    text-decoration: none;
+  }
+  /* floating cta */
+  
+  #program-btn .dropdown-menu {
+    background-color: #005ed2;
+  }
+  #program-btn .dropdown-menu li {
+    position: relative;
+  }
+  #program-btn .dropdown-menu .dropdown-submenu {
+    display: none;
+    position: absolute;
+    right: 100%;
+    top: -7px;
+    z-index: 4;
+  }
+  #program-btn .dropdown-menu .dropdown-submenu-left {
+    right: 100%;
+    left: auto;
+  }
+  #program-btn .dropdown-menu > li:hover > .dropdown-submenu {
+    display: block;
+  }
+  
+  #carousel-1 img {
+    max-height: 500px;
+    object-fit: cover;
+    filter: brightness(35%);
+  }
+  .feature-box {
+    position: absolute;
+    top: 68%;
+    z-index: 3;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+  
+  .feature-box .row > div {
+    margin: 10px;
+    /* background-color: rgba(0, 0, 0, 0.54); */
+    border: 1px solid grey;
+    /* box-shadow: -1px 2px 19px 0px rgb(0 0 0 / 75%); */
+    width: 113px;
+    height: 77px;
+    color: white;
+    vertical-align: center;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    border-radius: 5px;
+    /* padding: 10px 15px; */
+    margin-top: 20px;
+  }
+  
+  .feature-box .row > div > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* common styling */
+  .brand-span {
+    font-weight: 600;
+    padding: 8px;
+    background-color: #003372;
+    color: #fff;
+    clip-path: polygon(16.49% -12.07%, 86.19% -8.63%, 78.68% 120.69%, 9.89% 122.41%);
+  }
+  
+  section {
+    margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
+  }
+  /* common styling */
+  .breakcrumb-wrapper {
+    padding: 0;
+  }
+  .breakcrumb-wrapper .card {
+    border:  none;
+  }
+  
+  .breakcrumb-wrapper img {
+  object-fit: cover;
+  border-radius: 0;
+  }
+  
+  .breakcrumb-wrapper h5 {
+    color: #fff;
+  }
+  
+  .breakcrumb-wrapper .card-text {
+    font-size: .875em;
+  }
+  
+  #program-btn > a {
+  margin-top: 2px;
+  }
+  
+  #mainform button {
+    background-color: #ef7113;
+    color: #fff;
+    font-weight: 600;
+  }
+  #btu-logo {
+    height: 75px;
+  }
+
+  .heading-wrapper h1 span {
+    /* background-color: var(--blue-dark);
+    padding:4px 8px; */
+  }
+
+  #main-cta {
+    color:white;
+    background-color: black;
+  }
+
+  footer .about_bir {
+    max-width: 450px;
+  }
+  .about-us img {
+    max-height: 450px;
+  }
+  .hightlight-list img {
+    object-fit: cover;
+  }

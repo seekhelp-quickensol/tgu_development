@@ -1,0 +1,3670 @@
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');  
+class Web_model extends CI_Model{ 
+	public function addVisitor($ip){ 
+		$this->db->where('ip_address', $ip); 
+		$query = $this->db->get('tbl_visitors'); 
+		if ($query->num_rows() == 0) { 
+			$data = array( 
+				'ip_address' => $ip, 
+				'visit_date' => date('Y-m-d H:i:s') 
+			); 
+			$this->db->insert('tbl_visitors', $data); 
+		} 
+	} 
+	public function getVisitorCount(){ 
+		return $this->db->count_all('tbl_visitors'); 
+	} 
+	public function get_active_id_name(){  
+		$this->db->where('is_deleted', '0');  
+		$this->db->where('status', '1'); 
+		$this->db->order_by('id_name', 'ASC'); 
+		$result = $this->db->get('tbl_id_management'); 
+		return $result->result(); 
+	}
+	public function get_all_country()
+	{
+		$this->db->order_by('name', 'ASC');
+		$resullt = $this->db->get('countries');
+		return $resullt->result();
+	}
+	public function get_all_city()
+	{
+		$this->db->order_by('name', 'ASC');
+		$resullt = $this->db->get('cities');
+		return $resullt->result();
+	}
+	public function get_all_course_stream_relation()
+	{
+		$this->db->select('tbl_course_stream_relation.*,tbl_course.course_name,tbl_course.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course.course_type', '0');
+		$this->db->order_by('tbl_course.course_name', 'ASC');
+		$this->db->group_by('tbl_course_stream_relation.course');
+		$this->db->join('tbl_faculty', 'tbl_faculty.id = tbl_course_stream_relation.faculty');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function get_all_stream_relation($courseId)
+	{
+		$this->db->select('tbl_course_stream_relation.*,tbl_course.id,tbl_stream.stream_name');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course.id', $courseId);
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function get_single_course_stream_relation()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('id', $this->uri->segment(2));
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->row();
+	}
+	public function get_ajax_course_list()
+	{
+		$this->db->select('tbl_course.course_name,tbl_course.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->order_by('tbl_course.course_name', 'ASC');
+		$this->db->group_by('tbl_course_stream_relation.course');
+		$this->db->join('tbl_faculty', 'tbl_faculty.id = tbl_course_stream_relation.faculty');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course');
+		$result = $this->db->get('tbl_course_stream_relation');
+		echo json_encode($result->result());
+	}
+	public function get_course_stream()
+	{
+		$this->db->select('tbl_stream.stream_name,tbl_stream.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course_stream_relation.course', $this->input->post('course'));
+		$this->db->order_by('tbl_stream.stream_name', 'ASC');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.relation_id = tbl_course_stream_relation.id');
+		$this->db->group_by('tbl_course_stream_relation.id');
+		$result = $this->db->get('tbl_course_stream_relation');
+		echo json_encode($result->result());
+		// $result = $result->result();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_course_stream_by_name()
+	{
+		$this->db->select('tbl_stream.stream_name,tbl_stream.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course.course_name', $this->input->post('course'));
+		$this->db->order_by('tbl_stream.stream_name', 'ASC');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.relation_id = tbl_course_stream_relation.id');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course');
+		$this->db->group_by('tbl_course_stream_relation.id');
+		$result = $this->db->get('tbl_course_stream_relation');
+		echo json_encode($result->result());
+		// $result = $result->result();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_course_stream_subject()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course', $this->input->post('course'));
+		$this->db->where('stream', $this->input->post('stream'));
+		$this->db->where('year_sem', $this->input->post('year_sem'));
+		$this->db->order_by('subject_name', 'ASC');
+		$result = $this->db->get('tbl_subject');
+		echo json_encode($result->result());
+	}
+	/*public function get_selected_course_stream($course){
+		$this->db->select('tbl_stream.stream_name,tbl_stream.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted','0');
+		$this->db->where('tbl_course_stream_relation.status','1');
+		$this->db->where('tbl_course_stream_relation.course',$course);
+		$this->db->order_by('tbl_stream.stream_name','ASC');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_course_stream_relation.stream');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}*/
+	public function get_selected_course_stream($course, $faculty)
+	{
+		$this->db->select('tbl_stream.stream_name,tbl_stream.id,tbl_course_stream_relation.course_link');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course_stream_relation.course', $course);
+		$this->db->where('tbl_course_stream_relation.faculty', $faculty);
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function generate_registration_otp()
+	{
+		$otp = rand(10000, 99999);
+		$data = array(
+			'name' 			=> $this->security->xss_clean($this->input->post('otp_name')),
+			'mobile' 		=> $this->security->xss_clean($this->input->post('otp_mobile_number')),
+			'email' 		=> $this->security->xss_clean($this->input->post('otp_email')),
+			'created_on' 	=> date('Y-m-d H:i:s'),
+		);
+		$this->db->insert('tbl_registration_lead', $data);
+		$session = array(
+			'otp_mobile' 	=> $this->input->post('otp_mobile_number'),
+			'otp_email' 	=> $this->input->post('otp_email'),
+			'otp_otp' 		=> $otp,
+		);
+		$this->session->set_userdata($session);
+		$message = "Your OTP is " . $otp . no_reply_name;
+		$this->send_common_sms($this->input->post('otp_mobile_number'), $message);
+		if ($this->input->post('otp_email') != "") {
+			$message = "Dear Student";
+			$message .= "<br>Your One Time Password (OTP) for registration is " . $otp;
+			$message .= "<br>";
+			$message .= "<br>Thanks,<br>Team Global University";
+			$to = array(
+				"email" => $this->input->post('otp_email'),
+				"name" => $this->security->xss_clean($this->input->post('otp_name')),
+			);
+			$subject = 'One Time Password | ' . no_reply_name;
+			$this->Admin_model->send_send_blue($to, $subject, $message);
+			/*
+			$this->load->library('email');
+			$this->email->from('no-reply@birtikendrajituniversity.com','Birtikendrajit University');
+			$this->email->to($this->input->post('otp_email')); 
+			$this->email->subject('One Time Password | Birtikendrajit University');
+			$this->email->message($message);
+			$this->email->set_mailtype('html');
+			if($this->email->send()){ 
+			}else{ 
+			} */
+		}
+	}
+	public function generate_enrollment_otp()
+	{
+		$otp = rand(10000, 99999);
+		$this->db->where('enrollment_number', $this->input->post('enrollment'));
+		$this->db->where_in('admission_status', array(1, 4));
+		$this->db->where('status', '1');
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		if (!empty($result)) {
+			$session = array(
+				'otp_mobile' 	=> $result->mobile,
+				'en_otp' 		=> $otp,
+			);
+			$this->session->set_userdata($session);
+			$message = "Your OTP is " . $otp . no_reply_name;
+			$this->send_common_sms($result->mobile, $message);
+			/*if($this->input->post('otp_email') != ""){
+				$message = "Dear Student";
+				$message .= "<br>Your One Time Password (OTP) for registration is ".$otp;
+				$message .= "<br>";  
+				$message .= "<br>Thanks<br>Team Demo University";
+				$this->load->library('email');
+				$this->email->from('no-replys@in','Demo University');
+				$this->email->to($this->input->post('otp_email')); 
+				$this->email->subject('One Time Password | Demo University');
+				$this->email->message($message);
+				$this->email->set_mailtype('html');
+				if($this->email->send()){ 
+				}else{ 
+				}
+			}*/
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function resend_e_otp()
+	{
+		$otp = rand(10000, 99999);
+		$session = array(
+			'en_otp' 		=> $otp,
+		);
+		$this->session->set_userdata($session);
+		$message = "Your OTP is " . $otp . "THE GLOBAL UNIVERSITY";
+		$this->send_common_sms($this->session->userdata('otp_mobile'), $message);
+		return true;
+	}
+	public function resend_otp()
+	{
+		$otp = rand(10000, 99999);
+		$session = array(
+			'otp_otp' 		=> $otp,
+		);
+		$this->session->set_userdata($session);
+		$message = "Your OTP is " . $otp . "THE GLOBAL UNIVERSITY";
+		$this->send_common_sms($this->session->userdata('otp_mobile'), $message);
+		return true;
+	}
+	public function verify_otp()
+	{
+		if ($this->session->userdata('otp_otp') == $this->input->post('otp_code')) {
+			$data = array(
+				'is_verified' => '1'
+			);
+			$this->session->set_userdata($data);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function verify_e_library_otp()
+	{
+		if ($this->session->userdata('en_otp') == $this->input->post('otp_code')) {
+			$data = array(
+				'e_library' => '1'
+			);
+			$this->session->set_userdata($data);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function send_common_sms($mobile_number, $msg)
+	{
+		$authKey = SMSKEY;
+		$senderId = SENDERID;
+		$route = ROUTE;
+		$message = $msg;
+		$postData = array(
+			'authkey' => $authKey,
+			'mobiles' => $mobile_number,
+			'message' => $message,
+			'sender' => $senderId,
+			'route' => $route
+		);
+		$url = "http://sms.bulksmsserviceproviders.com/api/send_http.php";
+		$ch = curl_init();
+		curl_setopt_array($ch, array(
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $postData
+		));
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		$output = curl_exec($ch);
+		if (curl_errno($ch)) {
+			echo 'error:' . curl_error($ch);
+		}
+		curl_close($ch);
+		return true;
+	}
+	public function get_course_stream_duration()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course', $this->input->post('course'));
+		$this->db->where('stream', $this->input->post('stream'));
+		$result = $this->db->get('tbl_course_stream_relation');
+		$result = $result->row();
+		if (!empty($result)) {
+			if ($this->input->post('course_mode') == "1") {
+				$mode = "Year/Sem";
+				$entry_year = $result->year_duration;
+				echo "<option value=''>Select Year</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else if ($this->input->post('course_mode') == "2") {
+				$mode = "Year/Sem";
+				$entry_year = $result->sem_duration;
+				echo "<option value=''>Select Semester</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else if ($this->input->post('course_mode') == "4") {
+				$mode = "Month";
+				$entry_year = $result->month_duration;
+				echo "<option value=''>Select Month</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else {
+				echo "<option value=''>Select Year/Semester</option>
+			    <option value='1'>1</option>
+			    <option value='2'>2</option>
+			    <option value='3'>3</option>
+			    <option value='4'>4</option>
+			    <option value='5'>5</option>
+			    <option value='6'>6</option>
+			    <option value='7'>7</option>
+			    <option value='8'>8</option>
+			    ";
+			}
+		} else {
+			echo "<option value=''>Select Year/Semester</option>
+		        <option value='1'>1</option>
+			    <option value='2'>2</option>
+			    <option value='3'>3</option>
+			    <option value='4'>4</option>
+			    <option value='5'>5</option>
+			    <option value='6'>6</option>
+			    <option value='7'>7</option>
+			    <option value='8'>8</option>
+			    ";
+		}
+	}
+	public function get_course_stream_total_duration(){  
+		$this->db->where('is_deleted', '0'); 
+		$this->db->where('status', '1'); 
+		$this->db->where('course', $this->input->post('course')); 
+		$this->db->where('stream', $this->input->post('stream')); 
+		$result = $this->db->get('tbl_course_stream_relation'); 
+		$result = $result->row();  
+		if(!empty($result)){
+			echo $result->year_duration;
+		}
+	}  
+	public function get_course_stream_duration_separate()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course', $this->input->post('course'));
+		$this->db->where('stream', $this->input->post('stream'));
+		$result = $this->db->get('tbl_course_stream_relation');
+		$result = $result->row();
+		if (!empty($result)) {
+			if ($result->course_mode == "1") {
+				$mode = "Year/Sem";
+				$entry_year = $result->year_duration;
+				echo "<option value=''>Select Year/Sem</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else if ($result->course_mode == "2") {
+				$mode = "Year/Sem";
+				$entry_year = $result->sem_duration;
+				echo "<option value=''>Select Year/Sem</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else if ($result->course_mode == "4") {
+				$mode = "Month";
+				$entry_year = $result->month_duration;
+				echo "<option value=''>Select Month</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					echo "<option value=" . $s . ">" . $s . " " . $mode . " </option>";
+				}
+			} else if ($result->course_mode == "3") {
+				$mode = "";
+				$entry_year = $result->month_duration;
+				//	echo "<option value=''>Select duration</option>";
+				for ($s = 1; $s <= $entry_year; $s++) {
+					//echo "<option value=".$s.">".$s." ".$mode." </option>";
+				}
+				echo "<option value=''>Select Year/Semester</option>
+			   <option value='1'>1</option>
+			    <option value='2'>2</option>
+			    <option value='3'>3</option>
+			    <option value='4'>4</option>
+			    <option value='5'>5</option>
+			    <option value='6'>6</option>
+			    <option value='7'>7</option>
+			    <option value='8'>8</option>
+			";
+			} else {
+				echo "<option value=''>Select Year/Semester</option>
+			    <option value='1'>1</option>
+			    <option value='2'>2</option>
+			    <option value='3'>3</option>
+			    <option value='4'>4</option>
+			    <option value='5'>5</option>
+			    <option value='6'>6</option>
+			    <option value='7'>7</option>
+			    <option value='8'>8</option>
+			";
+			}
+		} else {
+			echo "<option value=''>Select Year/Semester</option>
+			   <option value='1'>1</option>
+			    <option value='2'>2</option>
+			    <option value='3'>3</option>
+			    <option value='4'>4</option>
+			    <option value='5'>5</option>
+			    <option value='6'>6</option>
+			    <option value='7'>7</option>
+			    <option value='8'>8</option>
+			";
+		}
+	}
+	public function get_course_stream_course_mode()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course', $this->input->post('course'));
+		$this->db->where('stream', $this->input->post('stream'));
+		$result = $this->db->get('tbl_course_stream_relation');
+		$result = $result->row();
+		if (!empty($result)) {
+			if ($result->course_mode == "1") {
+				echo "<option value=''>Select Course Mode</option>
+					<option value='1'>Year</option>
+				";
+			} else if ($result->course_mode == "2") {
+				echo "<option value=''>Select Course Mode</option>
+					<option value='2'>Semester</option>
+				";
+			} else if ($result->course_mode == "4") {
+				echo "<option value=''>Select Course Mode</option>
+					<option value='4'>Month</option>
+				";
+			} else if ($result->course_mode == "3") {
+				echo "<option value=''>Select Course Mode</option>
+					<option value='1'>Year</option>
+					<option value='2'>Semester</option>
+				";
+			}
+		} else {
+			echo "<option value=''>Select Course Mode</option>";
+		}
+	}
+	public function get_active_session()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('id', 'DESC');
+		// $this->db->limit(1);
+		$result = $this->db->get('tbl_session');
+		return $result->result();
+	}
+	public function get_course_stream_fees()
+	{
+		$fees = 0;
+		$registration_fees = 0;
+		/*$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('course',$this->input->post('course'));
+		$this->db->where('stream',$this->input->post('stream'));
+		$relation = $this->db->get('tbl_course_stream_relation');
+		$relation = $relation->row();
+		if(!empty($relation)){
+			$this->db->where('session_id',$this->input->post('session'));
+			$this->db->where('relation_id',$relation->id);
+			$this->db->where('course_id',$this->input->post('course'));
+			$this->db->where('stream_id',$this->input->post('stream'));
+			$result = $this->db->get('tbl_fees_realtion');
+			$result = $result->row();
+			if(!empty($result)){
+				$fees =  $result->campus_fees;
+				$registration_fees =  $result->registration_fees;
+			}else{
+				$this->db->where('relation_id',$relation->id);
+				$this->db->where('course_id',$this->input->post('course'));
+				$this->db->where('stream_id',$this->input->post('stream'));
+				$this->db->order_by('id','DESC');
+				$result = $this->db->get('tbl_fees_realtion');
+				$result = $result->row();
+				if(!empty($result)){
+					$fees =  $result->campus_fees;
+					$registration_fees =  $result->registration_fees;
+				}
+			}
+		}
+		
+		if($this->input->post('country') != "101"){
+			$fees = $fees*2;
+		}
+		*/
+		$this->db->where('course_id', $this->input->post('course'));
+		$this->db->where('stream_id', $this->input->post('stream'));
+		$this->db->where('session_id', $this->input->post('session'));
+		$this->db->where('center_id', '1');
+		$this->db->where('is_deleted', '0');
+		$fees_result = $this->db->get('tbl_center_fees');
+		$fees_result = $fees_result->row();
+		if (empty($fees_result)) {
+			$this->db->where('course_id', $this->input->post('course'));
+			$this->db->where('stream_id', $this->input->post('stream'));
+			$this->db->where('center_id', '1');
+			$this->db->where('is_deleted', '0');
+			$this->db->order_by('session_id', 'DESC');
+			$fees_result = $this->db->get('tbl_center_fees');
+			$fees_result = $fees_result->row();
+		}
+		if (!empty($fees_result)) {
+			// echo "<pre>";print_r($fees_result);exit;
+			$registration_fees = $fees_result->registration_fees;
+			if ($this->input->post('country') != "101") {
+				$fees = $fees_result->foregin_fees;
+			} else {
+				$fees = $fees_result->fees;
+			}
+		}
+		$this->db->where('id', $this->input->post('session'));
+		$session_fees = $this->db->get('tbl_session');
+		$session_fees = $session_fees->row();
+		$session_late_fees = 0;
+		if (!empty($session_fees)) {
+			if ($session_fees->late_fees_date < date("Y-m-d")) {
+				$session_late_fees = $session_fees->late_fees;
+			}
+		}
+		echo $fees . "@@@" . $session_late_fees . "@@@" . $registration_fees;
+	}
+	public function set_registration($photo, $noc, $identity_file,$undertaking_file,$affidavit_file,$old_migration)
+	{
+		$type = '';
+		$is_pulp = $this->input->post('is_pulp');
+		$is_bvoc = $this->input->post('is_bvoc');
+		if ($is_pulp == '1') {
+			$type = $is_pulp;
+		} else {
+			if ($is_bvoc == '2') {
+				$type = $is_bvoc;
+			} else {
+				$type = '0';
+			}
+		}
+		$this->db->select('id,faculty,course_type,course_mode');
+		$this->db->where('course', $this->input->post('course'));
+		$this->db->where('stream', $this->input->post('stream'));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$course = $this->db->get('tbl_course_stream_relation');
+		$course = $course->row();
+		// $lateral_entry_fees = 0;
+		// $late_fee = $this->get_lateral_entry_fees();
+		$lateral_entry_fees = 0;
+		$this->db->where('id', '1');
+		$this->db->where('is_deleted', '0');
+		$fees_result = $this->db->get('tbl_center');
+		$fees_result = $fees_result->row();
+		if ($this->input->post('admission_type') !="0") { 
+			$entry_year = $this->input->post('year_sem'); 
+			$lateral_entry_fees = $fees_result->lateral_entry_fees; 
+		} else {    
+			$entry_year = "0"; 
+		}
+		$data = array(
+			'session_id' 		=> $this->input->post('session'),
+			'faculty_id' 		=> $course->faculty,
+			'course_type' 		=> $course->course_type,
+			'course_mode' 		=> $this->input->post('course_mode'),
+			'course_id' 		=> $this->input->post('course'),
+			'stream_id' 		=> $this->input->post('stream'),
+			'year_sem' 			=> $this->input->post('year_sem'),
+			'student_name' 		=> $this->input->post('student_name'),
+			'father_name' 		=> $this->input->post('father_name'),
+			'father_profession' => $this->input->post('father_profession'),
+			'mother_name' 		=> $this->input->post('mother_name'),
+			'date_of_birth' 	=> date("Y-m-d", strtotime($this->input->post('date_of_birth'))),
+			'mobile' 			=> $this->input->post('mobile'),
+			'email' 			=> $this->input->post('email'),
+			'id_type' 			=> $this->input->post('id_type'),
+			'id_number' 		=> $this->input->post('identity_numer'),
+			'identity_softcopy' => $identity_file,
+			'photo' 			=> $photo,
+			'noc'               => $noc,
+			'gender' 			=> $this->input->post('gender'),
+			'category' 			=> $this->input->post('category'),
+			'address' 			=> $this->input->post('address'),
+			'nationality' 		=> $this->input->post('nationality'),
+			'country' 			=> $this->input->post('country'),
+			'state' 			=> $this->input->post('state'),
+			'city'	 			=> $this->input->post('city'),
+			'pincode' 			=> $this->input->post('pincode'),
+			'study_mode' 		=> $this->input->post('study_mode'),
+			'employement_type' 	=> $this->input->post('employement_type'),
+			'religion' 			=> $this->input->post('religion'),
+			'religin_specify' 	=> $this->input->post('religin_specify'),
+			'abc_apaar_id' 		=> $this->input->post('abc_apaar_id'),
+			'admission_type' 	=> $this->input->post('admission_type'),
+			'lateral_year' 		=> $entry_year,
+			'admission_date' 	=> date("Y-m-d"),
+			'course_for' 		=> $type,
+			'undertaking'  		=> $undertaking_file,
+			'affidavit_file' 	=> $affidavit_file,
+			
+			'anti_ragging_student_ref_id' 	=> $this->input->post('anti_ragging_student_ref_id'),
+			
+			'anti_ragging_parents_ref_id' 	=> $this->input->post('anti_ragging_parents_ref_id'),
+			
+			'old_migration' 	=> $old_migration,
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_student', $data);
+		$id = $this->db->insert_id();
+		$prefix = rand(10000, 99999);
+		$username = array(
+			'username' => $prefix . $id,
+			'password' => $prefix . $id,
+		);
+		$this->db->where('id', $id);
+		$this->db->update('tbl_student', $username);
+		/*
+		$this->db->where('session_id',$this->input->post('session'));
+		$this->db->where('relation_id',$course->id);
+		$this->db->where('course_id',$this->input->post('course'));
+		$this->db->where('stream_id',$this->input->post('stream'));
+		$result = $this->db->get('tbl_fees_realtion');
+		$result = $result->row();
+		
+		$fees = 0;
+		if(!empty($result)){
+			$fees = $result->campus_fees;
+		}else{
+			$this->db->where('relation_id',$course->id);
+			$this->db->where('course_id',$this->input->post('course'));
+			$this->db->where('stream_id',$this->input->post('stream'));
+			$this->db->order_by('id','DESC');
+			$result = $this->db->get('tbl_fees_realtion');
+			$result = $result->row();
+			if(!empty($result)){
+				$fees = $result->campus_fees;
+			}
+		}
+		if($this->input->post('country') != "101"){
+			$fees = $fees*2;
+		}*/
+		// $late_fees = 0;
+		// $this->db->where('id',$this->input->post('session'));
+		// $this->db->where('late_fees_date<',date("Y-m-d"));
+		// $seesion_late = $this->db->get('tbl_session');
+		// $seesion_late = $seesion_late->row();
+		// if(!empty($seesion_late)){
+		// 	$late_fees = $seesion_late->late_fees;
+		// }
+		$fees = 0;
+		$this->db->where('course_id', $this->input->post('course'));
+		$this->db->where('stream_id', $this->input->post('stream'));
+		$this->db->where('session_id', $this->input->post('session'));
+		$this->db->where('center_id', '1');
+		$this->db->where('is_deleted', '0');
+		$fees_result = $this->db->get('tbl_center_fees');
+		$fees_result = $fees_result->row();
+		if (empty($fees_result)) {
+			$this->db->where('course_id', $this->input->post('course'));
+			$this->db->where('stream_id', $this->input->post('stream'));
+			$this->db->where('center_id', '1');
+			$this->db->where('is_deleted', '0');
+			$this->db->order_by('session_id', 'DESC');
+			$fees_result = $this->db->get('tbl_center_fees');
+			$fees_result = $fees_result->row();
+		}
+		if (!empty($fees_result)) {
+			if ($this->input->post('country') != "101") {
+				$fees = $fees_result->foregin_fees;
+			} else {
+				$fees = $fees_result->fees;
+			}
+		}
+		if ($this->input->post('course') == "23" && $this->input->post('fees_option') == "2") {
+			$fees = $fees / 2;
+		}
+		//$fees = $this->input->post('admission_fees');
+		$late_fees = $this->input->post('late_fees');
+		$lateral_entry_fees = $this->input->post('lateral_entry_fees');
+		$registration_fees = $this->input->post('registration_fees');
+		$bank_id = 1;
+		$fees_data = array(
+			'student_id' 	=> $id,
+			'fees_type' 	=> 1,
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'payment_mode' 	=> $this->input->post('payment_mode'),
+			'payment_date' 	=> date("Y-m-d"),
+			'bank_id' 		=> $bank_id,
+			'late_fees' 	=> $late_fees,
+			'lateral_entry_fees' => $lateral_entry_fees,
+			'registration_fees' => $registration_fees,
+			'bank_fees' 	=> 0,
+			'amount' 		=> $fees,
+			'original_amount' => $fees,
+			'total_fees' 	=> $fees + $late_fees + $lateral_entry_fees + $registration_fees,
+			'created_on' 	=> date("Y-m-d H:i:s"),
+		);
+		// echo "<pre>";print_r($fees_data);exit;
+		$this->db->insert('tbl_student_fees', $fees_data);
+		$fees_id = $this->db->insert_id();
+		if ($this->input->post('payment_mode') == "2") {
+			redirect('upload_my_qualification/' . base64_encode($id) . "/" . base64_encode($fees_id));
+		} else {
+			redirect('upload_my_qualification/' . base64_encode($id) . "/" . base64_encode($fees_id));
+		}
+	}
+	public function old_admission_check()
+	{
+		$this->db->where('course_id', $this->input->post('course'));
+		$this->db->where('stream_id', $this->input->post('stream'));
+		$this->db->where('student_name', $this->input->post('student_name'));
+		$this->db->where('father_name', $this->input->post('father_name'));
+		$this->db->where('mother_name', $this->input->post('mother_name'));
+		$this->db->where('email', $this->input->post('email'));
+		// $this->db->where('admission_status','1');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	// public function old_admission_check_test(){
+	// 	$this->db->where('is_deleted','0');
+	// 	$this->db->where('student_name','VINOD RAI');
+	// 	$this->db->where('father_name','SHUBHA NARAYAN RAI');
+	// 	$this->db->where('mother_name','SHIV KUMARI DEVI');
+	// 	$this->db->where('email','jitenderrairairai@gmail.com');
+	// 	$this->db->where('admission_status','0');
+	// 	$result = $this->db->get('tbl_student');
+	// 	return $result->num_rows();
+	// }
+	public function get_active_challan_bank()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('show_for_challan', '1');
+		$this->db->order_by('bank_name', 'ASC');
+		$result = $this->db->get('tbl_bank');
+		return $result->result();
+	}
+	public function get_admission_challan_student(){
+		$this->db->select('tbl_student.*,tbl_course.course_name,tbl_stream.stream_name,tbl_faculty.faculty_name,tbl_session.session_name,cities.name as city_name,states.name as state_name');
+		$this->db->where('tbl_student.id', base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id');
+		$this->db->join('tbl_faculty', 'tbl_faculty.id = tbl_student.faculty_id');
+		$this->db->join('cities', 'cities.id = tbl_student.city');
+		$this->db->join('states', 'states.id = tbl_student.state');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_admission_challan_student_fees()
+	{
+		$this->db->select('tbl_student_fees.*,tbl_bank.account_holder,tbl_bank.account_number,tbl_bank.bank_name,tbl_bank.branch,tbl_bank.ifsc');
+		$this->db->where('tbl_student_fees.id', base64_decode($this->uri->segment(3)));
+		$this->db->where('tbl_student_fees.student_id', base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_bank', 'tbl_bank.id = tbl_student_fees.bank_id');
+		$result = $this->db->get('tbl_student_fees');
+		return $result->row();
+	}
+	public function set_enquiry()
+	{
+		$this->db->where('mobile', $this->input->post('full_mobile'));
+		$this->db->where('email', $this->input->post('full_email'));
+		$this->db->where('name', $this->input->post('full_name'));
+		$this->db->where('query', $this->input->post('full_course'));
+		$exist = $this->db->get('tbl_enquery');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			$data = array(
+				'name' 			=> $this->input->post('full_name'),
+				'mobile' 		=> $this->input->post('full_mobile'),
+				'email' 		=> $this->input->post('full_email'),
+				'query' 		=> $this->input->post('full_course'),
+				'state' 		=> $this->input->post('full_state'),
+				'created_on' 	=> date("Y-m-d H:i:s"),
+			);
+			$this->db->insert('tbl_enquery', $data);
+			redirect('thank-you-for-enquiry');
+		} else {
+			redirect($_SERVER['HTTP_REFERER']);
+		}
+	}
+	public function get_qualification_student()
+	{
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		//$this->db->where('admission_status','0');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_qualification_fees()
+	{
+		$this->db->where('id', base64_decode($this->uri->segment(3)));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$result = $this->db->get('tbl_student_fees');
+		return $result->row();
+	}
+	public function update_qualification($secondary_marksheet, $sr_secondary_marksheet, $graduation_marksheet, $post_graduation_marksheet, $other_qualification_marksheet, $signature)
+	{
+		$data = array(
+			'student_id' 						=> $this->input->post('student_id'),
+			'secondary_year' 					=> $this->input->post('secondary_year'),
+			'secondary_university' 				=> $this->input->post('secondary_university'),
+			'secondary_marks' 					=> $this->input->post('secondary_marks'),
+			// 'secondary_percentage' 				=> $this->input->post('secondary_percentage'),
+			'secondary_marksheet' 				=> $secondary_marksheet,
+			'sr_secondary_year' 				=> $this->input->post('sr_secondary_year'),
+			'sr_secondary_university' 			=> $this->input->post('sr_secondary_university'),
+			'sr_secondary_marks' 				=> $this->input->post('sr_secondary_marks'),
+			// 'sr_secondary_marks_percentage' 	=> $this->input->post('sr_secondary_marks_percentage'),
+			'sr_secondary_marksheet' 			=> $sr_secondary_marksheet,
+			'graduation_year' 					=> $this->input->post('graduation_year'),
+			'graduation_university' 			=> $this->input->post('graduation_university'),
+			'graduation_marks' 					=> $this->input->post('graduation_marks'),
+			// 'graduation_marks_percentage' 		=> $this->input->post('graduation_marks_percentage'),
+			'graduation_marksheet' 				=> $graduation_marksheet,
+			'post_graduation_year' 				=> $this->input->post('post_graduation_year'),
+			'post_graduation_university' 		=> $this->input->post('post_graduation_university'),
+			'post_graduation_marks' 			=> $this->input->post('post_graduation_marks'),
+			// 'post_graduation_marks_percentage' 	=> $this->input->post('post_graduation_marks_percentage'),
+			'post_graduation_marksheet' 		=> $post_graduation_marksheet,
+			'other_qualification_year' 			=> $this->input->post('other_qualification_year'),
+			'other_qualification_university' 	=> $this->input->post('other_qualification_university'),
+			'other_qualification_marks' 		=> $this->input->post('other_qualification_marks'),
+			// 'other_qualification_marks_percentage'=> $this->input->post('other_qualification_marks_percentage'),
+			'other_qualification_marksheet' 	=> $other_qualification_marksheet,
+			'created_on' 						=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_student_qualification', $data);
+		$signature_data = array(
+			'signature' => $signature
+		);
+		$this->db->where('id', $this->input->post('student_id'));
+		$this->db->update('tbl_student', $signature_data);
+		redirect('admission_payment/' . base64_encode($this->input->post('student_id')) . "/" . base64_encode($this->input->post('fees_id')));
+		/*
+		if($this->input->post('payment_mode') == "1"){
+			redirect('admission_payment/'.base64_encode($this->input->post('student_id'))."/".base64_encode($this->input->post('fees_id')));
+		}else if($this->input->post('payment_mode') == "3"){
+			redirect('print_cash_boucher/'.base64_encode($this->input->post('student_id'))."/".base64_encode($this->input->post('fees_id')));
+		}else{
+			redirect('print_challan/'.base64_encode($this->input->post('student_id'))."/".base64_encode($this->input->post('fees_id')));
+		}*/
+	}
+	public function get_unique_admission_contact()
+	{
+		$this->db->where('mobile', $this->input->post('mobile'));
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_student');
+		echo $result->num_rows();
+	}
+	public function get_unique_admission_email()
+	{
+		$this->db->where('email', $this->input->post('email'));
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_student');
+		echo $result->num_rows();
+	}
+	public function get_marquee_news()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('id', 'DESC');
+		$result = $this->db->get('tbl_marquee_news');
+		return $result->result();
+	}
+	public function get_all_course_list()
+	{
+		$this->db->select('tbl_course.course_name,tbl_course.sort_name,tbl_course.id,tbl_course_stream_relation.id as relation_id,tbl_course_stream_relation.course_mode,tbl_course_stream_relation.year_duration,tbl_course_stream_relation.sem_duration,tbl_fees_realtion.fees');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->order_by('tbl_course.course_name', 'ASC');
+		$this->db->group_by('tbl_course_stream_relation.course');
+		$this->db->join('tbl_faculty', 'tbl_faculty.id = tbl_course_stream_relation.faculty');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course');
+		$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.relation_id = tbl_course_stream_relation.id');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function get_all_active_faculty()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('faculty_name', 'ASC');
+		$result = $this->db->get('tbl_faculty');
+		return $result->result();
+	}
+	public function get_facilty_course_list()
+	{
+		$this->db->where('faculty_name', str_replace("-", " ", $this->uri->segment(1)));
+		$faculty = $this->db->get('tbl_faculty');
+		$faculty = $faculty->row();
+		if (!empty($faculty)) {
+			$this->db->select([
+				'tbl_course.course_image',
+				'tbl_course.course_description',
+				'tbl_course.course_name',
+				'tbl_course.course_link',
+				'tbl_course.course_read',
+				'tbl_course.id as course_id',
+				'tbl_course.sort_name',
+				'tbl_course_stream_relation.id as relation_id',
+				'tbl_course_stream_relation.course_mode',
+				'tbl_course_stream_relation.year_duration',
+				'tbl_course_stream_relation.sem_duration',
+				'tbl_course_stream_relation.month_duration',
+				'tbl_course_stream_relation.faculty as faculty_id',
+				'tbl_fees_realtion.fees'
+			]);
+			$this->db->from('tbl_course_stream_relation');
+			$this->db->join('tbl_faculty', 'tbl_faculty.id = tbl_course_stream_relation.faculty', 'inner');
+			$this->db->join('tbl_course', 'tbl_course.id = tbl_course_stream_relation.course', 'inner');
+			$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.relation_id = tbl_course_stream_relation.id', 'inner');
+			$this->db->where([
+				'tbl_course_stream_relation.is_deleted' => '0',
+				'tbl_course_stream_relation.status' => '1',
+				'tbl_course_stream_relation.faculty' => $faculty->id
+			]);
+			$this->db->group_by('tbl_course_stream_relation.course');
+			$this->db->order_by('tbl_course.course_name', 'ASC');
+			$result = $this->db->get();
+			return $result->result();
+		}
+	}
+	public function get_single_course_details()
+	{
+		$this->db->select('tbl_course.*');
+		$this->db->where('tbl_course.is_deleted', '0');
+		$this->db->where('tbl_course.course_link', $this->uri->segment(1));
+		$result = $this->db->get('tbl_course');
+		return $result->row();
+	}
+	public function set_guide_application($photo, $signature, $secondary_subject_marksheet, $sr_secondary_subject_marksheet, $graduation_subject_marksheet, $post_graduation_subject_marksheet, $phd_subject_marksheet, $other_qualification_subject_marksheet, $biodata, $aadhar_card)
+	{
+		ini_set('memory_limit', '-1');
+		$data = array(
+			'name' 								=> $this->input->post('full_name'),
+			'son_of' 							=> $this->input->post('son_of'),
+			'date_of_birth'					 	=> date("Y-m-d", strtotime($this->input->post('date_of_birth'))),
+			'phone_number' 						=> $this->input->post('phone_number'),
+			'mobile' 							=> $this->input->post('mobile'),
+			'email' 							=> $this->input->post('email'),
+			'gender' 							=> $this->input->post('gender'),
+			'photo' 							=> $photo,
+			'signature' 						=> $signature,
+			'address' 							=> $this->input->post('address'),
+			'country' 							=> $this->input->post('country'),
+			'state' 							=> $this->input->post('state'),
+			'city' 								=> $this->input->post('city'),
+			'pincode' 							=> $this->input->post('pincode'),
+			'specilisation' 					=> $this->input->post('specilisation'),
+			'remark' 							=> $this->input->post('remark'),
+			'designation' 						=> $this->input->post('designation'),
+			'research_area' 					=> $this->input->post('research_area'),
+			'employement_type' 					=> $this->input->post('employement_type'),
+			'work_experience' 					=> $this->input->post('work_experience'),
+			'present_working' 					=> $this->input->post('present_working'),
+			'secondary_year' 					=> $this->input->post('secondary_year'),
+			'secondary_university' 				=> $this->input->post('secondary_university'),
+			'secondary_subject' 				=> $this->input->post('secondary_subject'),
+			'secondary_subject_marksheet' 		=> $secondary_subject_marksheet,
+			'sr_secondary_year' 				=> $this->input->post('sr_secondary_year'),
+			'sr_secondary_university' 			=> $this->input->post('sr_secondary_university'),
+			'sr_secondary_subject' 				=> $this->input->post('sr_secondary_subject'),
+			'sr_secondary_subject_marksheet' 	=> $sr_secondary_subject_marksheet,
+			'graduation_year' 					=> $this->input->post('graduation_year'),
+			'graduation_university' 			=> $this->input->post('graduation_university'),
+			'graduation_subject' 				=> $this->input->post('graduation_subject'),
+			'graduation_subject_marksheet' 		=> $graduation_subject_marksheet,
+			'post_graduation_year' 				=> $this->input->post('post_graduation_year'),
+			'post_graduation_university' 		=> $this->input->post('post_graduation_university'),
+			'post_graduation_subject' 			=> $this->input->post('post_graduation_subject'),
+			'post_graduation_subject_marksheet' => $post_graduation_subject_marksheet,
+			'phd_year' 							=> $this->input->post('phd_year'),
+			'phd_university' 					=> $this->input->post('phd_university'),
+			'phd_subject' 						=> $this->input->post('phd_subject'),
+			'phd_subject_marksheet' 			=> $phd_subject_marksheet,
+			'other_qualification_year' 			=> $this->input->post('other_qualification_year'),
+			'other_qualification_university' 	=> $this->input->post('other_qualification_university'),
+			'other_qualification_subject' 		=> $this->input->post('other_qualification_subject'),
+			'other_qualification_subject_marksheet' => $other_qualification_subject_marksheet,
+			'biodata'							=> $biodata,
+			'aadhar_card'                       => $aadhar_card,
+			'bank_name' 						=> $this->input->post('bank_name'),
+			'account_name' 						=> $this->input->post('account_name'),
+			'account_number' 					=> $this->input->post('account_number'),
+			'ifsc_code' 						=> $this->input->post('ifsc_code'),
+			'reference' 						=> $this->input->post('reference'),
+			'created_on' 						=> date("Y-m-d H:i:S"),
+		);
+		$this->db->insert('tbl_guide_application', $data);
+		return true;
+	}
+	public function set_campus_enquiry_form()
+	{
+		$this->db->where('mobile_number', $this->input->post('mobile_number'));
+		$this->db->where('email', $this->input->post('email'));
+		$this->db->where('name', $this->input->post('name'));
+		$this->db->where('course', $this->input->post('course'));
+		$exist = $this->db->get('tbl_campus_enquery');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			$data = array(
+				'name' 								=> $this->input->post('name'),
+				'mobile_number' 					=> $this->input->post('mobile_number'),
+				'email' 							=> $this->input->post('email'),
+				'course' 							=> $this->input->post('course'),
+				'address' 							=> $this->input->post('address'),
+				'visit_for' 						=> $this->input->post('visit_for'),
+				'father_name' 						=> $this->input->post('father_name'),
+				'mother_name' 						=> $this->input->post('mother_name'),
+				'description' 						=> $this->input->post('description'),
+				'head_id' 						    => $this->input->post('head_id'),
+				'call_back_date' 					=> $this->input->post('call_back_date'),
+				'visitor_attend_by_whom' 			=> $this->input->post('visitor_attend_by_whom'),
+				'created_on' 						=> date("Y-m-d H:i:S"),
+			);
+			$this->db->insert('tbl_campus_enquery', $data);
+			$message = "Dear Admin";
+			$message .= "<br>Your have received one enquiry from the campus, below is the details.<br> ";
+			$message .= "<br>Name: " . $this->input->post('name');
+			$message .= "<br>Mobile Number: " . $this->input->post('mobile_number');
+			$message .= "<br>Email: " . $this->input->post('email');
+			$message .= "<br>Course: " . $this->input->post('course');
+			$message .= "<br>Address: " . $this->input->post('address');
+			$message .= "<br>Visit For: " . $this->input->post('visit_for');
+			$message .= "<br>";
+			$message .= "<br>Thanks,<br>Team Global University";
+			$to = array(
+				// "email" => 'manipurbtu@gmail.com',
+				// "name" => 'Manipur'
+			);
+			$cc = array(
+				// "email" => 'shubham.btuniversity@gmail.com',
+				// "name" => 'Subham Goyal'
+			);
+			$subject = 'Campus Enquiry | ' . no_reply_name;
+			$this->Admin_model->send_in_blue_cc($to, $subject, $message, $cc);
+			/*
+			
+			
+			$this->load->library('email');
+			$this->email->from('no-reply@birtikendrajituniversity.com','Birtikendrajit University');
+			$this->email->to('manipurbtu@gmail.com'); 
+			//$this->email->cc('shubham.btuniversity@gmail.com'); 
+			$this->email->subject('Campus Enquiry| Birtikendrajit University');
+			$this->email->message($message);
+			$this->email->set_mailtype('html');
+			if($this->email->send()){ 
+			}else{ 
+			} */
+			redirect('thank-you-for-enquiry');
+		} else {
+			redirect($_SERVER['HTTP_REFERER']);
+		}
+	}
+	public function get_enquiry_head()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->order_by('head_name', 'ASC');
+		$result = $this->db->get('tbl_followup_heads');
+		return $result->result();
+	}
+	public function set_enquiry_form()
+	{
+		$this->db->where('mobile', $this->input->post('mobile_number'));
+		$this->db->where('email', $this->input->post('email'));
+		$this->db->where('name', $this->input->post('name'));
+		$this->db->where('query', $this->input->post('course'));
+		$exist = $this->db->get('tbl_enquery');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			$data = array(
+				'name' 								=> $this->input->post('name'),
+				'mobile' 							=> $this->input->post('mobile_number'),
+				'email' 							=> $this->input->post('email'),
+				'query' 							=> $this->input->post('query'),
+				// 'country' 							=> $this->input->post('country'),
+				// 'state' 							=> $this->input->post('state'),
+				'created_on' 						=> date("Y-m-d H:i:S"),
+			);
+			$this->db->insert('tbl_enquery', $data);
+			redirect('thanks-for-enquiry');
+		} else {
+			redirect('thanks-for-enquiry');
+		}
+	}
+	public function set_center_enquiry($photo, $adharcard, $pan_card, $other_doc)
+	{
+		$data = array(
+			'center_name' 				=> $this->input->post('center_name'),
+			'head_name' 				=> $this->input->post('head_name'),
+			'contact_person_name' 		=> $this->input->post('contact_person_name'),
+			'mobile' 					=> $this->input->post('contact_number'),
+			'email' 					=> $this->input->post('email'),
+			'country' 					=> $this->input->post('country'),
+			'state' 					=> $this->input->post('state'),
+			'city' 						=> $this->input->post('city'),
+			'pincode' 					=> $this->input->post('pincode'),
+			'address' 					=> $this->input->post('address'),
+			'reference' 				=> $this->input->post('reference'),
+			'photo' 					=> $photo,
+			'adhar_card' 				=> $adharcard,
+			'pan_card' 					=> $pan_card,
+			'other_doc' 				=> $other_doc,
+			'account_name'				=>	$this->input->post('account_name'),
+			'account_number'			=>	$this->input->post('account_number'),
+			'bank_name'					=>	$this->input->post('bank_name'),
+			'ifsc'						=>	$this->input->post('ifsc'),
+			'created_on' 				=> date("Y-m-d H:i:S"),
+		);
+		// echo "<pre>";
+		// print_r($data);
+		// exit;
+		$this->db->insert('tbl_center_enquiry', $data);
+		return true;
+	}
+	public function save_phd_registration($image)
+	{
+		$data = array(
+			'student_name' 					=> $this->input->post('student_name'),
+			'father_name' 					=> $this->input->post('father_name'),
+			'mother_name' 					=> $this->input->post('mother_name'),
+			// 'photo_image' 				=> $this->input->post('hidden_image'),
+			'profile_photo_link' 			=> $this->input->post('photo_image'),
+			'date_of_birth'					=> date("Y-m-d", strtotime($this->input->post('date_of_birth'))),
+			'mobile_number' 				=> $this->input->post('mobile'),
+			'email_id' 						=> $this->input->post('email'),
+			'gender' 						=> $this->input->post('gender'),
+			'category' 						=> $this->input->post('category'),
+			'current_address' 				=> $this->input->post('address'),
+			'id_type' 						=> $this->input->post('id_type'),
+			'id_number' 					=> $this->input->post('id_number'),
+			'nationality' 					=> $this->input->post('nationality'),
+			'country' 						=> $this->input->post('country'),
+			'state' 						=> $this->input->post('state'),
+			'city' 							=> $this->input->post('city'),
+			'pin_code' 						=> $this->input->post('pincode'),
+			'course' 						=> $this->input->post('course'),
+			'stream' 						=> $this->input->post('stream'),
+			'semester' 						=> $this->input->post('year_sem'),
+			'secondary_year' 				=> $this->input->post('secondary_year'),
+			'secondary_board' 				=> $this->input->post('secondary_board'),
+			'secondary_percentage' 			=> $this->input->post('secondary_percentage'),
+			'secondary_marksheet' 			=> $image['secondary_marksheet'],
+			'sr_secondary_year' 			=> $this->input->post('sr_secondary_year'),
+			'sr_secondary_board' 			=> $this->input->post('sr_secondary_board'),
+			'sr_secondary_percentage' 		=> $this->input->post('sr_secondary_percentage'),
+			'sr_secondary_marksheet' 		=> $image['sr_secondary_marksheet'],
+			'graduation_year' 				=> $this->input->post('graduation_year'),
+			'graduation_board' 				=> $this->input->post('graduation_board'),
+			'graduation_percentage' 		=> $this->input->post('graduation_percentage'),
+			'graduation_marksheet' 			=> $image['graduation_marksheet'],
+			'post_graduation_year' 			=> $this->input->post('post_graduation_year'),
+			'post_graduation_board' 		=> $this->input->post('post_graduation_board'),
+			'post_graduation_percentage' 	=> $this->input->post('post_graduation_percentage'),
+			'post_graduation_marksheet' 	=> $image['post_graduation_marksheet'],
+			'mphil_year' 					=> $this->input->post('mphil_year'),
+			'mphil_board' 					=> $this->input->post('mphil_board'),
+			'mphil_percentage' 				=> $this->input->post('mphil_percentage'),
+			'mphil_marksheet' 				=> $image['mphil_marksheet'],
+			'other_year' 					=> $this->input->post('other_year'),
+			'other_board' 					=> $this->input->post('other_board'),
+			'other_percentage' 				=> $this->input->post('other_percentage'),
+			'other_marksheet' 				=> $image['other_marksheet'],
+			'employment_details' 			=> $this->input->post('employment_details'),
+			'password'						=> rand(10, 100000),
+			'bank'							=> '3',
+			'payment_mode'					=> $this->input->post('payment_mode'),
+			'amount'						=> '10000',
+			'payment_date'					=> date("Y-m-d"),
+			'created_on' 					=> date("Y-m-d H:i:S"),
+		);
+		$this->db->insert('tbl_phd_registration_form', $data);
+		$id = $this->db->insert_id();
+		redirect('phd_registration_payment/' . base64_encode($id));
+		//$this->send_common_sms($data['mobile_number'],$sms_login);
+		if ($this->input->post('payment_mode') == "1") {
+			redirect('phd_registration_payment/' . base64_encode($id));
+			//redirect('phd_registration_payment_freecharge/'.base64_encode($id));
+		} else {
+			redirect('phd_registration_cash/' . base64_encode($id));
+		}
+	}
+	public function get_phd_registration_cash()
+	{
+		$this->db->select('tbl_phd_registration_form.*,tbl_course.print_name,tbl_stream.stream_name');
+		$this->db->where('tbl_phd_registration_form.id', base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_phd_registration_form.course');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_phd_registration_form.stream');
+		$result = $this->db->get('tbl_phd_registration_form');
+		return $result->row();
+	}
+	public function get_phd_course()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('id', '23');
+		$result = $this->db->get('tbl_course');
+		return $result->result();
+	}
+	public function set_career_form($file)
+	{
+		$data = array(
+			'name' 			         => $this->input->post('name'),
+			'mobile_number'          => $this->input->post('mobile_number'),
+			'email' 		         => $this->input->post('email'),
+			'position' 		         => $this->input->post('position'),
+			'last_qualification'     => $this->input->post('last_qualification'),
+			'work_experience'        => $this->input->post('work_experience'),
+			'present_working'        => $this->input->post('present_working'),
+			// 'present_job_location'   => $this->input->post('present_job_location'),
+			// 'present_job_title'      => $this->input->post('present_job_title'),
+			'state'        			 => $this->input->post('state'),
+			'full_address'        	 => $this->input->post('full_address'),
+			'userfile' 		         => $file,
+		);
+		$this->db->insert('tbl_career', $data);
+		// $message = "Dear Sir";
+		// $message .= "<br>Please check below details for the postion of ".$this->input->post('position');
+		// $message .= "<br>";  
+		// $message .= "Name: ".$this->input->post('name');  
+		// $message .= "<br>";  
+		// $message .= "Mobile: ".$this->input->post('mobile_number');  
+		// $message .= "<br>";  
+		// $message .= "Email: ".$this->input->post('email');  
+		// $message .= "<br>";  
+		// $message .= "Position: ".$this->input->post('position');  
+		// $message .= "<br>";  
+		// $message .= "<br>Thanks<br>Team Birtikendrajit University";
+		//  $to = array(
+		// 		"email" => 'anujiips@gmail.com',
+		// 		"name" => 'Anuj Goyal',
+		// 	);
+		// 	$subject = 'Career Form |THE GLOBAL UNIVERSITY';    
+		//     $this->Admin_model->send_send_blue($to,$subject,$message);
+		/*
+		$this->load->library('email');
+		$this->email->from('no-replys@birtikendrajituniversity.ac.in','Birtikendrajit University');
+		$this->email->to('anujiips@gmail.com'); 
+		$this->email->subject('Career Form | Birtikendrajit University');
+		$this->email->message($message);
+		$this->email->attach("images/career/".$file);
+		$this->email->set_mailtype('html');
+		if($this->email->send()){ 
+		}else{ 
+		}*/
+		return true;
+	}
+	public function get_lateral_entry_fees()
+	{
+		$result = $this->db->get('tbl_lateral_entry_fees');
+		return $result->row();
+	}
+	public function check_exam_open($course_mode, $session)
+	{
+		$this->db->where('session', $session);
+		$this->db->where('applicable_for', $course_mode);
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('student_type', '0');
+		$result = $this->db->get('tbl_exam_setup_details')->row();
+		return $result;
+	}
+	// public function generate_examination_otp(){
+	// 	$this->db->where('is_deleted','0');
+	// 	$this->db->where('status','1');
+	// 	$this->db->where('admission_status','1');
+	// 	//$this->db->where('center_id','1');
+	// 	$this->db->where('enrollment_number',$this->input->post('enrollment_number'));
+	// 	$result = $this->db->get('tbl_student');
+	// 	$result = $result->row();
+	// 	if(!empty($result)){
+	// 		//$activate = 0;
+	// 		$activate = 1;
+	// 		/*if($result->session_id == "1" && $result->year_sem == 2){ 
+	// 			$activate = 1;
+	// 		}else if($result->session_id == "3" && $result->year_sem == 1){
+	// 			$activate = 1;
+	// 		}else if($result->session_id == "2" && $result->year_sem == 1){
+	// 			$activate = 1;
+	// 		}*/
+	// 		/*$enroll = array('201009137231265','201009137231217');
+	// 		if(in_array($this->input->post('enrollment_number'),$enroll)){
+	// 			$activate = 1;
+	// 		}
+	// 		$enroll = array('201009137231265','201009137231217','20100917666319');
+	// 		if(in_array($this->input->post('enrollment_number'),$enroll)){
+	// 			$activate = 1;
+	// 		}*/
+	// 		if($activate == 1){
+	// 			if($result->course_mode == "1"){
+	// 				if($result->session_id == "1"  || $result->session_id == "2"  || $result->session_id == "3" || $result->session_id == "5" || $result->session_id == "5"){
+	// 					$otp = rand ( 10000 , 99999 );
+	// 					$session = array(
+	// 						'exam_session_id'=> $result->id,
+	// 						'exam_mobile' 	=> $result->mobile,
+	// 						'exam_email' 	=> $result->email,
+	// 						'exam_otp' 		=> $otp,
+	// 						'is_validated' 	=> '1',
+	// 					);
+	// 					$this->session->set_userdata($session);
+	// 					return true;
+	// 				}
+	// 			}else if($result->course_mode == "2"){
+	// 				if($result->session_id == "3" || $result->session_id == "2"  || $result->session_id == "5" || $result->session_id == "8" || $result->session_id == "6"){
+	// 					$otp = rand ( 10000 , 99999 );
+	// 					$session = array(
+	// 						'exam_session_id'=> $result->id,
+	// 						'exam_mobile' 	=> $result->mobile,
+	// 						'exam_email' 	=> $result->email,
+	// 						'exam_otp' 		=> $otp,
+	// 						'is_validated' 	=> '1',
+	// 					);
+	// 					$this->session->set_userdata($session);
+	// 					return true;
+	// 				}else{
+	// 				    if(in_array($this->input->post('enrollment_number'),$enroll)){
+	//         				$session = array(
+	// 							'exam_session_id'=> $result->id,
+	// 							'exam_mobile' 	=> $result->mobile,
+	// 							'exam_email' 	=> $result->email,
+	// 							'exam_otp' 		=> $otp,
+	// 							'is_validated' 	=> '1',
+	// 						);
+	// 						$this->session->set_userdata($session);
+	// 						return true;
+	//         			}
+	// 				}
+	// 			}
+	// 		}
+	// 		/*$message = "Your OTP is ".$otp."THE GLOBAL UNIVERSITY";
+	// 		$this->send_common_sms($result->mobile,$message);
+	// 		if($result->email != ""){
+	// 			$message = "Dear Student";
+	// 			$message .= "<br>Your One Time Password (OTP) for registration is ".$otp;
+	// 			$message .= "<br>";  
+	// 			$message .= "<br>Thanks<br>Team Birtikendrajit University";
+	// 			$this->load->library('email');
+	// 			$this->email->from('no-reply@birtikendrajituniversity.com','Birtikendrajit University');
+	// 			$this->email->to($result->email); 
+	// 			$this->email->subject('One Time Password | Birtikendrajit University');
+	// 			$this->email->message($message);
+	// 			$this->email->set_mailtype('html');
+	// 			if($this->email->send()){ 
+	// 			}else{ 
+	// 			} 
+	// 		}*/
+	// 		return false;
+	// 	}else{
+	// 		return false;
+	// 	}	
+	// }
+	public function generate_examination_otp()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('admission_status', '1');
+		//$this->db->where('center_id','1');
+		$this->db->where('enrollment_number', $this->input->post('enrollment_number'));
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		if (!empty($result)) {
+			$activate = $this->check_exam_open($result->course_mode, $result->session_id);
+			if (!empty($activate)) {
+				$otp = rand(10000, 99999);
+				$session = array(
+					'exam_session_id' => $result->id,
+					'exam_mobile' 	=> $result->mobile,
+					'exam_email' 	=> $result->email,
+					'exam_otp' 		=> $otp,
+					'is_validated' 	=> '1',
+				);
+				$this->session->set_userdata($session);
+				return true;
+			}
+			//$activate = 0;
+			// $activate = 1;
+			/*if($result->session_id == "1" && $result->year_sem == 2){ 
+				$activate = 1;
+			}else if($result->session_id == "3" && $result->year_sem == 1){
+				$activate = 1;
+			}else if($result->session_id == "2" && $result->year_sem == 1){
+				$activate = 1;
+			}*/
+			/*$enroll = array('201009137231265','201009137231217');
+			if(in_array($this->input->post('enrollment_number'),$enroll)){
+				$activate = 1;
+			}
+			$enroll = array('201009137231265','201009137231217','20100917666319');
+			if(in_array($this->input->post('enrollment_number'),$enroll)){
+				$activate = 1;
+			}*/
+			// if($activate == 1){
+			// 	if($result->course_mode == "1"){
+			// 		if($result->session_id == "1"  || $result->session_id == "2"  || $result->session_id == "3" || $result->session_id == "4" || $result->session_id == "5" || $result->session_id == "6"){
+			// 			$otp = rand ( 10000 , 99999 );
+			// 			$session = array(
+			// 				'exam_session_id'=> $result->id,
+			// 				'exam_mobile' 	=> $result->mobile,
+			// 				'exam_email' 	=> $result->email,
+			// 				'exam_otp' 		=> $otp,
+			// 				'is_validated' 	=> '1',
+			// 			);
+			// 			$this->session->set_userdata($session);
+			// 			return true;
+			// 		}
+			// 	}else if($result->course_mode == "2"){
+			// 		if($result->session_id == "3" || $result->session_id == "2"  || $result->session_id == "5" || $result->session_id == "8" || $result->session_id == "4" || $result->session_id == "6"){
+			// 			$otp = rand ( 10000 , 99999 );
+			// 			$session = array(
+			// 				'exam_session_id'=> $result->id,
+			// 				'exam_mobile' 	=> $result->mobile,
+			// 				'exam_email' 	=> $result->email,
+			// 				'exam_otp' 		=> $otp,
+			// 				'is_validated' 	=> '1',
+			// 			);
+			// 			$this->session->set_userdata($session);
+			// 			return true;
+			// 		}else{
+			// 		    if(in_array($this->input->post('enrollment_number'),$enroll)){
+			// 				$session = array(
+			// 					'exam_session_id'=> $result->id,
+			// 					'exam_mobile' 	=> $result->mobile,
+			// 					'exam_email' 	=> $result->email,
+			// 					'exam_otp' 		=> $otp,
+			// 					'is_validated' 	=> '1',
+			// 				);
+			// 				$this->session->set_userdata($session);
+			// 				return true;
+			// 			}
+			// 		}
+			// 	}
+			// }
+			/*$message = "Your OTP is ".$otp." BIR TIKENDRAJIT UNIVERSITY";
+			$this->send_common_sms($result->mobile,$message);
+			if($result->email != ""){
+				$message = "Dear Student";
+				$message .= "<br>Your One Time Password (OTP) for registration is ".$otp;
+				$message .= "<br>";  
+				$message .= "<br>Thanks<br>Team Birtikendrajit University";
+				$this->load->library('email');
+				$this->email->from('no-reply@birtikendrajituniversity.com','Birtikendrajit University');
+				$this->email->to($result->email); 
+				$this->email->subject('One Time Password | Birtikendrajit University');
+				$this->email->message($message);
+				$this->email->set_mailtype('html');
+				if($this->email->send()){ 
+				}else{ 
+				} 
+			}*/
+			return false;
+		} else {
+			return false;
+		}
+	}
+	public function re_generate_examination_otp()
+	{
+		$otp = rand(10000, 99999);
+		$session = array(
+			'exam_otp' 		=> $otp,
+		);
+		$this->session->set_userdata($session);
+		$message = "Your One is " . $otp . "THE GLOBAL UNIVERSITY";
+		$this->send_common_sms($this->session->userdata('exam_mobile'), $message);
+		if ($result->email != "") {
+			$message = "Dear Student";
+			$message .= "<br>Your One Time Password (OTP) for registration is " . $otp;
+			$message .= "<br>";
+			$message .= "<br>Thanks,<br>Team Global University";
+			$to = array(
+				"email" => $this->session->userdata('exam_email'),
+				"name" => 'Student',
+			);
+			$subject = 'OTP |' . no_reply_name;
+			$this->Admin_model->send_send_blue($to, $subject, $message);
+			/*
+			$this->load->library('email');
+			$this->email->from('no-reply@birtikendrajituniversity.com','Birtikendrajit University');
+			$this->email->to($this->session->userdata('exam_email')); 
+			$this->email->subject('One Time Password | Birtikendrajit University');
+			$this->email->message($message);
+			$this->email->set_mailtype('html');
+			if($this->email->send()){ 
+			}else{ 
+			} */
+		}
+		return true;
+	}
+	public function get_examination_student()
+	{
+		// echo "<pre>";print_r($this->uri->segment(2));exit;	
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name');
+		$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number'));
+		// $this->db->where('tbl_student_fees.id',base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id', 'left');
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		if (!empty($result)) {
+			if ($result->center_id != "1") {
+				$this->session->set_flashdata('message', 'Please cordinate to your admission center');
+				redirect('examination-form');
+			} else {
+				return $result;
+			}
+		}
+		return $result;
+	}
+	public function get_exam_fees($course, $stream, $center_id)
+	{
+		$this->db->where('tbl_center_fees.course_id', $course);
+		$this->db->where('tbl_center_fees.stream_id', $stream);
+		$this->db->where('tbl_center_fees.center_id', $center_id);
+		$this->db->where('tbl_center_fees.is_deleted', '0');
+		$this->db->order_by('tbl_center_fees.id', 'DESC');
+		$result = $this->db->get('tbl_center_fees');
+		return $result->row();
+	}
+	public function get_examintion()
+	{
+		$this->db->select('tbl_examination_form.*');
+		$this->db->where('tbl_examination_form.is_deleted', '0');
+		$this->db->where('tbl_examination_form.student_id', $this->uri->segment(2));
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_examination_form.student_id', 'left');
+		$result = $this->db->get('tbl_examination_form');
+		return $result->row();
+	}
+	public function get_direct_examination_student()
+	{
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name');
+		$this->db->where('tbl_student.enrollment_number', $this->uri->segment(2));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_examination_cash_boucher_student()
+	{
+		$this->db->select('tbl_student.*,tbl_course.course_name,tbl_stream.stream_name,tbl_session.session_name,tbl_student_fees.payment_mode,tbl_student_fees.total_fees,tbl_student_fees.payment_date');
+		$this->db->where('tbl_student_fees.id', base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_student_fees.student_id');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id');
+		$result = $this->db->get('tbl_student_fees');
+		return $result->row();
+	}
+	// public function set_examination_form(){
+	// 	$this->db->where('id',$this->input->post('std_id'));
+	// 	$student_data = $this->db->get('tbl_student');
+	// 	$student_data = $student_data->row();
+	// 	// $arr_data = array(
+	// 	// 	'religion' => $this->input->post('religion'),
+	// 	// 	'religin_specify' => $this->input->post('religin_specify'),
+	// 	// );
+	// 	// $this->db->where('id',$student_data->id);
+	// 	// $this->db->update('tbl_student',$arr_data);
+	// 	$data = array(
+	// 		'student_id' 		=> $student_data->id,
+	// 		'exam_month' 		=> "June",
+	// 		'exam_year' 		=> '2023',
+	// 		'student_name' 		=> $student_data->student_name,
+	// 		'father_name' 		=> $student_data->father_name,
+	// 		'mother_name' 		=> $student_data->mother_name,
+	// 		'date_of_birth' 	=> $student_data->date_of_birth,
+	// 		'session' 			=> $student_data->session_id,
+	// 		'course_name' 		=> $student_data->course_id,
+	// 		'stream_name' 		=> $student_data->stream_id,
+	// 		'year_sem' 			=> $this->input->post('year_sem'),
+	// 		'religion'   		=>$this->input->post('religion'),
+	// 		'late_fees' 		=> $this->input->post('late_fees'),
+	// 		'examination_fees' 	=> $this->input->post('examination_fees'),
+	// 		'total_examination_fees' => $this->input->post('total_examination_fees'),
+	// 		'exam_mode_type' 	=> $this->input->post('exam_mode_type'),
+	// 		'exam_type' 		=> $this->input->post('exam_type'),
+	// 		'payment_date' 		=> date("Y-m-d"),
+	// 		'created_on' 		=> date("Y-m-d H:i:s"),
+	// 	);
+	// 	$this->db->insert('tbl_examination_form',$data);
+	// 	$last_id = $this->db->insert_id();
+	// 	// echo "<pre>";print_r($last_id);exit;
+	// 	$subject = $this->input->post('subject');
+	// 	/*$subject_arr = array();
+	// 	for($i=0;$i<count($subject);$i++){
+	// 		$subject_arr[] = array(
+	// 			'student_id' 		=> $student_data->id,
+	// 			'exam_form_id' 		=> $last_id,
+	// 			//'subject_id' 		=> $subject[$i],
+	// 			'created_on'		=> date("Y-m-d H:i:s")
+	// 		);
+	// 	}
+	// 	if(!empty($subject_arr)){
+	// 		$this->db->insert_batch('tbl_exam_subject',$subject_arr);
+	// 	}*/
+	// 	$fees_data = array(
+	// 		'student_id' 		=> $student_data->id, 
+	// 		'examination_id' 	=> $last_id, 
+	// 		'fees_type' 		=> 2, 
+	// 		'payment_mode' 		=> $this->input->post('payment_mode'), 
+	// 		'payment_date' 		=> date("Y-m-d"), 
+	// 		'bank_id' 			=> 3,
+	// 		'late_fees' 		=> $this->input->post('late_fees'),
+	// 		'lateral_entry_fees'=> '0',
+	// 		'bank_fees'			=> '0',
+	// 		'original_amount'	=> $this->input->post('examination_fees'),
+	// 		'amount'			=> $this->input->post('examination_fees'),
+	// 		'amount'			=> $this->input->post('examination_fees'),
+	// 		'discount'			=> '0',
+	// 		'total_fees'		=> $this->input->post('total_examination_fees'),
+	// 		'year_sem'			=> $this->input->post('year_sem'),
+	// 		'created_on'		=> date("Y-m-d H:i:s"),
+	// 	);
+	// 	$this->db->insert('tbl_student_fees',$fees_data);
+	// 	$fess_id = $this->db->insert_id();
+	// 	if($this->input->post('payment_mode') == "3"){
+	// 		redirect('print_exam_cash_boucher/'.base64_encode($fess_id));
+	// 	}
+	// 	return base64_encode($fess_id).'/'.base64_encode($student_data->id);
+	// }
+	public function set_examination_form()
+	{
+		// echo "<pre>";
+		// print_r($_POST);exit;
+		// echo"<pre>";print_r($this->input->post('std_id'));exit;
+		$this->db->where('id', $this->input->post('std_id'));
+		$student_data = $this->db->get('tbl_student');
+		$student_data = $student_data->row();
+		$data = array(
+			'student_id' 		=> $student_data->id,
+			'exam_month' 		=> "December",
+			'exam_year' 		=> '2024',
+			'student_name' 		=> $student_data->student_name,
+			'father_name' 		=> $student_data->father_name,
+			'mother_name' 		=> $student_data->mother_name,
+			'date_of_birth' 	=> $student_data->date_of_birth,
+			'session' 			=> $student_data->session_id,
+			'course_name' 		=> $student_data->course_id,
+			'stream_name' 		=> $student_data->stream_id,
+			'year_sem' 			=> $this->input->post('year_sem'),
+			'late_fees' 		=> $this->input->post('late_fees'),
+			'examination_fees' 	=> $this->input->post('examination_fees'),
+			'total_examination_fees' => $this->input->post('total_examination_fees'),
+			'exam_mode_type' 	=> $this->input->post('exam_mode_type'),
+			'exam_type' 		=> $this->input->post('exam_type'),
+			'payment_date' 		=> date("Y-m-d"),
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_examination_form', $data);
+		$last_id = $this->db->insert_id();
+		// echo "<pre>";print_r($last_id);exit;
+		$subject = $this->input->post('subject');
+		/*$subject_arr = array();
+		for($i=0;$i<count($subject);$i++){
+			$subject_arr[] = array(
+				'student_id' 		=> $student_data->id,
+				'exam_form_id' 		=> $last_id,
+				//'subject_id' 		=> $subject[$i],
+				'created_on'		=> date("Y-m-d H:i:s")
+			);
+		}
+		if(!empty($subject_arr)){
+			$this->db->insert_batch('tbl_exam_subject',$subject_arr);
+		}*/
+		$fees_data = array(
+			'student_id' 		=> $student_data->id,
+			'examination_id' 	=> $last_id,
+			'fees_type' 		=> 2,
+			'payment_mode' 		=> $this->input->post('payment_mode'),
+			'payment_date' 		=> date("Y-m-d"),
+			'bank_id' 			=> 1,
+			'late_fees' 		=> $this->input->post('late_fees'),
+			'lateral_entry_fees' => '0',
+			'bank_fees'			=> '0',
+			'original_amount'	=> $this->input->post('examination_fees'),
+			'amount'			=> $this->input->post('examination_fees'),
+			'amount'			=> $this->input->post('examination_fees'),
+			'discount'			=> '0',
+			'total_fees'		=> $this->input->post('total_examination_fees'),
+			'year_sem'			=> $this->input->post('year_sem'),
+			'created_on'		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_student_fees', $fees_data);
+		$fess_id = $this->db->insert_id();
+		if ($this->input->post('payment_mode') == "3") {
+			redirect('print_exam_cash_boucher/' . base64_encode($fess_id));
+		}
+		return base64_encode($fess_id) . '/' . base64_encode($student_data->id);
+	}
+	public function set_direct_examination_form()
+	{
+		$this->db->where('id', $this->input->post('std_id'));
+		$student_data = $this->db->get('tbl_student');
+		$student_data = $student_data->row();
+		// $arr_data = array(
+		// 	'religion' => $this->input->post('religion'),
+		// 	'religin_specify' => $this->input->post('religin_specify'),
+		// );
+		// $this->db->where('id',$student_data->id);
+		// $this->db->update('tbl_student',$arr_data);
+		$data = array(
+			'student_id' 		=> $student_data->id,
+			'exam_month' 		=> $this->input->post('exam_month'),
+			'exam_year' 		=> $this->input->post('exam_year'),
+			'student_name' 		=> $student_data->student_name,
+			'father_name' 		=> $student_data->father_name,
+			'mother_name' 		=> $student_data->mother_name,
+			'date_of_birth' 	=> $student_data->date_of_birth,
+			'session' 			=> $student_data->session_id,
+			'course_name' 		=> $student_data->course_id,
+			'stream_name' 		=> $student_data->stream_id,
+			'year_sem' 			=> $this->input->post('year_sem'),
+			'late_fees' 		=> $this->input->post('late_fees'),
+			'examination_fees' 	=> $this->input->post('examination_fees'),
+			'total_examination_fees' => $this->input->post('total_examination_fees'),
+			'exam_mode_type' 	=> $this->input->post('exam_mode_type'),
+			'exam_type' 		=> $this->input->post('exam_type'),
+			'payment_date' 		=> date("Y-m-d"),
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_examination_form', $data);
+		$last_id = $this->db->insert_id();
+		$subject = $this->input->post('subject');
+		/*$subject_arr = array();
+		for($i=0;$i<count($subject);$i++){
+			$subject_arr[] = array(
+				'student_id' 		=> $student_data->id,
+				'exam_form_id' 		=> $last_id,
+				//'subject_id' 		=> $subject[$i],
+				'created_on'		=> date("Y-m-d H:i:s")
+			);
+		}
+		if(!empty($subject_arr)){
+			$this->db->insert_batch('tbl_exam_subject',$subject_arr);
+		}*/
+		$fees_data = array(
+			'student_id' 		=> $student_data->id,
+			'examination_id' 	=> $last_id,
+			'fees_type' 		=> 2,
+			'payment_mode' 		=> $this->input->post('payment_mode'),
+			'payment_date' 		=> date("Y-m-d"),
+			'bank_id' 			=> 1,
+			'late_fees' 		=> $this->input->post('late_fees'),
+			'lateral_entry_fees' => '0',
+			'bank_fees'			=> '0',
+			'original_amount'	=> $this->input->post('examination_fees'),
+			'amount'			=> $this->input->post('examination_fees'),
+			'amount'			=> $this->input->post('examination_fees'),
+			'discount'			=> '0',
+			'total_fees'		=> $this->input->post('total_examination_fees'),
+			'year_sem'			=> $this->input->post('year_sem'),
+			'created_on'		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_student_fees', $fees_data);
+		$fess_id = $this->db->insert_id();
+		if ($this->input->post('payment_mode') == "3") {
+			redirect('print_exam_cash_boucher/' . base64_encode($fess_id));
+		}
+		return base64_encode($fess_id);
+	}
+	public function get_examination_form_fees_details()
+	{
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		// $this->db->where('student_id',$this->session->userdata('exam_session_id'));
+		$result = $this->db->get('tbl_student_fees');
+		return $result->row();
+		// $result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_examination_subjct($student, $course, $stream, $year_Sem, $center)
+	{
+		// echo "<pre>";print_r($_POST);exit;
+		$this->db->where('course', $course);
+		$this->db->where('stream', $stream);
+		$this->db->where('year_sem', $year_Sem);
+		//$this->db->where('center_id',$center);
+		$this->db->where('status', '1');
+		$this->db->where('is_deleted', '0');
+		$this->db->order_by('subject_type', 'DESC');
+		$result = $this->db->get('tbl_subject');
+		return $result->result();
+		// $result = $result->result();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_hall_ticket()
+	{
+		$exam_setup = $this->get_exam_setup();
+		if ($this->input->post('enrollment_number') != "") {
+			//echo date("Y-m-d",strtotime($this->input->post('date_of_birth')));exit;
+			$this->db->select('tbl_examination_form.*,tbl_student.student_name,tbl_student.father_name,tbl_student.category,tbl_student.address,tbl_student.enrollment_number,tbl_student.photo,tbl_student.signature,tbl_stream.stream_name,tbl_course.print_name,tbl_student.date_of_birth');
+			//$this->db->where('tbl_examination_form.exam_month', $exam_setup->month);
+			//$this->db->where('tbl_examination_form.exam_year', $exam_setup->year);
+			$this->db->where('tbl_examination_form.exam_status', "1");
+			$this->db->where('tbl_examination_form.status', "1");
+			$this->db->where('tbl_examination_form.is_deleted', "0");
+			$this->db->where('tbl_student.admission_status', "1");
+			$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number'));
+			//$this->db->where('tbl_student.date_of_birth',date("Y-m-d",strtotime($this->input->post('date_of_birth'))));
+			$this->db->join('tbl_student', 'tbl_student.id = tbl_examination_form.student_id');
+			$this->db->join('tbl_course', 'tbl_course.id = tbl_examination_form.course_name');
+			$this->db->join('tbl_stream', 'tbl_stream.id = tbl_examination_form.stream_name');
+			$result = $this->db->get('tbl_examination_form');
+			$result = $result->row();
+			if (!empty($result)) {
+				return $result;
+			} else {
+				$this->session->set_flashdata('message', 'Hallticket is not available');
+				redirect('hallticket');
+			}
+		}
+	}
+	public function get_re_appear_hall_ticket()
+	{
+		$this->db->select('tbl_re_appear.*,tbl_student.student_name,tbl_student.father_name,tbl_student.category,tbl_student.address,tbl_student.enrollment_number,tbl_student.photo,tbl_student.signature,tbl_stream.stream_name,tbl_course.print_name,tbl_student.date_of_birth');
+		$this->db->where('tbl_re_appear.status', "1");
+		$this->db->where('tbl_re_appear.is_deleted', "0");
+		$this->db->where('tbl_re_appear.hall_status', "1");
+		$this->db->where('tbl_student.admission_status', "1");
+		$this->db->where('tbl_student.enrollment_number', $_GET['enrollment_number']);
+		$this->db->join('tbl_student', 'tbl_student.enrollment_number = tbl_re_appear.enrollment_number');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id');
+		$result = $this->db->get('tbl_re_appear');
+		$result = $result->row();
+		if (!empty($result)) {
+			return $result;
+		} else {
+			$this->session->set_flashdata('message', 'Hallticket is not available');
+			redirect('hallticket_re_appear');
+		}
+	}
+	public function get_center_student_hall_ticket()
+	{
+		$exam_setup = $this->get_exam_setup();
+		$this->db->select('tbl_examination_form.*,tbl_student.student_name,tbl_student.father_name,tbl_student.category,tbl_student.address,tbl_student.enrollment_number,tbl_student.photo,tbl_student.signature,tbl_stream.stream_name,tbl_course.print_name,tbl_student.date_of_birth');
+		// $this->db->where('tbl_examination_form.exam_month',"June");
+		// $this->db->where('tbl_examination_form.exam_year',"2023");
+		$this->db->where('tbl_examination_form.exam_month', $exam_setup->month);
+		$this->db->where('tbl_examination_form.exam_year', $exam_setup->year);
+		$this->db->where('tbl_examination_form.exam_status', "1");
+		$this->db->where('tbl_examination_form.status', "1");
+		$this->db->where('tbl_examination_form.is_deleted', "0");
+		$this->db->where('tbl_student.admission_status', "1");
+		$this->db->where('tbl_student.enrollment_number', $this->uri->segment(2));
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_examination_form.student_id');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_examination_form.course_name');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_examination_form.stream_name');
+		$result = $this->db->get('tbl_examination_form');
+		$result = $result->row();
+		// 		echo "<pre>";print_r($result);exit;
+		if (!empty($result)) {
+			return $result;
+		} else {
+			$this->session->set_flashdata('message', 'Hallticket is not available');
+			redirect('center_active_hall_ticket_list');
+		}
+	}
+	public function get_hall_ticket_subject($exam, $student)
+	{
+		// echo"<pre>";print_r($student);exit;
+		$this->db->select('tbl_subject.*');
+		$this->db->where('tbl_exam_subject.student_id', $student);
+		$this->db->where('tbl_exam_subject.exam_form_id', $exam);
+		$this->db->where('tbl_exam_subject.is_deleted', '0');
+		$this->db->join('tbl_subject', 'tbl_subject.id = tbl_exam_subject.subject_id');
+		$result = $this->db->get('tbl_exam_subject');
+		return $result->result();
+		// $result = $result->result();
+		// echo"<pre>";print_r($result);exit;
+	}
+	public function get_my_result()
+	{
+		// echo "<pre>";print_r($this->input->post('year_sem'));exit;
+		$this->db->select('tbl_exam_results.*,tbl_course.course_name,tbl_stream.stream_name,tbl_student.student_name,tbl_student.course_mode,tbl_student.father_name,tbl_exam_results.examination_month,tbl_exam_results.examination_year');
+		$this->db->where('tbl_exam_results.enrollment_number', $this->input->post('enrollment_number'));
+		$this->db->where('tbl_exam_results.examination_status', $this->input->post('examination_status'));
+		$this->db->where('tbl_exam_results.year_sem', $this->input->post('year_sem'));
+		$this->db->where('tbl_examination_form.year_sem', $this->input->post('year_sem'));
+		$this->db->where('tbl_exam_results.examination_month !=', 'January');
+		$this->db->where('tbl_exam_results.examination_year !=', '2024');
+		$this->db->where('tbl_examination_form.exam_status', '1');
+		$this->db->where('tbl_examination_form.payment_status', '1');
+		$this->db->where('tbl_exam_results.is_deleted', '0');
+		$this->db->where('tbl_exam_results.status', '1');
+		$this->db->where('tbl_student.status', '1');
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_exam_results.student_id', 'left');
+		$this->db->join('tbl_examination_form', 'tbl_examination_form.student_id = tbl_exam_results.student_id', 'left');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_exam_results.course_id', 'left');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_exam_results.stream_id', 'left');
+		$result = $this->db->get('tbl_exam_results');
+		$result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+		if (empty($result)) {
+			$this->db->select('tbl_separate_student_exam_results.*,tbl_course.course_name,tbl_stream.stream_name,tbl_separate_student.student_name,tbl_separate_student.course_mode,tbl_separate_student.father_name,tbl_separate_student_exam_results.examination_month,tbl_separate_student_exam_results.examination_year');
+			$this->db->where('tbl_separate_student_exam_results.enrollment_number', $this->input->post('enrollment_number'));
+			$this->db->where('tbl_separate_student_exam_results.examination_status', $this->input->post('examination_status'));
+			$this->db->where('tbl_separate_student_exam_results.year_sem', $this->input->post('year_sem'));
+			$this->db->where('tbl_separate_student_exam_results.is_deleted', '0');
+			$this->db->where('tbl_separate_student_exam_results.status', '1');
+			$this->db->where('tbl_separate_student.status', '1');
+			$this->db->join('tbl_separate_student', 'tbl_separate_student.id = tbl_separate_student_exam_results.student_id');
+			$this->db->join('tbl_course', 'tbl_course.id = tbl_separate_student_exam_results.course_id');
+			$this->db->join('tbl_stream', 'tbl_stream.id = tbl_separate_student_exam_results.stream_id');
+			$result = $this->db->get('tbl_separate_student_exam_results');
+			$result = $result->row();
+		}
+		return $result;
+	}
+	public function get_re_registration_form()
+	{
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name');
+		$this->db->where('tbl_student.is_deleted', '0');
+		$this->db->where('tbl_student.hold_login', '0');
+		$this->db->where('tbl_student.center_id', '1');
+		$this->db->where("tbl_student.admission_status", "1"); 
+		$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number'));
+		$this->db->where('tbl_student.date_of_birth', date("Y-m-d", strtotime($this->input->post('date_of_birth'))));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id', 'left');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function set_re_registration()
+	{
+		$data = array(
+			'year_sem' => $this->input->post('year_sem')
+		);
+		$this->db->where('id', $this->session->userdata('re_registration_id'));
+		$this->db->update('tbl_student', $data);
+		$result =  $this->get_single_student($this->session->userdata('re_registration_id'));
+		$maintain_data = array(
+			"student_id"						=> $result->id,
+			"enrollment_number"					=> $result->enrollment_number,
+			"previous_year_sem"					=> $result->year_sem - 1,
+			"current_year_sem"					=> $result->year_sem,
+			"course_mode"						=> $result->course_mode,
+			"created_on"						=> date("Y-m-d H:i:s"),
+			"payment_status"					=> '1',
+		);
+		$this->db->insert("tbl_re_registered_student", $maintain_data);
+		return true;
+	}
+	public function get_single_student($id)
+	{
+		$this->db->select('tbl_student.*,tbl_fees_realtion.fees');
+		$this->db->where('tbl_student.id', $id);
+		$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.course_id = tbl_student.course_id AND tbl_fees_realtion.stream_id = tbl_student.stream_id AND tbl_fees_realtion.session_id = tbl_student.session_id');
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		if (empty($result)) {
+			$this->db->select('tbl_student.*,tbl_fees_realtion.fees');
+			$this->db->where('tbl_student.id', $id);
+			$this->db->join('tbl_fees_realtion', 'tbl_fees_realtion.course_id = tbl_student.course_id AND tbl_fees_realtion.stream_id = tbl_student.stream_id');
+			$this->db->order_by('tbl_fees_realtion.session_id', 'DESC');
+			$result = $this->db->get('tbl_student');
+			$result = $result->row();
+		}
+		// print_r($result->row());exit;
+		return $result;
+	}
+	public function get_single_student_details($id)
+	{
+		$this->db->where('id', $id);
+		$this->db->where('course_id !=', '23');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function student_reregistration_payment_process($stu_id, $stu_fees, $stu_year_sem)
+	{
+		$data = array(
+			"student_id"		=> $stu_id,
+			"fees_type"			=> '4',
+			"payment_mode"		=> '1',
+			"bank_id"			=> '1',
+			"payment_date"		=> date("Y-m-d"),
+			"original_amount"	=> $stu_fees,
+			"amount"			=> $stu_fees,
+			"total_fees"		=> $stu_fees,
+			"year_sem"			=> $stu_year_sem,
+			"created_on"		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_fees", $data);
+		$id = $this->db->insert_id();
+		return $id;
+	}
+	public function update_student_reregistration_payment()
+	{
+		if (isset($_REQUEST['status'])) {
+			if ($_REQUEST['status'] == 'COMPLETED') {
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('tbl_student_fees.id', $this->input->get('payment_id'));
+				$this->db->update('tbl_student_fees', $data);
+				$stu_data = array(
+					"year_sem" => $this->input->get("year_sem"),
+				);
+				$this->db->where("tbl_student.id", $this->input->get('student_id'));
+				$this->db->update("tbl_student", $stu_data);
+				$result =  $this->get_single_student($this->input->get('student_id'));
+				$maintain_data = array(
+					"transaction_id" => $_REQUEST['txnId'],
+					"current_year_sem" => $result->year_sem,
+					"payment_status" => '1',
+				);
+				$this->db->where("tbl_re_registered_student.id", $this->input->get("student_re_registration_id"));
+				$this->db->update("tbl_re_registered_student", $maintain_data);
+				$return_data = array(
+					"transaction_id" => $_REQUEST['txnId'],
+					"student_name" => $result->student_name,
+					"address"       => $result->address,
+					"mobile"	=> $result->mobile,
+					"fees"      => $result->fees,
+				);
+				return $return_data;
+			}
+		}
+	}
+	public function set_re_registered_student($id, $fees)
+	{
+		
+		$result =  $this->get_single_student_details($id);
+		$this->db->where('student_id', $result->id);
+		$this->db->where('previous_year_sem', $result->year_sem);
+		$exist = $this->db->get('tbl_re_registered_student');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			if($fees == 0){
+				$maintain_data = array(
+					"student_id"		=> $result->id,
+					"enrollment_number"	=> $result->enrollment_number,
+					"previous_year_sem"	=> $result->year_sem,
+					"current_year_sem"	=> $result->year_sem+1,
+					"course_mode"		=> $result->course_mode,
+					"payment_amount"	=> $fees,
+					"payment_status"	=> '1',
+					"created_on"		=> date("Y-m-d H:i:s"),
+				);
+				$this->db->insert("tbl_re_registered_student", $maintain_data);
+				$ins_id = $this->db->insert_id();
+			}else if($fees > 0){
+				$maintain_data = array(
+					"student_id"		=> $result->id,
+					"enrollment_number"	=> $result->enrollment_number,
+					"previous_year_sem"	=> $result->year_sem,
+					"current_year_sem"	=> $result->year_sem+1,
+					"course_mode"		=> $result->course_mode,
+					"payment_amount"	=> $fees,
+					"created_on"		=> date("Y-m-d H:i:s"),
+				);
+				$this->db->insert("tbl_re_registered_student", $maintain_data);
+				$ins_id = $this->db->insert_id();
+			}
+		} else {
+			$ins_id = $exist->id;
+		}
+		return $ins_id;
+	}
+	public function check_stu_re_registration($stu_enrollment_number, $stu_course_mode)
+	{
+		$this->db->where("is_deleted", "0");
+		$this->db->where("status", "1");
+		$this->db->where("payment_status", "1");
+		$this->db->where("enrollment_number", $stu_enrollment_number);
+		$this->db->order_by("id", "DESC");
+		$result = $this->db->get("tbl_re_registered_student")->row();
+		// echo "<pre>";print_r($result);exit;
+		if (!empty($result)) {
+			$create_date = $result->created_on;
+			$create_date = strtotime($create_date);
+			$today_date = strtotime(date("Y-m-d H:i:s"));
+			$differ_date = round(($today_date - $create_date) / (60 * 60 * 24 * 30));
+			$this->db->where("enrollment_number", $stu_enrollment_number);
+			$student = $this->db->get("tbl_student")->row();
+			if ($student->course_id != "234") {
+				if ($stu_course_mode == 1) {
+					if ($differ_date < 0) {
+						return true;
+					}
+				} else {
+					if ($differ_date < 0) {
+						return true;
+					}
+				}
+			}
+		}else{
+
+		}
+		// 	if (!empty($result)) {
+		// 		$create_date = strtotime($result->created_on);
+		// 		$today_date = strtotime(date("Y-m-d H:i:s"));
+		// 		$difference_months = ($today_date - $create_date) / (60 * 60 * 24 * 30);
+		// // echo "<pre>";print_r($difference_months);exit;
+		// 		// Check if the difference is less than 4 months
+		// 		if ($difference_months < 4) {
+		// 			return true;
+		// 		} else {
+		// 			// If more than 4 months, check if course_id is not "234"
+		// 			$this->db->where("enrollment_number", $stu_enrollment_number);
+		// 			$student = $this->db->get("tbl_student")->row();
+		// 			if (!empty($student) && $student->course_id != "234") {
+		// 				return true;
+		// 			}
+		// 		}
+		// 	}
+	}
+
+	// public function get_old_student_details()
+	// {
+	// 	$this->db->where('is_deleted', '0');
+	// 	$this->db->where('enrollment_number', $this->input->get('old_enrollment'));
+	// 	$result = $this->db->get('tbl_student');
+	// 	return $result->row();
+	// }
+
+	public function get_old_student_details()
+	{
+		$this->db->select("tbl_student.*,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_course.course_name,tbl_stream.stream_name,tbl_session.session_name,tbl_student_fees.late_fees,tbl_student_fees.registration_fees,tbl_student_fees.registration_fees,tbl_student_fees.original_amount,tbl_student_fees.payment_mode");
+		$this->db->where('tbl_student.is_deleted', '0');
+		$this->db->where('tbl_student.admission_status', '4');
+		$this->db->where('tbl_student.enrollment_number', $this->input->get('old_enrollment'));
+		$this->db->join("countries", "countries.id=tbl_student.country",'left');
+		$this->db->join("states", "states.id=tbl_student.state",'left');
+		$this->db->join("cities", "cities.id=tbl_student.city",'left');
+		$this->db->join("tbl_course", "tbl_course.id=tbl_student.course_id",'left');
+		$this->db->join("tbl_stream", "tbl_stream.id=tbl_student.stream_id",'left');
+		$this->db->join("tbl_session", "tbl_session.id=tbl_student.session_id",'left');
+		$this->db->join("tbl_student_fees", "tbl_student_fees.student_id = tbl_student.id",'left');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_old_state($old_student_details)
+	{
+		$this->db->where('id', $old_student_details->state);
+		$result = $this->db->get('states');
+		return $result->row();
+	}
+	public function get_old_city($old_student_details)
+	{
+		$this->db->where('id', $old_student_details->city);
+		$result = $this->db->get('cities');
+		return $result->row();
+	}
+	public function get_course_wise_stream()
+	{
+		// if($this->uri->segment(2) != ''){
+		// 	$course_id = base64_decode($this->uri->segment(2));
+		// }else{
+		// 	$course_id = "";
+		// }
+		$course_id = base64_decode($this->uri->segment(2));
+		$this->db->select('tbl_stream.stream_name,tbl_stream.id');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course_stream_relation.course', $course_id);
+		$this->db->order_by('tbl_stream.stream_name', 'ASC');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function get_student_data_ajax()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('enrollment_number', $this->input->post('enrollment_number'));
+		$result = $this->db->get('tbl_student');
+		echo json_encode($result->row());
+	}
+	public function get_student_data_placement_record_form()
+	{
+		$this->db->join('tbl_course', 'tbl_student.course_id = tbl_course.id');
+		$this->db->where('tbl_student.is_deleted', '0');
+		$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number'));
+		$result = $this->db->get('tbl_student');
+		echo json_encode($result->row());
+	}
+	public function set_placement_record_form()
+	{
+		$data = array(
+			'enrollment_no' 	=> $this->input->post('enrollment_number'),
+			'student_name' 		=> $this->input->post('student_name'),
+			'mobile' 			=> $this->input->post('mobile'),
+			'email' 			=> $this->input->post('email'),
+			'course_name' 		=> $this->input->post('course_name'),
+			'passout_year' 		=> $this->input->post('passout_year'),
+			'employment_type' 	=> $this->input->post('employment_type'),
+			'organization' 		=> $this->input->post('organization'),
+			'department' 		=> $this->input->post('department'),
+			'designation' 		=> $this->input->post('designation'),
+			'country' 			=> $this->input->post('country'),
+			'state' 			=> $this->input->post('state'),
+			'city' 				=> $this->input->post('city'),
+			'created_on'		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_placement_records', $data);
+		return true;
+	}
+	public function set_demo_payment()
+	{
+		$data = array(
+			'enrollment_number' 	=> $this->input->post('enrollment_number'),
+			'student_name' 			=> $this->input->post('student_name'),
+			'student_id' 			=> $this->input->post('student_id'),
+			'mobile_number' 		=> $this->input->post('mobile_number'),
+			'email' 				=> $this->input->post('email'),
+			'fees_type' 			=> $this->input->post('fees_type'),
+			'total_fees' 			=> $this->input->post('total_fees'),
+			'created_on'			=> date("Y-m-d H:i:s"),
+		);
+		$this->db->update('tbl_demo_payment', $data);
+		return true;
+	}
+	// 6/8/2021   
+	public function get_student_data_by_enrollment_no()
+	{
+		$this->db->select("tbl_student.*,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student.is_deleted", "0");
+		$this->db->where("tbl_student.status", "1");
+		$this->db->where("tbl_student.course_id", "23");
+		$this->db->where("tbl_student.enrollment_number", $this->input->post("enrollment_number"));
+		$this->db->join("countries", "countries.id=tbl_student.country");
+		$this->db->join("states", "states.id=tbl_student.state");
+		$this->db->join("cities", "cities.id=tbl_student.city");
+		$this->db->join("tbl_course", "tbl_course.id=tbl_student.course_id");
+		$this->db->join("tbl_stream", "tbl_stream.id=tbl_student.stream_id");
+		$result = $this->db->get("tbl_student");
+		if (!empty($result->row())) {
+			return $result->row();
+			// 	$result = $result->row();
+		} else {
+			$this->session->set_flashdata("message", "invalid enrollment no.");
+			redirect("phd_course_work/enrollment");
+		}
+	}
+	public function get_course_work_data()
+	{
+		$this->db->select("tbl_phd_course_work.*,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_phd_course_work.is_deleted", "0");
+		$this->db->where("tbl_phd_course_work.status", "1");
+		$this->db->where("tbl_phd_course_work.payment_status", "1");
+		$this->db->where("tbl_phd_course_work.course_id", "23");
+		$this->db->where("tbl_phd_course_work.enrollment_number", $this->input->post("enrollment_number"));
+		$this->db->join("countries", "countries.id=tbl_phd_course_work.country_id",'left');
+		$this->db->join("states", "states.id=tbl_phd_course_work.state_id",'left');
+		$this->db->join("cities", "cities.id=tbl_phd_course_work.city_id",'left');
+		$this->db->join("tbl_course", "tbl_course.id=tbl_phd_course_work.course_id",'left');
+		$this->db->join("tbl_stream", "tbl_stream.id=tbl_phd_course_work.stream_id",'left');
+		$result = $this->db->get("tbl_phd_course_work");
+		return $result->row();
+	}
+	public function set_phd_course_work_form_data()
+	{ 
+		$data = array(
+			"registration_id"		=> $this->input->post("student_no"),
+			"student_name"			=> $this->input->post("student_name"),
+			"father_name"			=> $this->input->post("father_name"),
+			"mother_name"			=> $this->input->post("mother_name"),
+			"date_of_birth"			=> date("Y-m-d", strtotime($this->input->post("date_of_birth"))),
+			"mobile"				=> $this->input->post("mobile"),
+			"email"					=> $this->input->post("email"),
+			"gender"				=> $this->input->post("gender"),
+			"address"				=> $this->input->post("address"),
+			"country_id"			=> $this->input->post("country_id"),
+			"state_id"				=> $this->input->post("state_id"),
+			"city_id"				=> $this->input->post("city_id"),
+			"pincode"				=> $this->input->post("pincode"),
+			"enrollment_number"		=> $this->input->post("enrollment_no"),
+			"schedule"				=> $this->input->post("schedule"),
+			"course_id"				=> $this->input->post("course_id"),
+			"stream_id"				=> $this->input->post("stream_id"),
+			"year_sem"				=> $this->input->post("year_sem"),
+			"date_of_registration"	=> $this->input->post("date_of_registration"),
+			"payment_ammount"		=> $this->input->post("payment_ammount"),
+			"created_on"			=> date("Y-m-d H:i:s"),
+		);
+
+		$this->db->where('enrollment_number',$this->input->post("enrollment_no"));
+		$this->db->where('is_deleted','0');
+		$exist = $this->db->get("tbl_phd_course_work");
+		$exist = $exist->row();
+		if(!empty($exist) && $exist->payment_status == "1"){
+			$this->session->set_flashdata('message','Your course work form has been already approved');
+			redirect(base_url());
+		}else if(!empty($exist)){
+			$rel_id = $exist->id;
+		}else{
+			$this->db->insert("tbl_phd_course_work", $data);
+			$rel_id = $this->db->insert_id();
+			$bank_name = $this->input->post("bank_name");
+			$payment_mode = $this->input->post("payment_mode");
+			$transaction_no = $this->input->post("transaction_no");
+			$deposit_date = $this->input->post("deposit_date");
+			$ammount = $this->input->post("ammount");
+			for ($i = 0; $i < count($bank_name); $i++) {
+				$bank_data = array(
+					"bank_name"			=> $bank_name[$i],
+					"payment_mode"		=> $payment_mode[$i],
+					"transaction_id"	=> $transaction_no[$i],
+					"deposit_date"		=> $deposit_date[$i],
+					"ammount"			=> $ammount[$i],
+					"rel_id"			=> $rel_id,
+					"enrollment_no"		=> $this->input->post("enrollment_no"),
+					"created_on"		=> date("Y-m-d H:i:s"),
+				);
+				$this->db->insert("tbl_phd_course_work_bank_details", $bank_data);
+			}
+		}
+		redirect("phd_course_work_payment/" . base64_encode($rel_id));
+	}
+	public function get_phd_course_work_schedule_dates()
+	{
+		$this->db->where("is_deleted", "0");
+		$this->db->where("status", "1");
+		$result = $this->db->get("tbl_phd_course_work_schedules");
+		return $result->result();
+	}
+	public function get_phd_course_work_student_data()
+	{
+		$this->db->select("tbl_phd_course_work.*,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_phd_course_work.id", base64_decode($this->uri->segment(2)));
+		$this->db->join("countries", "countries.id=tbl_phd_course_work.country_id");
+		$this->db->join("states", "states.id=tbl_phd_course_work.state_id");
+		$this->db->join("cities", "cities.id=tbl_phd_course_work.city_id");
+		$this->db->join("tbl_course", "tbl_course.id=tbl_phd_course_work.course_id");
+		$this->db->join("tbl_stream", "tbl_stream.id=tbl_phd_course_work.stream_id");
+		$result = $this->db->get("tbl_phd_course_work");
+		return $result->row();
+	}
+	public function enrollment_verification()
+	{
+		// if(substr($this->input->post("enrollment_number"), 0,5)=="20100"){
+		$this->db->select("tbl_student.*,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student.is_deleted", '0');
+		$this->db->where("tbl_student.status", '1');
+		$this->db->where("tbl_student.verified_status", '1');
+		$this->db->where("tbl_student.admission_status !=", '0');
+		$this->db->where("tbl_student.hold_login", '0');
+		$this->db->where('tbl_student.enrollment_number', $this->input->post("enrollment_number"));
+		$this->db->join('tbl_course', "tbl_course.id = tbl_student.course_id");
+		$this->db->join('tbl_stream', "tbl_stream.id = tbl_student.stream_id");
+		$result = $this->db->get("tbl_student")->row();
+		// }else{
+		// 	$this->db->select("tbl_separate_student.*,tbl_course.course_name,tbl_stream.stream_name");
+		// 	$this->db->where("tbl_separate_student.is_deleted",'0');
+		// 	$this->db->where("tbl_separate_student.status",'1'); 
+		// 	$this->db->where("tbl_separate_student.course_id",'23'); 
+		// 	$this->db->where("tbl_separate_student.hold_login",'0');
+		// 	$this->db->where('tbl_separate_student.enrollment_number',$this->input->post("enrollment_number"));
+		// 	$this->db->join('tbl_course',"tbl_course.id = tbl_separate_student.course_id");
+		// 	$this->db->join('tbl_stream',"tbl_stream.id = tbl_separate_student.stream_id");
+		// 	$result = $this->db->get("tbl_separate_student")->row();
+		// }
+		return $result;
+	}
+	// document verification 
+	public function document_verification($documents)
+	{
+		$data = array(
+			"name"							=> $this->input->post("name"),
+			"address"						=> $this->input->post("address"),
+			"city"							=> $this->input->post("city"),
+			"pin_code"						=> $this->input->post("pin_code"),
+			"mobile_number"					=> $this->input->post("mobile_number"),
+			"email"							=> $this->input->post("email"),
+			"student_name"					=> $this->input->post("student_name"),
+			"enrollment_number"				=> $this->input->post("enrollment_number"),
+			"passing_year"					=> $this->input->post("passing_year"),
+			"course_name"					=> $this->input->post("course_name"),
+			"query"							=> $this->input->post("query"),
+			"amount"						=> 1000,
+			"created_on"					=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_document_verification", $data);
+		$id = $this->db->insert_id();
+		$documents = explode(",", $documents);
+		// echo "<pre>";print_r($documents);exit;
+		$count = count($documents);
+		$document_name = $this->input->post("document_name");
+		for ($i = 0; $i < $count - 1; $i++) {
+			$detail_data = array(
+				"document_name" => $document_name[$i],
+				"document" => $documents[$i],
+				"document_verification_rel" => $id,
+				"created_on" => date("Y-m-d H:i:s"),
+			);
+			$this->db->insert("tbl_document_verification_data", $detail_data);
+		}
+		redirect("document_verification_payment/" . base64_encode($id));
+	}
+	public function get_document_verification_student_data()
+	{
+		$this->db->where("is_deleted", "0");
+		$this->db->where("status", "1");
+		$this->db->where("id", base64_decode($this->uri->segment(2)));
+		$result = $this->db->get("tbl_document_verification")->row();
+		return $result;
+	}
+	public function set_caste_based_discrimination()
+	{
+		$userfile = '';
+		if ($_FILES['userfile']['name'] != "") {
+			$userfile = $this->Digitalocean_model->upload_photo($filename = "userfile", $path = "rti_reply/");
+		}
+		if ($userfile != "") {
+			$userfile = $userfile . ",";
+		} else {
+			$userfile = '';
+		}
+		$data = array(
+			'added_by_name' 	=> $this->input->post('added_by_name'),
+			'first_name' 		=> $this->input->post('first_name'),
+			'last_name' 		=> $this->input->post('last_name'),
+			'enrollment_number' => $this->input->post('enrollment_number'),
+			'gender' 			=> $this->input->post('gender'),
+			'student_teacher' 	=> $this->input->post('student_teacher'),
+			'mobile_number' 	=> $this->input->post('mobile_number'),
+			'email' 			=> $this->input->post('email'),
+			'complaint' 		=> $this->input->post('complaint'),
+			'address' 			=> $this->input->post('address'),
+			'city' 				=> $this->input->post('city'),
+			'pincode' 			=> $this->input->post('pincode'),
+			'file'				=> $userfile,
+			"created_on"		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_caste_discrimination", $data);
+		return true;
+	}
+	public function get_student_fees($course, $stream, $session, $country)
+	{
+		$fees = 0;
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course', $course);
+		$this->db->where('stream', $stream);
+		$relation = $this->db->get('tbl_course_stream_relation');
+		$relation = $relation->row();
+		if (!empty($relation)) {
+			$this->db->where('session_id', $session);
+			$this->db->where('relation_id', $relation->id);
+			$this->db->where('course_id', $course);
+			$this->db->where('stream_id', $stream);
+			$result = $this->db->get('tbl_fees_realtion');
+			$result = $result->row();
+			if (!empty($result)) {
+				$fees =  $result->fees;
+			} else {
+				$this->db->where('relation_id', $relation->id);
+				$this->db->where('course_id', $course);
+				$this->db->where('stream_id', $stream);
+				$this->db->order_by('id', 'DESC');
+				$result = $this->db->get('tbl_fees_realtion');
+				$result = $result->row();
+				if (!empty($result)) {
+					$fees =  $result->fees;
+				}
+			}
+		}
+		return $fees;
+	}
+	public function update_payment_details($tracking_id, $order_id)
+	{
+		$data = array(
+			'transaction_id' 	=> $tracking_id,
+			'payment_status' 	=> '1',
+		);
+		$this->db->where('id', $order_id);
+		$this->db->update('tbl_student_fees', $data);
+		$this->db->where('id', $this->session->userdata('re_reg_id'));
+		$result = $this->db->get('tbl_re_registered_student');
+		$result = $result->row();
+		$previous_year_sem = 0;
+		if (!empty($result)) {
+			$previous_year_sem = $result->previous_year_sem;
+		}
+		$current_year_sem = $previous_year_sem + 1;
+		$data_two = array(
+			'transaction_id' 	=> $tracking_id,
+			'payment_status' 	=> '1',
+			'current_year_sem' 	=> $current_year_sem,
+		);
+		$this->db->where('id', $this->session->userdata('re_reg_id'));
+		$this->db->update('tbl_re_registered_student', $data_two);
+		$session = array(
+			'session_amount' 	=> '',
+			'order_id' 			=> '',
+			're_reg_id' 		=> '',
+		);
+		$this->session->set_userdata($session);
+		$this->session->set_flashdata('message', 'Re-registration Successfully.');
+		redirect(base_url());
+	}
+	public function verify_supervisor()
+	{
+		$this->db->where('password', $this->input->post('password'));
+		$this->db->where('appliation_status', '1');
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$result = $this->db->get('tbl_guide_application');
+		$result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+		if (!empty($result)) {
+			redirect('appointment-letter-for-supervisors/' . base64_encode($result->id));
+		} else {
+			return 0;
+		}
+	}
+	public function get_single_guide_data()
+	{
+		$this->db->select('tbl_guide_application.*,cities.name as city_name, countries.name as country_name, states.name as state_name');
+		$this->db->where('tbl_guide_application.id', base64_decode($this->uri->segment(2)));
+		$this->db->where('tbl_guide_application.is_deleted', '0');
+		$this->db->where('tbl_guide_application.status', '1');
+		$this->db->join('countries', 'countries.id = tbl_guide_application.country');
+		$this->db->join('states', 'states.id = tbl_guide_application.state');
+		$this->db->join('cities', 'cities.id = tbl_guide_application.city');
+		$result = $this->db->get('tbl_guide_application');
+		return $result->row();
+	}
+	public function get_meta_data()
+	{
+		$currentURL = current_url();
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('url', $currentURL);
+		$result = $this->db->get('tbl_seo_title');
+		$result = $result->row();
+		return $result;
+	}
+	public function get_indian_state()
+	{
+		$this->db->where('country_id', '101');
+		$result = $this->db->get('states');
+		return $result->result();
+	}
+	public function get_online_classes()
+	{
+		$this->db->where('enrollment_number', $this->input->get('enrollment'));
+		$user = $this->db->get('tbl_student');
+		$user = $user->row();
+		if (!empty($user)) {
+			$this->db->select('tbl_online_classes.*,tbl_course.course_name');
+			$this->db->where('tbl_online_classes.is_deleted', '0');
+			$this->db->where('tbl_online_classes.course_id', $user->course_id);
+			$this->db->where('Date(tbl_online_classes.created_on)', date("Y-m-d"));
+			$this->db->join('tbl_course', 'tbl_course.id = tbl_online_classes.course_id');
+			$result = $this->db->get('tbl_online_classes');
+			return $result->result();
+		} else {
+			$this->session->set_flashdata('message', 'Please enter valid enrollment number');
+			redirect($_SERVER['HTTP_REFEREROR']);
+		}
+	}
+	public function get_activities_image()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('image_title', 'ASC');
+		$result = $this->db->get('tbl_university_activity_image');
+		return $result->result();
+	}
+	public function get_activities_image_home_page()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('id', 'DESC');
+		$this->db->limit(15);
+		$result = $this->db->get('tbl_university_activity_image');
+		return $result->result();
+	}
+	public function get_activities_videos()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->order_by('id', 'DESC');
+		$result = $this->db->get('tbl_university_activity_video');
+		return $result->result();
+	}
+	public function set_collaboration_form($photo, $adharcard, $pan_card, $doc_data)
+	{
+		$center_type = '';
+		$is_pulp = $this->input->post('is_pulp');
+		$is_bvoc = $this->input->post('is_bvoc');
+		if ($is_pulp == "1") {
+			$center_type = $is_pulp;
+		} else {
+			if ($is_bvoc == "2") {
+				$center_type = $is_bvoc;
+			} else {
+				$center_type = '0';
+			}
+		}
+		$password = rand();
+		$data = array(
+			'center_name' 				=> $this->input->post('center_name'),
+			'head_name' 				=> $this->input->post('head_name'),
+			'head_email' 				=> $this->input->post('head_email'),
+			'head_contact_number' 		=> $this->input->post('head_contact_number'),
+			'contact_person_name' 		=> $this->input->post('contact_person_name'),
+			'contact_person_contact' 	=> $this->input->post('contact_person_contact'),
+			'contact_person_email' 		=> $this->input->post('contact_person_email'),
+			'address' 					=> $this->input->post('present_address'),
+			'country' 					=> $this->input->post('present_country'),
+			'state' 					=> $this->input->post('present_state'),
+			'city' 						=> $this->input->post('present_city'),
+			'pincode' 					=> $this->input->post('present_pincode'),
+			'collaboration_address' 	=> $this->input->post('collaboration_address'),
+			'collaboration_country' 	=> $this->input->post('collaboration_country'),
+			'collaboration_state' 		=> $this->input->post('collaboration_state'),
+			'collaboration_city' 		=> $this->input->post('collaboration_city'),
+			'collaboration_pincode' 	=> $this->input->post('collaboration_pincode'),
+			'permanent_address' 		=> $this->input->post('permanent_address'),
+			'permanent_country' 		=> $this->input->post('permanent_country'),
+			'permanent_state' 			=> $this->input->post('permanent_state'),
+			'permanent_city' 			=> $this->input->post('permanent_city'),
+			'permanent_pincode' 		=> $this->input->post('permanent_pincode'),
+			'permanent_pincode' 		=> $this->input->post('permanent_pincode'),
+			'account_name' 				=> $this->input->post('account_name'),
+			'account_number' 			=> $this->input->post('account_number'),
+			'bank_name' 				=> $this->input->post('bank_name'),
+			'ifsc' 						=> $this->input->post('ifsc'),
+			'center_type' 				=> $center_type,
+			'photo' 					=> $photo,
+			'adhar_card' 				=> $adharcard,
+			'pan_card' 					=> $pan_card,
+			'other_doc' 				=> $doc_data,
+			'orgnization_head_pan_card_number' 	=> $this->input->post('pan_card_orgnization_head'),
+			'orgnization_pan_card_number' 		=> $this->input->post('pan_card_orgnization'),
+			'reference' 				=> $this->input->post('reference'),
+			'is_information' 			=> $this->input->post('is_information'),
+			'created_on' 				=> date("Y-m-d"),
+			'password' 					=> md5($password),
+			'start_date' 				=> date("Y-m-d", strtotime($this->input->post('start_date'))),
+			'end_date' 					=> date("Y-m-d", strtotime($this->input->post('end_date'))),
+			'collaboration_status' 		=> '0',
+		);
+		$this->db->insert('tbl_center', $data);
+		$last_id = $this->db->insert_id();
+		if (strlen($last_id) == 1) {
+			$code = "000" . $last_id;
+		} else if (strlen($last_id) == 2) {
+			$code = "00" . $last_id;
+		} else if (strlen($last_id) == 3) {
+			$code = "0" . $last_id;
+		} else if (strlen($last_id) == 4) {
+			$code = $last_id;
+		} else {
+			$code = $last_id;
+		}
+		$center_code = array(
+			'center_code' => $code
+		);
+		$this->db->where('id', $last_id);
+		$this->db->update('tbl_center', $center_code);
+		$coupon = array();
+		$coupon_id = 0;
+		if ($this->input->post('coupon_code') != "") {
+			$this->db->where('coupon_code', $this->input->post('coupon_code'));
+			$this->db->where('is_deleted', '0');
+			$this->db->where('status', '1');
+			$this->db->where('start_date <=', date("Y-m-d"));
+			$this->db->where('end_date >=', date("Y-m-d"));
+			$coupon = $this->db->get('tbl_coupon');
+			$coupon = $coupon->row();
+		}
+		if (!empty($coupon)) {
+			$center_fees = $coupon->amount;
+			$coupon_id = $coupon->id;
+		} else {
+			$center_fees = 120000;
+		}
+		$payment_data = array(
+			'center_id' 		=> $last_id,
+			'payment_date' 		=> date("Y-m-d"),
+			'payment_mode' 		=> '1',
+			'amount' 			=> $center_fees,
+			'coupon_id'         => $coupon_id,
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_center_payment', $payment_data);
+		$paument_id = $this->db->insert_id();
+		redirect('agreement_document_status/' . base64_encode($last_id) . '/' . base64_encode($paument_id));
+		//redirect('make_center_payment/' . base64_encode($last_id) . '/' . base64_encode($paument_id));
+		//return true;
+	}
+	public function get_center_unique_email()
+	{
+		$this->db->where('head_email', $this->input->post('head_email'));
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_center');
+		echo $result->num_rows();
+	}
+	public function get_center_unique_contact_number()
+	{
+		$this->db->where('head_contact_number', $this->input->post('head_contact_number'));
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_center');
+		echo $result->num_rows();
+	}
+	public function get_student_current_examination($student_id, $year_sem)
+	{
+		$this->db->where('student_id', $student_id);
+		$this->db->where('year_sem', $year_sem);
+		$this->db->where('payment_status', '1');
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_examination_form');
+		return $result->num_rows();
+	}
+	public function get_examination_student_details_payment($id)
+	{
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name');
+		$this->db->where('tbl_student.id', $id);
+		// $this->db->where('tbl_student_fees.id',base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left');
+		$this->db->join('tbl_session', 'tbl_session.id = tbl_student.session_id', 'left');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+		// $result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_examination_student_details()
+	{
+		$this->db->where('enrollment_number', $this->input->post('enrollment_number'));
+		$this->db->where('tbl_student.is_deleted', '0');
+		$this->db->where('tbl_student.hold_login', '0');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function set_generate_cash_receipt()
+	{
+		$data = array(
+			'registration_id' 	=> $this->input->post('registration_number'),
+			'name' 				=> $this->input->post('name'),
+			'email' 			=> $this->input->post('email'),
+			'mobile_number' 	=> $this->input->post('mobile_number'),
+			'course' 			=> $this->input->post('course'),
+			'stream' 			=> $this->input->post('stream'),
+			'year_sem' 			=> $this->input->post('year_sem'),
+			'pay_for' 			=> $this->input->post('pay_for'),
+			'date_of_payment' 	=> $this->input->post('date_of_payment'),
+			'amount' 			=> $this->input->post('amount'),
+			'payment_mode' 		=> $this->input->post('payment_mode'),
+			'transaction_id' 	=> $this->input->post('transaction_id'),
+			'collected_by' 		=> $this->input->post('collected_by'),
+			'address' 			=> $this->input->post('address'),
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_generate_payment_receipt', $data);
+		$id = $this->db->insert_id();
+		$id = base64_encode($id);
+		$message = "Dear " . $this->input->post('name') . ",";
+		$message .= "<br><br>Thank you for submitting your payment.";
+		$message .= "<br><br>";
+		$message .= "Click <a href='" . base_url() . "print_cash_receipt/" . $id . "'> here</a> to download your payment receipt";
+		$message .= "<br><br><b>Best Regards,</b><br>IT Team";
+		$to = array(
+			"email" => $this->input->post('email'),
+			"name" => $this->input->post('name'),
+		);
+		$cc = array(
+			"email" => 'info@theglobaluniversity.edu.in',
+			// 		"name" => 'Manipur',
+		);
+		$subject = 'Payment Receipt | ' . no_reply_name;
+		$this->Admin_model->send_in_blue_cc($to, $subject, $message, $cc);
+		$this->load->library('email');
+		$this->email->from(no_reply_mail, no_reply_name);
+		$this->email->to($this->input->post('email'));
+		//$this->email->cc('manipurbtu@gmail.com,btu.ac01@gmail.com,btumanipur@gmail.com'); 
+		//$this->email->cc('btu.ac01@gmail.com'); 
+		////$this->email->cc('btumanipur@gmail.com'); 
+		$this->email->bcc('info@theglobaluniversity.edu.in');
+		$this->email->subject('Payment Receipt | ' . no_reply_name);
+		$this->email->message($message);
+		$this->email->set_mailtype('html');
+		if ($this->email->send()) {
+		} else {
+		}
+		redirect("print_cash_receipt/" . $id);
+	}
+	public function get_print_receipt()
+	{
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$result = $this->db->get('tbl_generate_payment_receipt');
+		return $result->row();
+	}
+	public function get_center_print_receipt()
+	{
+		$this->db->select('
+				tbl_center_payment.*, 
+				tbl_center.center_name, 
+				tbl_center.head_name, 
+				tbl_center.head_email, 
+				tbl_center.head_contact_number, 
+				tbl_center.address, 
+				countries.name as country_name, 
+				states.name as state_name, 
+				cities.name as city_name, 
+				tbl_center.pincode
+			');
+		$this->db->where('tbl_center_payment.id', base64_decode($this->uri->segment(2)));
+		$this->db->join('tbl_center', 'tbl_center.id = tbl_center_payment.center_id', 'left');
+		$this->db->join('countries', 'countries.id = tbl_center.country', 'left');
+		$this->db->join('states', 'states.id = tbl_center.state', 'left');
+		$this->db->join('cities', 'cities.id = tbl_center.city', 'left');
+		$result = $this->db->get('tbl_center_payment');
+		return $result->row();
+	}
+	public function get_admission_print_receipt()
+	{
+		// echo "<pre>";print_r($this->uri->segment(2));exit;
+		$this->db->select('tbl_student_fees.*,tbl_student.enrollment_number,tbl_student.student_name,tbl_student.mobile,tbl_student.email,tbl_student.address,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_student.pincode,tbl_student.city,tbl_course.print_name,tbl_stream.stream_name');
+		$this->db->where('student_id', $this->uri->segment(2));
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_student_fees.student_id', 'left');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left');
+		$this->db->join('countries', 'countries.id = tbl_student.country');
+		$this->db->join('states', 'states.id = tbl_student.state');
+		$this->db->join('cities', 'cities.id = tbl_student.city');
+		$result = $this->db->get('tbl_student_fees');
+		return $result->row();
+		// echo "<pre>";print_r($result->row());exit;
+	}
+	public function get_student_data()
+	{
+		$this->db->where('id', $this->input->post('registration_number'));
+		$this->db->or_where('enrollment_number', $this->input->post('registration_number'));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		echo json_encode($result);
+	}
+	public function get_course_details()
+	{
+		$this->db->where('course_link', $this->uri->segment(1));
+		$result = $this->db->get('tbl_course');
+		return $result->row();
+	}
+	public function get_only_state()
+	{
+		$result = $this->db->get('states');
+		return $result->result();
+	}
+	public function submit_enquiry()
+	{
+		$this->db->where('mobile', $this->input->post('enquire_mobile'));
+		$this->db->where('email', $this->input->post('enquire_email'));
+		$this->db->where('name', $this->input->post('enquire_name'));
+		$this->db->where('query', $this->input->post('enquire_course'));
+		$exist = $this->db->get('tbl_enquery');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			$data = array(
+				'name' 			=> $this->input->post('enquire_name'),
+				'mobile' 		=> $this->input->post('enquire_mobile'),
+				'email' 		=> $this->input->post('enquire_email'),
+				'query' 		=> $this->input->post('enquire_course'),
+				'state' 		=> $this->input->post('enquire_state'),
+				'created_on' 	=> date("Y-m-d H:i:s"),
+			);
+			$this->db->insert('tbl_enquery', $data);
+			redirect('thank-you-for-enquiry');
+		} else {
+			redirect($_SERVER['HTTP_REFERER']);
+		}
+	}
+	public function direct_submit_enquiry()
+	{
+		$this->db->where('mobile', $this->input->post('enquire_mobile'));
+		$this->db->where('email', $this->input->post('enquire_email'));
+		$this->db->where('name', $this->input->post('enquire_name'));
+		$this->db->where('query', $this->input->post('enquire_course'));
+		$exist = $this->db->get('tbl_direct_enquery');
+		$exist = $exist->row();
+		if (empty($exist)) {
+			$data = array(
+				'name' 			=> $this->input->post('enquire_name'),
+				'mobile' 		=> $this->input->post('enquire_mobile'),
+				'email' 		=> $this->input->post('enquire_email'),
+				'query' 		=> $this->input->post('enquire_course'),
+				'created_on' 	=> date("Y-m-d H:i:s"),
+			);
+			$this->db->insert('tbl_direct_enquery', $data);
+			redirect('thank-you-for-enquiry');
+		} else {
+			redirect($_SERVER['HTTP_REFERER']);
+		}
+	}
+	public function get_course_home_page()
+	{
+		$this->db->where('course_read', '1');
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('course_read', '1');
+		$this->db->limit(32);
+		$result = $this->db->get('tbl_course');
+		return $result->result();
+	}
+	public function get_course_stream_home($course)
+	{
+		$this->db->select('tbl_stream.stream_name');
+		$this->db->where('tbl_course_stream_relation.is_deleted', '0');
+		$this->db->where('tbl_course_stream_relation.status', '1');
+		$this->db->where('tbl_course_stream_relation.course', $course);
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_course_stream_relation.stream');
+		$this->db->limit(4);
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->result();
+	}
+	public function set_center_enquiry_foreign($photo, $passport, $other_doc)
+	{
+		if ($other_doc != "") {
+			$other_data = implode(',', $other_doc);
+		} else {
+			$other_data = '';
+		}
+		$data = array(
+			'center_name' 				=> $this->input->post('center_name'),
+			'head_name' 				=> $this->input->post('head_name'),
+			'contact_person_name' 		=> $this->input->post('contact_person_name'),
+			'mobile'		 			=> $this->input->post('contact_number'),
+			'email' 					=> $this->input->post('email'),
+			'country' 					=> $this->input->post('country'),
+			'state' 					=> $this->input->post('state'),
+			'city' 						=> $this->input->post('city'),
+			'pincode' 					=> $this->input->post('pincode'),
+			'address' 					=> $this->input->post('address'),
+			'account_name' 				=> $this->input->post('account_name'),
+			'account_number' 			=> $this->input->post('account_number'),
+			'bank_name' 				=> $this->input->post('bank_name'),
+			'reference' 				=> $this->input->post('reference'),
+			'ifsc' 						=> $this->input->post('ifsc'),
+			'photo' 					=> $photo,
+			'passport' 					=> $passport,
+			'other_doc' 				=> $other_data,
+			'collaboration_status' 		=> '1',
+			'created_on' 				=> date("Y-m-d H:i:S"),
+			'operation'					=> '0',  //
+		);
+		$this->db->insert('tbl_center_enquiry', $data);
+		return true;
+	}
+	public function set_collaboration_form_foreign($photo, $passport, $doc_data)
+	{
+		$doc_data = json_encode($doc_data);
+		$password = rand();
+		$data = array(
+			'center_name' 				=> $this->input->post('center_name'),
+			'head_name' 				=> $this->input->post('head_name'),
+			'head_email' 				=> $this->input->post('head_email'),
+			'head_contact_number' 		=> $this->input->post('head_contact_number'),
+			'contact_person_name' 		=> $this->input->post('contact_person_name'),
+			'contact_person_contact' 	=> $this->input->post('contact_person_contact'),
+			'contact_person_email' 		=> $this->input->post('contact_person_email'),
+			'address' 					=> $this->input->post('present_address'),
+			'country' 					=> $this->input->post('present_country'),
+			'state' 					=> $this->input->post('present_state'),
+			'city' 						=> $this->input->post('present_city'),
+			'pincode' 					=> $this->input->post('present_pincode'),
+			'collaboration_address' 	=> $this->input->post('collaboration_address'),
+			'collaboration_country' 	=> $this->input->post('collaboration_country'),
+			'collaboration_state' 		=> $this->input->post('collaboration_state'),
+			'collaboration_city' 		=> $this->input->post('collaboration_city'),
+			'collaboration_pincode' 	=> $this->input->post('collaboration_pincode'),
+			'permanent_address' 		=> $this->input->post('permanent_address'),
+			'permanent_country' 		=> $this->input->post('permanent_country'),
+			'permanent_state' 			=> $this->input->post('permanent_state'),
+			'permanent_city' 			=> $this->input->post('permanent_city'),
+			'permanent_pincode' 		=> $this->input->post('permanent_pincode'),
+			'photo' 					=> $photo,
+			'passport_number' 			=> $this->input->post('passport_number'),
+			'reference' 				=> $this->input->post('reference'),
+			'passport' 					=> $passport,
+			'other_doc' 				=> $doc_data,
+			'created_on' 				=> date("Y-m-d"),
+			// 'password' 					=> md5($password),
+			'collaboration_status' 		=> '1',
+			'start_date' 				=> date("Y-m-d", strtotime($this->input->post('start_date'))),
+			'end_date' 					=> date("Y-m-d", strtotime($this->input->post('end_date'))),
+			'operation'					=> '0',   //
+		);
+		$this->db->insert('tbl_center', $data);
+		$last_id = $this->db->insert_id();
+		if (strlen($last_id) == 1) {
+			$code = "000" . $last_id;
+		} else if (strlen($last_id) == 2) {
+			$code = "00" . $last_id;
+		} else if (strlen($last_id) == 3) {
+			$code = "0" . $last_id;
+		} else if (strlen($last_id) == 4) {
+			$code = $last_id;
+		} else {
+			$code = $last_id;
+		}
+		$center_code = array(
+			'center_code' => $code
+		);
+		$this->db->where('id', $last_id);
+		$this->db->update('tbl_center', $center_code);
+		$payment_data = array(
+			'center_id' 		=> $last_id,
+			'payment_date' 		=> date("Y-m-d"),
+			'payment_mode' 		=> '1',
+			'amount' 			=> '240000',
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_center_payment', $payment_data);
+		$paument_id = $this->db->insert_id();
+		// redirect('make_center_payment_foregin/'.base64_encode($last_id).'/'.base64_encode($paument_id));
+		redirect('make_center_payment/' . base64_encode($last_id) . '/' . base64_encode($paument_id));
+		return true;
+	}
+	public function accept_provisional_terms()
+	{
+		$data = array(
+			'provisional_degree' => '1'
+		);
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->update('tbl_student', $data);
+		return true;
+	}
+	public function accept_degree_terms()
+	{
+		$data = array(
+			'degree_cert' => '1'
+		);
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->update('tbl_student', $data);
+		return true;
+	}
+	public function accept_transfer_terms()
+	{
+		$data = array(
+			'transfer_cert' => '1'
+		);
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->update('tbl_student', $data);
+		return true;
+	}
+	public function accept_transcript_terms()
+	{
+		$data = array(
+			'transcript' => '1'
+		);
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->update('tbl_student', $data);
+		return true;
+	}
+	public function accept_migration_terms()
+	{
+		$data = array(
+			'migration_terms' => '1'
+		);
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$this->db->update('tbl_student', $data);
+		return true;
+	}
+	public function get_payment_head()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$result = $this->db->get('tbl_direct_payment_head');
+		return $result->result();
+	}
+	public function get_head_payment()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('id', $this->input->post('pay_for'));
+		$result = $this->db->get('tbl_direct_payment_head');
+		$result = $result->row();
+		if (!empty($result)) {
+			echo $result->fees;
+		} else {
+			echo 0;
+		}
+	}
+	public function get_pay_for_name($id)
+	{
+		$this->db->where('id', $id);
+		$result = $this->db->get('tbl_direct_payment_head');
+		return $result->row();
+	}
+	public function get_student_re_appear_exam_second(){  
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name'); 
+		$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number'));  
+		$this->db->where('tbl_student.admission_status', '1'); 
+		$this->db->where('tbl_student.hold_login', '0');  
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left'); 
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left');  
+		$result = $this->db->get('tbl_student'); 
+		$result = $result->row();   
+		if (!empty($result)) { 
+		    $allowed_center = array('1','12'); 
+			/*if (!in_array($result->center_id,$allowed_center)) { 
+				$this->session->set_flashdata('message', 'Please cordinate to your admission center'); 
+				redirect('re-appear-form-second'); 
+			} else {  */
+				return $result;  
+			//} 
+		}  
+		return $result;  
+	} 	
+	public function get_student_re_appear_exam(){  
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_exam_results.year_sem as exam_sem'); 
+		$this->db->where('tbl_student.enrollment_number', $this->input->post('enrollment_number')); 
+		$this->db->where('tbl_exam_results.year_sem', $this->input->post('year_sem')); 
+		$this->db->where('tbl_student.admission_status', '1'); 
+		$this->db->where('tbl_student.hold_login', '0');  
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id', 'left'); 
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id', 'left'); 
+		$this->db->join('tbl_exam_results', 'tbl_exam_results.student_id = tbl_student.id', 'left'); 
+		$result = $this->db->get('tbl_student'); 
+		$result = $result->row();  
+		//return $result;
+		if (!empty($result)) { 
+		    $allowed_center = array('1','12'); 
+			if (!in_array($result->center_id,$allowed_center)) { 
+				$this->session->set_flashdata('message', 'Please cordinate to your admission center'); 
+				redirect('re-appear-form'); 
+			} else {  
+				return $result;  
+			} 
+		}  
+		return $result;  
+	} 
+	public function get_student_re_appear_subject($student_id,$year_sem){
+		$this->db->where('result !=','0');
+		$this->db->where('is_deleted','0');
+		$this->db->where('student_id',$student_id);
+		$this->db->where('year_sem',$year_sem);
+		$exist = $this->db->get('tbl_exam_results');
+		$exist = $exist->row();
+		if(!empty($exist)){
+			$this->db->select('tbl_subject.*');
+			$this->db->where('tbl_examination_result_details.is_deleted','0');
+			$this->db->where('tbl_examination_result_details.result !=','0');
+			$this->db->where('tbl_examination_result_details.result_id',$exist->id);
+			$this->db->join('tbl_subject','tbl_subject.id = tbl_examination_result_details.subject_id');
+			$result = $this->db->get('tbl_examination_result_details');
+			return $result->result();
+		}
+	}
+	public function set_re_appear(){  
+		$data = array(  
+			'enrollment_number' 	=> $this->input->post('enrollment_number'), 
+			'year_sem' 				=> $this->input->post('year_sem'), 
+			'number_of_paper' 		=> $this->input->post('number_of_paper'), 
+			'amount' 				=> $this->input->post('total_examination_fees'), 
+			'payment_date' 			=> date("Y-m-d"), 
+			'created_on' 			=> date("Y-m-d H:i:s") 
+		); 
+		$this->db->insert('tbl_re_appear', $data); 
+		$id = $this->db->insert_id(); 
+		$subject = $this->input->post('subject');
+		if(!empty($subject)){
+			$subject_data = array();
+			for($s=0;$s<count($subject);$s++){
+				$subject_data[] = array(
+					're_appear_id' => $id,
+					'subject_id' => $subject[$s],
+					'created_on' => date("Y-m-d H:i:s"),
+				);
+			}
+			if(!empty($subject_data)){
+				$this->db->insert_batch('tbl_re_appear_subjects',$subject_data);
+			}
+		}
+		
+		redirect('pay_re_appear/' . base64_encode($id)); 
+	} 
+	public function set_re_appear_second(){  
+		$data = array(  
+			'enrollment_number' 	=> $this->input->post('enrollment_number'), 
+			'year_sem' 				=> $this->input->post('year_sem'), 
+			'number_of_paper' 		=> $this->input->post('number_of_paper'), 
+			'amount' 				=> $this->input->post('total_examination_fees'), 
+			'payment_date' 			=> date("Y-m-d"), 
+			'created_on' 			=> date("Y-m-d H:i:s") 
+		); 
+		$this->db->insert('tbl_re_appear', $data); 
+		$id = $this->db->insert_id();   
+		redirect('pay_re_appear/' . base64_encode($id)); 
+	} 
+	public function get_re_appear_examination_student(){
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_re_appear.id as pay_id,tbl_re_appear.amount');
+		$this->db->where('tbl_re_appear.id', base64_decode($this->uri->segment(2)));
+		$this->db->where('tbl_student.admission_status', '1');
+		$this->db->where('tbl_student.hold_login', '0');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_re_appear', 'tbl_re_appear.enrollment_number = tbl_student.enrollment_number');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_enroll_details_for_kyc()
+	{
+		$admission_status = array(1, 4);
+		$this->db->where('enrollment_number', $this->uri->segment(2));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where_in('admission_status', $admission_status);
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_course_wise_timesheet()
+	{
+		$this->db->select('tbl_time_table.*,tbl_course.print_name,tbl_stream.stream_name');
+		$this->db->where('tbl_time_table.is_deleted', '0');
+		$this->db->where('tbl_time_table.course', $this->input->post('course'));
+		$this->db->where('tbl_time_table.stream', $this->input->post('stream'));
+		$this->db->where('tbl_time_table.year_sem', $this->input->post('year_sem'));
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_time_table.course');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_time_table.stream');
+		$result = $this->db->get('tbl_time_table');
+		return  $result->row();
+	}
+	public function get_timetable_papers($id)
+	{
+		$this->db->where('sheet_id', $id);
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_timesheet_details');
+		return $result->result();
+	}
+	public function set_information_center()
+	{
+		$pancard = '';
+		if ($_FILES['information_pancard']['name'] != "") {
+			$pancard = $this->Digitalocean_model->upload_photo($filename = "information_pancard", $path = "images/center/pan_card/");
+		}
+		$adharcard = '';
+		if ($_FILES['information_adhar']['name'] != "") {
+			$adharcard = $this->Digitalocean_model->upload_photo($filename = "information_adhar", $path = "images/center/adharcard/");
+		}
+		$randomToken = $this->generateRandomToken(20);
+		$data = array(
+			'center_name' 				=> $this->input->post('information_center_name'),
+			'information_person_name' 	=> $this->input->post('information_person_name'),
+			'information_email' 		=> $this->input->post('information_email'),
+			'information_mobile' 		=> $this->input->post('information_mobile'),
+			'information_address' 		=> $this->input->post('information_address'),
+			'pincode' 					=> $this->input->post('information_pincode'),
+			'pancard' 					=> $pancard,
+			'adharcard' 				=> $adharcard,
+			'amount' 					=> 10000,
+			'autho_token' 				=> $randomToken . $randomToken . $randomToken,
+			'payment_date' 				=> date("Y-m-d"),
+			'created_on' 				=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_information_center_leads', $data);
+		$last_id = $this->db->insert_id();
+		$words = str_word_count($this->input->post('information_center_name'), 1);
+		$firstCharacters = [];
+		foreach ($words as $word) {
+			$firstCharacters[] = substr($word, 0, 1);
+		}
+		$resultString = implode('', $firstCharacters);
+		$reference_number = $resultString . '/BTU/' . $last_id . '/' . date("y") . '-' . date('y', strtotime('+1 year'));
+		$ref_data = array(
+			'center_reference_number' => $reference_number,
+		);
+		$this->db->where('id', $last_id);
+		$this->db->update('tbl_information_center_leads', $ref_data);
+		redirect('make_information_center_payment/' . base64_encode($last_id));
+	}
+	public function generateRandomToken($length)
+	{
+		$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		$token = '';
+		$maxIndex = strlen($characters) - 1;
+		for ($i = 0; $i < $length; $i++) {
+			$randomIndex = rand(0, $maxIndex);
+			$token .= $characters[$randomIndex];
+		}
+		return $token;
+	}
+	public function get_information_payment_details()
+	{
+		$this->db->where('id', base64_decode($this->uri->segment(2)));
+		$result = $this->db->get('tbl_information_center_leads');
+		return $result->row();
+	}
+	public function get_auth_letter_information_center()
+	{
+		$this->db->where('autho_token', $this->uri->segment(2));
+		$result = $this->db->get('tbl_information_center_leads');
+		return $result->row();
+	}
+	public function set_contact()
+	{
+		$data = array(
+			'name' 				=> $this->input->post('name'),
+			'email' 			=> $this->input->post('email'),
+			'phone_number' 		=> $this->input->post('phone_number'),
+			'msg_subject' 		=> $this->input->post('msg_subject'),
+			'message' 			=> $this->input->post('message'),
+		);
+		$this->db->insert('tbl_contact_us', $data);
+	}
+	public function get_unique_email_id()
+	{
+		$this->db->where('head_email', $this->input->post('head_email'));
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != "0") {
+			$this->db->where('id !=', $this->input->post('id'));
+		}
+		$result = $this->db->get('tbl_center');
+		echo $result->num_rows();
+	}
+	public function get_unique_contact_person_email_id()
+	{
+		$this->db->where('contact_person_email', $this->input->post('contact_person_email'));
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != "0") {
+			$this->db->where('id !=', $this->input->post('id'));
+		}
+		$result = $this->db->get('tbl_center');
+		echo $result->num_rows();
+	}
+	public function get_unique_email()
+	{
+		$this->db->where('email', $this->input->post('email'));
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != "0") {
+			$this->db->where('id !=', $this->input->post('id'));
+		}
+		$result = $this->db->get('tbl_student');
+		echo $result->num_rows();
+	}
+	public function get_unique_email_id_ajax()
+	{
+		$this->db->where('email_id', $this->input->post('email'));
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != "0") {
+			$this->db->where('id !=', $this->input->post('id'));
+		}
+		$result = $this->db->get('tbl_phd_registration_form');
+		echo $result->num_rows();
+	}
+	// public function get_hallticket_setup($exam_month,$exam_year){
+	// 	$this->db->select('tbl_exam_setup.*,tbl_signature.name as signature_name,tbl_signature.signature,tbl_signature.dispalay_signature');
+	// 	$this->db->where('tbl_exam_setup.status','1');
+	// 	$this->db->where('tbl_exam_setup.is_deleted','0');
+	// 	$this->db->where('tbl_exam_setup.month', $exam_month); 
+	// 	$this->db->where('tbl_exam_setup.year', $exam_year);
+	// 	$this->db->join("tbl_signature","tbl_signature.id = tbl_exam_setup.signature",'left');
+	// 	$result = $this->db->get('tbl_exam_setup');
+	// 	return  $result->row();
+	// }
+	public function get_inner_receipt()
+	{
+		if ($this->uri->segment(3) == "tbl_phd_registration_form") {
+			$this->db->select('tbl_phd_registration_form.*,tbl_course.course_name,tbl_stream.stream_name');
+			$this->db->where('tbl_phd_registration_form.id', base64_decode($this->uri->segment(2)));
+			$this->db->where('tbl_phd_registration_form.payment_status', '1');
+			$this->db->join('tbl_course', 'tbl_course.id = tbl_phd_registration_form.course', 'left');
+			$this->db->join('tbl_stream', 'tbl_stream.id = tbl_phd_registration_form.stream', 'left');
+			$payment = $this->db->get('tbl_phd_registration_form');
+			$payment = $payment->row();
+			$arr = array();
+			$receipt_no = "";
+			if (strlen($payment->id) == "1") {
+				$arr['receipt_no'] = "PEF-000" . $payment->id;
+			} else if (strlen($payment->id) == "2") {
+				$arr['receipt_no'] = "PEF-00" . $payment->id;
+			} else if (strlen($payment->id) == "3") {
+				$arr['receipt_no'] = "PEF-0" . $payment->id;
+			} else {
+				$arr['receipt_no'] = "PEF-" . $payment->id;
+			}
+			if (!empty($payment) && $payment->id != "") {
+				$enrollment_number = $payment->id;
+			} else {
+				$enrollment_number  = "-";
+			}
+			$arr['date_of_receipt'] = date("d/m/Y", strtotime($payment->payment_date));
+			$arr['enrollment_number'] = $enrollment_number;
+			$arr['student_name'] = $payment->student_name;
+			$arr['print_name'] = $payment->course_name;
+			$arr['stream_name'] = $payment->stream_name;
+			$arr['address'] = $payment->current_address;
+			$arr['mobile'] = $payment->mobile_number;
+			$arr['email'] = $payment->email_id;
+			$arr['ref_level'] = "Registration No";
+			$arr['pay_for'] = "Ph.D Entrance Fees";
+			$arr['transaction_id'] = $payment->payment_id;
+			$arr['print_amount'] = $payment->amount;
+			$arr['order_status'] = "Success";
+			$arr['payment_by'] = $payment->student_name;
+			return $arr;
+		} else {
+			return array();
+		}
+	}
+	public function get_phd_entrance_details($id)
+	{
+		$this->db->where('id', $id);
+		$result = $this->db->get('tbl_phd_registration_form')->row();
+		return $result;
+	}
+	public function get_coupon_validator()
+	{
+		$this->db->where('coupon_code', $this->input->post('coupon_code'));
+		$this->db->where('is_deleted', '0');
+		$this->db->where('status', '1');
+		$this->db->where('start_date <=', date("Y-m-d"));
+		$this->db->where('end_date >=', date("Y-m-d"));
+		$result = $this->db->get('tbl_coupon');
+		$result = $result->row();
+		if (!empty($result)) {
+			echo 1;
+		} else {
+			echo 0;
+		}
+	}
+	public function get_terms_and_condition()
+	{
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_terms_and_conditions');
+		return $result->row();
+	}
+	public function get_privacy_policy()
+	{
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_privacy_policy');
+		return $result->row();
+	}
+	public function get_phd_student_data_ajax()
+	{
+		$this->db->select('tbl_phd_registration_form.*,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_course.course_name as student_course_name,tbl_stream.stream_name as student_stream_name');
+		$this->db->where('tbl_phd_registration_form.is_deleted', '0');
+		$this->db->where('tbl_phd_registration_form.email_id', $this->input->post('email'));
+		$this->db->join('countries', 'countries.id = tbl_phd_registration_form.country');
+		$this->db->join('states', 'states.id = tbl_phd_registration_form.state');
+		$this->db->join('cities', 'cities.id = tbl_phd_registration_form.city');
+		$this->db->join('tbl_course', 'tbl_course.id = tbl_phd_registration_form.course');
+		$this->db->join('tbl_stream', 'tbl_stream.id = tbl_phd_registration_form.stream');
+		$result = $this->db->get('tbl_phd_registration_form');
+		echo json_encode($result->row());
+		// $result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_exam_setup()
+	{
+		$this->db->where('is_deleted', '0');
+		$this->db->where('student_type', '0');
+		$this->db->where('status', '1');
+		$result = $this->db->get('tbl_exam_setup');
+		return $result->row();
+		// $result = $result->row();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function get_center_profile()
+	{
+		$this->db->where('id', '1');
+		$this->db->where('is_deleted', '0');
+		$result = $this->db->get('tbl_center');
+		return $result->row();
+	}
+	public function set_rti_grievance()
+	{
+		// echo "<pre>";
+		// print_r($_POST);
+		// exit;
+		$userfile = '';
+		if ($_FILES['userfile']['name'] != "") {
+			$userfile = $this->Digitalocean_model->upload_photo($filename = "userfile", $path = "rti_reply/");
+		}
+		$data = array(
+			'added_by_name' 	=> $this->input->post('added_by_name'),
+			'first_name' 		=> $this->input->post('first_name'),
+			'last_name' 		=> $this->input->post('last_name'),
+			'enrollment_number' => $this->input->post('enrollment_number'),
+			'gender' 			=> $this->input->post('gender'),
+			'student_teacher' 	=> $this->input->post('student_teacher'),
+			'mobile_number' 	=> $this->input->post('mobile_number'),
+			'email' 			=> $this->input->post('email'),
+			'complaint' 		=> $this->input->post('complaint'),
+			'file'				=> $userfile . ',',
+			"created_on"		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_rti_grievance", $data);
+		return true;
+	}
+	public function get_city($id)
+	{
+		$this->db->where('id', $id);
+		$result = $this->db->get('cities');
+		return $result->row();
+	}
+	public function get_state_cities($state)
+	{
+		$this->db->where('state_id', $state);
+		$result = $this->db->get('cities');
+		return $result->result();
+	}
+	public function get_state($id)
+	{
+		$this->db->where('id', $id);
+		$result = $this->db->get('states');
+		return $result->row();
+	}
+	public function get_country_state($country)
+	{
+		$this->db->where('country_id', $country);
+		$result = $this->db->get('states');
+		return $result->result();
+	}
+	
+	public function check_unique_mobile_number_ajx()
+	{
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != '' && $this->input->post('id') != '0') {
+			$this->db->where("id !=", $this->input->post('id'));
+		}
+		$this->db->where('mobile', $this->input->post('mobile'));
+		$res = $this->db->get('tbl_student')->row();
+		if (!empty($res)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+	public function set_re_evaluation_student(){  
+		$update_re = array(
+			'is_deleted' => '1'
+		);
+		$this->db->where('year_sem',$this->input->post('year_sem'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('enrollment_number',$this->input->post('enrollment_number'));
+		$this->db->update('tbl_re_evaluation_student',$update_re);
+		
+		$this->db->select('tbl_student.*'); 
+		$this->db->where('tbl_student.is_deleted','0'); 
+		$this->db->where('tbl_student.hold_login','0');  
+		$this->db->where('tbl_student.enrollment_number',$this->input->post('enrollment_number')); 
+		$this->db->where('tbl_student.year_sem >=',$this->input->post('year_sem')); 
+		$student = $this->db->get('tbl_student'); 
+		$student = $student->row(); 
+		if(!empty($student)){
+			$this->db->where('year_sem',$this->input->post('year_sem'));
+			$this->db->where('is_deleted','0');
+			$this->db->where('enrollment_number',$this->input->post('enrollment_number'));
+			$exist = $this->db->get('tbl_re_evaluation_student');
+			$exist = $exist->row();
+			if(empty($exist)){
+				$data = array(
+					"student_id"			=> $student->id,
+					'center_id'				=> $student->center_id,
+					"enrollment_number"		=> $this->input->post('enrollment_number'),
+					"year_sem"				=> $this->input->post('year_sem'),
+					"payment_date"			=> date("Y-m-d"),
+					"created_on"			=> date("Y-m-d H:i:s"),
+					"payment_amount"		=> '1000',
+				);
+				$this->db->insert("tbl_re_evaluation_student",$data);
+				$last_id = $this->db->insert_id();
+				redirect('student_re_evaluation_payment/'.base64_encode($last_id));
+			}else if($exist->payment_status == "0"){
+				redirect('student_re_evaluation_payment/'.base64_encode($exist->id));
+			}else{
+				$this->session->set_flashdata('message','Sorry form is already submitted for this year/sem!');  
+				redirect('re_evaluation');
+			}
+		}else{
+			return false;
+		} 
+	}  	
+	public function get_re_evaluation_payment_student(){
+		$this->db->select('tbl_re_evaluation_student.id,tbl_re_evaluation_student.payment_amount,tbl_student.student_name,tbl_student.mobile,tbl_student.email,tbl_student.pincode,tbl_student.address');
+		$this->db->where('tbl_re_evaluation_student.id',base64_decode($this->uri->segment(2)));
+		$this->db->where('tbl_re_evaluation_student.is_deleted','0'); 
+		$this->db->join('tbl_student','tbl_student.enrollment_number = tbl_re_evaluation_student.enrollment_number'); 
+		$result = $this->db->get('tbl_re_evaluation_student');
+		return $result->row();
+	}
+	public function set_visitor_form($visitor_file){
+		$data = array(
+			'name' 				=> $this->input->post('name'),
+			'mobile_number' 	=> $this->input->post('mobile_number'),
+			'email' 			=> $this->input->post('email'),
+			'visit_for' 		=> $this->input->post('visit_for'),
+			'address' 			=> $this->input->post('address'),
+			'visitor_file' 		=> $visitor_file,
+			'created_on' 		=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert('tbl_visitor', $data);
+		return true;
+	}
+
+	public function check_unique_email_number_ajx()
+	{
+		$this->db->where('is_deleted', '0');
+		if ($this->input->post('id') != '' && $this->input->post('id') != '0') {
+			$this->db->where("id !=", $this->input->post('id'));
+		}
+		$this->db->where('email', $this->input->post('email'));
+		$res = $this->db->get('tbl_student')->row();
+		if (!empty($res)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+
+	public function get_last_year_sem_of_student($course,$stream){
+		$this->db->where('course',$course);
+		$this->db->where('stream',$stream);
+		$this->db->where('is_deleted','0');
+		$result = $this->db->get('tbl_course_stream_relation');
+		return $result->row();
+   }
+
+   public function check_exam_before_reregistration($student_id,$year_sem){
+		$this->db->where('is_deleted','0');
+		$this->db->where('student_id',$student_id);
+		$this->db->where('year_sem',$year_sem);
+		$this->db->where('payment_status','1');
+		$result = $this->db->get('tbl_examination_form');
+		return $result->row(); 
+	}
+
+	public function check_result_before_reregistration($student_id,$year_sem){
+		$this->db->where('is_deleted','0');
+		$this->db->where('student_id',$student_id);
+		$this->db->where('year_sem',$year_sem); 
+		$result = $this->db->get('tbl_exam_results');
+		return $result->row(); 
+	}
+
+
+	public function get_exam_form_check_new($id, $year)
+	{
+		$this->db->select('tbl_examination_form.*,tbl_student.id');
+		$this->db->where('tbl_examination_form.is_deleted', '0');
+		$this->db->where('tbl_examination_form.status', '1');
+		$this->db->where('tbl_examination_form.payment_status', '1');
+		$this->db->where('tbl_student.id', $id);
+		$this->db->join('tbl_student', 'tbl_student.id = tbl_examination_form.student_id', 'left');
+		$this->db->where('tbl_examination_form.year_sem', $year);
+		$result = $this->db->get('tbl_examination_form');
+		return $result->row();
+	}
+}

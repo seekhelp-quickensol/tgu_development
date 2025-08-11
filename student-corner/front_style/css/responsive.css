@@ -1,0 +1,272 @@
+                    @media (min-width:1755px) and (max-width:1920px) {
+                        .offer-img img {
+                            position: absolute !important;
+                            z-index: 999;
+                            width: 50px;
+                            right: 10px;
+                        }
+                    }
+                    
+                    @media (min-width:320px) and (max-width:1200px) {
+                        .resp_pad {
+                            padding: 0px 20px;
+                        }
+                    }
+                    
+                    @media (min-width: 993px) and (max-width: 1024px) {
+                        .res_about_heading {
+                            font-size: 19px;
+                            margin-bottom: 20px !important;
+                            line-height: 1.4;
+                        }
+                        .about-img {
+                            margin-top: -200px;
+                        }
+                    }
+                    
+                    @media (min-width: 768px) and (max-width: 992px) {
+                        .about-img {
+                            margin-top: -450px;
+                        }
+                        .front-login-details {
+                            margin: 200px auto 0 !important;
+                        }
+                        .respn_mobile_h {
+                            height: 100%;
+                        }
+                        .respn_mobile_h li {
+                            height: 20% !important;
+                            margin-bottom: 0px !important;
+                        }
+                        .offer-img img {
+                            position: absolute !important;
+                            z-index: 999;
+                            width: 40px;
+                            right: 4px;
+                        }
+                        .tearm_right_sec {
+                            padding-left: 15px !important;
+                            padding-right: 15px !important;
+                        }
+                        .market-wrapper .categories-list li {
+                            width: 50%;
+                        }
+                        .main-page .stats-desc .user-stats {
+                            flex-wrap: unset;
+                        }
+                        .res_guides {
+                            text-align: center;
+                        }
+                        .services-wrapper p {
+                            width: 100%;
+                        }
+                        .market-wrapper p {
+                            width: 100%;
+                            margin-bottom: 16px;
+                        }
+                        .tearms_res h2 {
+                            font-size: 26px;
+                        }
+                        .privacy_res h2 {
+                            font-size: 26px;
+                        }
+                    }
+                    
+                    @media (min-width:320px) and (max-width: 767px) {
+                        .modal-dialog {
+                            max-width: 100% !important;
+                            left: auto;
+                            right: auto;
+                            top: 25%;
+                            position: absolute;
+                        }
+                        .vid_tile {
+                            padding-top: 10px;
+                            padding-bottom: 10px;
+                            margin: auto;
+                            /* border: 1px solid red; */
+                        }
+                        .about-img {
+                            margin-top: 0px;
+                        }
+                        .front-login-details {
+                            margin: 50px auto 50px;
+                        }
+                        .respn_mobile_h {
+                            height: 100%;
+                        }
+                        .respn_mobile_h li {
+                            height: 20% !important;
+                            margin-bottom: 0px !important;
+                        }
+                        .result_main {
+                            font-size: 16px;
+                        }
+                        .tearm_right_sec {
+                            padding-left: 15px !important;
+                            padding-right: 15px !important;
+                        }
+                        .contant_form {
+                            padding: 0px;
+                        }
+                        .contant_form h2 {
+                            padding-left: 10px;
+                        }
+                        .what-we-cont p {
+                            font-size: 16px;
+                        }
+                        .section-title {
+                            margin-bottom: 0px !important;
+                        }
+                        .footer-address {
+                            margin-bottom: 0px;
+                        }
+                        footer div h2 {
+                            font-size: 20px;
+                        }
+                        footer ul li {
+                            font-size: 16px;
+                        }
+                        .pro-text {
+                            width: 100%;
+                        }
+                        .guide-wrapper {
+                            padding-bottom: 0px !important;
+                        }
+                        .services-wrapper p {
+                            width: 100%;
+                        }
+                        .market-wrapper p {
+                            width: 100%;
+                            margin-bottom: 16px;
+                        }
+                        .market-wrapper .categories-list li {
+                            width: 100%;
+                        }
+                        .homepage-search-form {
+                            padding: 0px 5px;
+                        }
+                        .res_guides {
+                            text-align: center;
+                        }
+                        .about_content {
+                            margin-top: 41px;
+                            text-align: center;
+                            padding-left: 10px !important;
+                        }
+                        .about_content h5 {
+                            font-size: 22px;
+                            text-align: left;
+                        }
+                        .about_content p {
+                            font-size: 16px;
+                        }
+                        .res_about_heading {
+                            font-size: 20px;
+                            margin-bottom: 30px !important;
+                        }
+                        .contact_content h6 {
+                            margin-top: 23px;
+                        }
+                        .terms_heading {
+                            margin-top: 20px;
+                        }
+                        .tearms_res h2 {
+                            font-size: 26px;
+                        }
+                        .privacy_res h2 {
+                            font-size: 26px;
+                        }
+                    }
+                    
+                    @media (min-width:320px) and (max-width: 500px) {
+                        .pro-text h3 {
+                            font-size: 20px;
+                        }
+                        /*    .privacy_img{
+        height: 130px;
+    }*/
+                        .respn_logo {
+                            margin: auto;
+                            margin-bottom: 10px;
+                        }
+                        .respn_sp_btn {
+                            margin: auto;
+                            text-align: center;
+                        }
+                        .offer-text {
+                            margin-bottom: 10px;
+                        }
+                    }
+                    
+                    @media (min-width:320px) and (max-width: 425px) {
+                        .picture-wrapper iframe {
+                            height: 251px;
+                        }
+                        .homepage-search-title h1 {
+                            font-size: 33px;
+                        }
+                    }
+                    
+                    .tool .tooltiptext {
+                        display: none;
+                    }
+                    
+                    @media (min-width:320px) and (max-width: 581px) {
+                        .res_order_bt {
+                            height: 47px;
+                        }
+                        .res_e_certificate_bt {
+                            height: auto;
+                        }
+                        .respn_exam_btn {
+                            display: block !important;
+                        }
+                        .respn_exam_btn .respn_exam_text {
+                            margin-bottom: 10px;
+                        }
+                        .respn_conversation_btn {
+                            display: block !important;
+                        }
+                        .resp_assesment_btn {
+                            display: block !important;
+                        }
+                        .resp_assesment_btn .resp_assesment_text {
+                            margin-bottom: 10px;
+                        }
+                    }
+                    
+                    @media (min-width:0px) and (max-width:767px) {
+                        .video_list {
+                            width: 320px !important;
+                        }
+                        .video_list li {
+                            width: 100%;
+                            margin: 0px 0px 0px 0px;
+                            position: relative;
+                            float: left;
+                        }
+                        .video_poster_img {
+                            background-size: cover !important;
+                            background-position: center !important;
+                            height: 220px;
+                            width: 100%;
+                        }
+                        .company_name{
+                            font-size: 18px;
+                            margin-top: 7px !important;
+                        }
+                        .osahan-login a img {
+                            width: 115px;
+                        }
+                        .front-login-details{
+                            margin: 20px auto 60px;
+                            padding: 15px 26px;
+                        }
+                        .osahan-login{
+                            padding-top: 0px !important;
+                        }
+                        .company_caption{
+                            margin-bottom: 10px;
+                        }
+                    }

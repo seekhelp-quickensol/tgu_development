@@ -1,0 +1,35 @@
+<?php include('header.php'); ?>
+
+<div class="breakcrumb-wrapper">
+
+  <div class="card text-white">
+
+    <!-- <img src="https://via.placeholder.com/1200x250.png" class="card-img" alt=""> -->
+
+    <img src="https://www.tgu.ac.in/landing_assets/images/btech_banner.jpg" height="250px" width="100%" class="card-img" alt="">
+
+    <div class="card-img-overlay d-flex justify-content-center flex-column container">
+
+      <h5 class="card-title">Membership & Accreditation</h5>
+
+      <!-- <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p> -->
+
+      <p class="card-text">Home / Membership & Accreditation </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<section class="container" id="img-cont">
+  <img src="https://www.tgu.ac.in/images/accreditation/iso_certificate_1.png" alt="" class="m-3 img-thumbnail">
+  <img src="https://www.tgu.ac.in/images/accreditation/iso_certificate_2.png" alt="" class="m-3 img-thumbnail">
+  <img src="https://www.tgu.ac.in/images/accreditation/iso_certificate_3.png" alt="" class="m-3 img-thumbnail">
+</section>
+
+
+
+<?php include('contact_form.php'); ?>
+
+<?php include('footer.php'); ?>

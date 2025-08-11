@@ -1,0 +1,499 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');THE GLOBAL UNIVERSITY
+class Api_model extends CI_Model {  
+	public function get_verification_user_login(){  
+		$_GET = $_POST;
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('email',$this->input->post('email'));
+		$this->db->where('password',$this->input->post('password'));
+		$result = $this->db->get('tbl_verification_user_login');
+		$result = $result->row();
+		echo json_encode($result);
+	}
+	public function get_verification_user_profile(){  
+		$_GET = $_POST;
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('id',$this->input->post('id')); 
+		$result = $this->db->get('tbl_verification_user_login');
+		$result = $result->row();BIR TIKENDRAJIT UNIVERSITY
+		echo json_encode($result);
+	}
+	public function get_update_profile_verification(){ 
+		$_GET = $_POST;  
+		if($_FILES['file']['name']){ 
+			$photo = $this->Digitalocean_model->upload_photo($filename="file",$path="uploads/document_verification_user/");
+		}else{
+			$photo = $this->input->post('old_img');
+		}  
+		$data = array(
+			'name' 			=> $this->input->post('name'),
+			'email' 		=> $this->input->post('email'),
+			'mobile_number' => $this->input->post('mobile_number'),
+			'profile_photo' => $photo,BIR TIKENDRAJIT UNIVERSITY
+		);	 		 
+		$this->db->where('id',$this->input->post('id')); 
+		$result = $this->db->update('tbl_verification_user_login',$data);
+		$this->db->where('id',$this->input->post('id')); 
+		$result = $this->db->get('tbl_verification_user_login');
+		$result = $result->row();
+		echo json_encode($result);
+	}
+	public function set_password_update(){
+		$_GET = $_POST; 
+		$data = array(
+			'password' 	=> $this->input->post('new_password'), 
+		);	 		 
+		$this->db->where('id',$this->input->post('id')); 
+		$result = $this->db->update('tbl_verification_user_login',$data);
+	}
+	public function get_new_verification_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verify','0');  
+		$this->db->where('verified_status','1');  
+		$this->db->where('admission_status !=','0');
+		$this->db->where('admission_status !=','2');
+		if($this->input->post('session') !=""){
+			$this->db->where('session_id',$this->input->post('session'));
+		}
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function get_new_pending_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verify','0');  
+		$this->db->where('admission_status','0');
+		if($this->input->post('session') !=""){
+			$this->db->where('session_id',$this->input->post('session'));
+		}
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	} 
+	public function get_new_document_pending_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verify','0');  
+		$this->db->where('tbl_student.verified_status','0');
+		$this->db->where('tbl_student.admission_status !=','0');
+		if($this->input->post('session') !=""){
+			$this->db->where('session_id',$this->input->post('session'));
+		}
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function get_my_verified_student(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verify','1');  
+		$this->db->where('doc_verified_by',$this->input->post('id'));  
+		$this->db->order_by('doc_verified_date','DESC');  
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function get_rejected_student_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verify','2');  
+		$this->db->where('doc_verified_by',$this->input->post('id'));  
+		$this->db->order_by('doc_verified_date','DESC');  
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function get_single_verification_student(){
+		$_GET = $_POST;   
+		$this->db->select('tbl_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name,countries.name as country_name,cities.name as city_name,states.name as state_name');
+		$this->db->where('tbl_student.id',$this->input->post('student_id'));  
+		$this->db->join('tbl_course','tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_session','tbl_session.id = tbl_student.session_id');
+		$this->db->join('cities','cities.id = tbl_student.city');
+		$this->db->join('states','states.id = tbl_student.state');
+		$this->db->join('countries','countries.id = tbl_student.country');
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		$result->photo_path = $this->Digitalocean_model->get_photo('images/profile_pic/'.$result->photo);
+		$result->signature_path = $this->Digitalocean_model->get_photo('images/signature/'.$result->signature);
+		$result->identity_softcopy_path = $this->Digitalocean_model->get_photo('images/student_identity_softcopy/'.$result->identity_softcopy);
+		echo json_encode($result);
+	}
+	public function get_single_verification_student_qualification(){
+		$_GET = $_POST;    
+		$this->db->where('is_deleted','0');   
+		$this->db->where('student_id',$this->input->post('student_id'));   
+		$result = $this->db->get('tbl_student_qualification');
+		$result = $result->row();
+		if(!empty($result)){
+			if($result->secondary_marksheet !=""){
+				$result->secondary_marksheet_path = $this->Digitalocean_model->get_photo('images/qualification/'.$result->secondary_marksheet);
+			}else{
+				$result->secondary_marksheet_path = "";
+			}
+			if($result->sr_secondary_marksheet !=""){
+				$result->sr_secondary_marksheet_path = $this->Digitalocean_model->get_photo('images/qualification/'.$result->sr_secondary_marksheet);
+			}else{
+				$result->sr_secondary_marksheet_path = "";
+			}
+			if($result->graduation_marksheet !=""){
+				$result->graduation_marksheet_path = $this->Digitalocean_model->get_photo('images/qualification/'.$result->graduation_marksheet);
+			}else{
+				$result->graduation_marksheet_path = "";
+			}
+			if($result->post_graduation_marksheet !=""){
+				$result->post_graduation_marksheet_path = $this->Digitalocean_model->get_photo('images/qualification/'.$result->post_graduation_marksheet);
+			}else{
+				$result->post_graduation_marksheet_path = "";
+			}
+			if($result->other_qualification_marksheet !=""){
+				$result->other_qualification_marksheet_path = $this->Digitalocean_model->get_photo('images/qualification/'.$result->other_qualification_marksheet);
+			}else{
+				$result->other_qualification_marksheet_path = "";
+			}
+		}else{
+			$result = array();
+		}
+		echo json_encode($result);
+	}
+	public function set_verification_student(){
+		$_GET = $_POST;    
+		$stud_data = array(
+			'religion' 			=> $this->input->post('religion'),
+			'religin_specify' 	=> $this->input->post('religin_specify'), 
+		);
+		$this->db->where('id',$this->input->post('student_id'));
+		$this->db->update('tbl_student',$stud_data);
+		$data = array(
+			'student_id'  			=> $this->input->post('student_id'), 
+			'student_type'  		=> $this->input->post('student_type'),
+			'name_verified'  		=> $this->input->post('name_verified'), 
+			'name_remark'  			=> $this->input->post('name_remark'), 
+			'father_verified'  		=> $this->input->post('father_verified'), 
+			'father_remark'  		=> $this->input->post('father_remark'), 
+			'mother_verified'  		=> $this->input->post('mother_verified'), 
+			'mother_remark'  		=> $this->input->post('mother_remark'), 
+			'birth_verified'  		=> $this->input->post('birth_verified'), 
+			'birth_remark'  		=> $this->input->post('birth_remark'), 
+			'nationality_verified'  => $this->input->post('nationality_verified'), 
+			'nationality_remark'  	=> $this->input->post('nationality_remark'), 
+			'address_verified'  	=> $this->input->post('address_verified'), 
+			'address_remark'  		=> $this->input->post('address_remark'), 
+			'city_verified'  		=> $this->input->post('city_verified'), 
+			'city_remark'  			=> $this->input->post('city_remark'), 
+			'pin_verified'  		=> $this->input->post('pin_verified'), 
+			'pin_remark'  			=> $this->input->post('pin_remark'), 
+			'state_verified'  		=> $this->input->post('state_verified'), 
+			'state_remark'  		=> $this->input->post('state_remark'), 
+			'country_verified'  	=> $this->input->post('country_verified'), 
+			'country_remark'  		=> $this->input->post('country_remark'), 
+			'mobile_verified'  		=> $this->input->post('mobile_verified'), 
+			'mobile_remark'  		=> $this->input->post('mobile_remark'), 
+			'email_verified'  		=> $this->input->post('email_verified'), 
+			'category_verified'  	=> $this->input->post('category_verified'), 
+			'cauntry_remark'  		=> $this->input->post('cauntry_remark'), 
+			'gender_verified'  		=> $this->input->post('gender_verified'), 
+			'gender_remark'  		=> $this->input->post('gender_remark'), 
+			'year_verified'  		=> $this->input->post('year_verified'), 
+			'year_remark'  			=> $this->input->post('year_remark'), 
+			'secondary_verified' 	=> $this->input->post('secondary_verified'), 
+			'secondary_remark'  	=> $this->input->post('secondary_remark'),
+			'sr_secondary_verified' => $this->input->post('sr_secondary_verified'), 
+			'sr_secondary_remark'  	=> $this->input->post('sr_secondary_remark'),
+			'graduation_verified'  	=> $this->input->post('graduation_verified'), 
+			'graduation_remark'  	=> $this->input->post('graduation_remark'),
+			'graduation_verified'  	=> $this->input->post('graduation_verified'), 
+			'graduation_remark'  	=> $this->input->post('graduation_remark'),
+			'post_gratuation_verified' => $this->input->post('post_gratuation_verified'), 
+			'post_gratuation_remark' => $this->input->post('post_gratuation_remark'),
+			'other_verified'  		=> $this->input->post('other_verified'), 
+			'other_remark'  		=> $this->input->post('other_remark'),
+			'facebook_url'  		=> $this->input->post('facebook_url'), 
+			'facebook_verified'  	=> $this->input->post('facebook_verified'), 
+			'facebook_remark'  		=> $this->input->post('facebook_remark'), 
+			'instagram_url'  		=> $this->input->post('instagram_url'), 
+			'instagram_verified'  	=> $this->input->post('instagram_verified'), 
+			'instagram_remark'  	=> $this->input->post('instagram_remark'), 
+			'linkedin_url'  		=> $this->input->post('linkedin_url'), 
+			'linkedin_verified'  	=> $this->input->post('linkedin_verified'), 
+			'linkedin_remark'  		=> $this->input->post('linkedin_remark'), 
+			'remark'  				=> $this->input->post('remark'), 
+			'id_verified'  			=> $this->input->post('id_verified'), 
+			'id_remark'  			=> $this->input->post('id_remark'), 
+			'photo_verified'  		=> $this->input->post('photo_verified'), 
+		); 
+		if($this->input->post('final_verification') == "Complete Verification"){
+			$final = array(
+				'doc_verify' 		=> '1',
+				'doc_verified_by' 	=> $this->input->post('user_id'),
+				'doc_verified_date' => date("Y-m-d"),
+			);
+			$this->db->where('id',$this->input->post('student_id'));
+			$this->db->update('tbl_student',$final);
+		}
+		if($this->input->post('reject_verification') == "Reject Verification"){
+			$final = array(
+				'doc_verify' 		=> '2',
+				'doc_verified_by' 	=> $this->input->post('user_id'),
+				'doc_verified_date' => date("Y-m-d"),
+			);
+			$this->db->where('id',$this->input->post('student_id'));
+			$this->db->update('tbl_student',$final);
+		}
+		$this->db->where('student_id',$this->input->post('student_id'));
+		$exist = $this->db->get('tbl_document_verification_remark');
+		$exist = $exist->row();
+		if(!empty($exist)){
+			$this->db->where('id',$exist->id);
+			$this->db->update('tbl_document_verification_remark',$data);
+		}else{
+			$date = array(
+				'created_on' => date("Y-m-d H:i:s")
+			);
+			$new_arr = array_merge($data,$date);
+			$this->db->insert('tbl_document_verification_remark',$new_arr);
+		} 
+	}
+	public function get_single_verified_date(){
+		$this->db->where('student_id',$this->input->post('student_id'));
+		$result = $this->db->get('tbl_document_verification_remark');
+		$result = $result->row();
+		echo json_encode($result);
+	}
+	public function get_session_list(){
+		$this->db->where('is_deleted','0');
+		$result = $this->db->get('tbl_session');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function blended_student_list(){
+		$_GET = $_POST;    
+		$this->db->where('doc_verified','0');
+		$this->db->where('is_deleted','0');
+		if($this->input->post('session') !=""){
+			$this->db->where('session_id',$this->input->post('session'));
+		}
+		$result = $this->db->get('tbl_separate_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function get_single_blended_verification_student(){
+		$_GET = $_POST;    
+		$this->db->select('tbl_separate_student.*,tbl_course.print_name,tbl_stream.stream_name,tbl_session.session_name');
+		$this->db->where('tbl_separate_student.is_deleted','0');   
+		$this->db->where('tbl_separate_student.id',$this->input->post('student_id'));
+		$this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+		$this->db->join('tbl_session','tbl_session.id = tbl_separate_student.session_id'); 
+		$result = $this->db->get('tbl_separate_student');
+		$result = $result->row();
+		if(!empty($result)){
+			if($result->photo !=""){
+				$result->photo_path = $this->Digitalocean_model->get_photo('images/separate_student/photo/'.$result->photo);
+			}else{
+				$result->photo_path = "";
+			} 
+			if($result->identity_softcopy !=""){
+				$result->identity_softcopy_path = $this->Digitalocean_model->get_photo('images/separate_student/'.$result->identity_softcopy);
+			}else{
+				$result->identity_softcopy_path = "";
+			} 
+			if($result->document !=""){
+				$result->document_path = $this->Digitalocean_model->get_photo('images/separate_student/'.$result->document);
+			}else{
+				$result->document_path = "";
+			} 
+		}else{
+			$result = array();
+		}
+		echo json_encode($result);
+	}
+	public function set_blended_erification_student(){
+		$_GET = $_POST;    
+		$data = array(
+			'student_id'  			=> $this->input->post('student_id'), 
+			'student_type'  		=> $this->input->post('student_type'),
+			'name_verified'  		=> $this->input->post('name_verified'), 
+			'name_remark'  			=> $this->input->post('name_remark'), 
+			'father_verified'  		=> $this->input->post('father_verified'), 
+			'father_remark'  		=> $this->input->post('father_remark'), 
+			'mother_verified'  		=> $this->input->post('mother_verified'), 
+			'mother_remark'  		=> $this->input->post('mother_remark'), 
+			'birth_verified'  		=> $this->input->post('birth_verified'), 
+			'birth_remark'  		=> $this->input->post('birth_remark'), 
+			'address_verified'  	=> $this->input->post('address_verified'), 
+			'address_remark'  		=> $this->input->post('address_remark'), 
+			'mobile_verified'  		=> $this->input->post('mobile_verified'), 
+			'mobile_remark'  		=> $this->input->post('mobile_remark'), 
+			'email_verified'  		=> $this->input->post('email_verified'), 
+			'gender_verified'  		=> $this->input->post('gender_verified'), 
+			'gender_remark'  		=> $this->input->post('gender_remark'), 
+			'year_verified'  		=> $this->input->post('year_verified'), 
+			'year_remark'  			=> $this->input->post('year_remark'), 
+			'document_verified'  	=> $this->input->post('document_verified'), 
+			'documents_remark'  	=> $this->input->post('documents_remark'), 
+			'facebook_url'  		=> $this->input->post('facebook_url'), 
+			'facebook_verified'  	=> $this->input->post('facebook_verified'), 
+			'facebook_remark'  		=> $this->input->post('facebook_remark'), 
+			'instagram_url'  		=> $this->input->post('instagram_url'), 
+			'instagram_verified'  	=> $this->input->post('instagram_verified'), 
+			'instagram_remark'  	=> $this->input->post('instagram_remark'), 
+			'linkedin_url'  		=> $this->input->post('linkedin_url'), 
+			'linkedin_verified'  	=> $this->input->post('linkedin_verified'), 
+			'linkedin_remark'  		=> $this->input->post('linkedin_remark'), 
+			'remark'  				=> $this->input->post('remark'), 
+			'id_verified'  			=> $this->input->post('id_verified'), 
+			'id_remark'  			=> $this->input->post('id_remark'), 
+			'photo_verified'  		=> $this->input->post('photo_verified'), 
+		); 
+		if($this->input->post('final_verification') == "Complete Verification"){
+			$final = array(
+				'doc_verified' 	=> '1',
+				'verified_by' 	=> $this->input->post('user_id'),
+				'verified_date' => date("Y-m-d"),
+			);
+			$this->db->where('id',$this->input->post('student_id'));
+			$this->db->update('tbl_separate_student',$final);
+		}
+		if($this->input->post('reject_verification') == "Reject Verification"){
+			$final = array(
+				'doc_verified' 	=> '2',
+				'verified_by' 	=> $this->input->post('user_id'),
+				'verified_date' => date("Y-m-d"),
+			);
+			$this->db->where('id',$this->input->post('student_id'));
+			$this->db->update('tbl_separate_student',$final);
+		}
+		$this->db->where('student_id',$this->input->post('student_id'));
+		$exist = $this->db->get('tbl_separate_document_verification_remark');
+		$exist = $exist->row();
+		if(!empty($exist)){
+			$this->db->where('id',$exist->id);
+			$this->db->update('tbl_separate_document_verification_remark',$data);
+		}else{
+			$date = array(
+				'created_on' => date("Y-m-d H:i:s")
+			);
+			$new_arr = array_merge($data,$date);
+			$this->db->insert('tbl_separate_document_verification_remark',$new_arr);
+		} 
+	}
+	public function get_blended_single_verified_remark(){
+		$_GET = $_POST;     
+		$this->db->where('student_id',$this->input->post('student_id')); 
+		$result = $this->db->get('tbl_separate_document_verification_remark');
+		$result = $result->row();
+		echo json_encode($result);
+	}
+	public function verified_blended_student_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verified','1');  
+		$this->db->where('verified_by',$this->input->post('id'));  
+		$this->db->order_by('verified_date','DESC');  
+		$result = $this->db->get('tbl_separate_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	public function rejected_blended_student_list(){
+		$_GET = $_POST;   
+		$this->db->where('doc_verified','2');  
+		$this->db->where('verified_by',$this->input->post('id'));  
+		$this->db->order_by('verified_date','DESC');  
+		$result = $this->db->get('tbl_separate_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public function get_all_student_for_verification(){
+		$status = array(0,1);
+		$this->db->where_in('admission_status',$status);
+		$result = $this->db->get('tbl_student');
+		$result = $result->result();
+		echo json_encode($result);
+	}
+    public function get_stu_information($data){
+        $this->db->select("tbl_student.*,tbl_fees_realtion.fees");
+        $this->db->where("tbl_student.is_deleted","0");
+        $this->db->where("tbl_student.status","1");
+        $this->db->where("tbl_student.enrollment_number",$data["Student_UID"]);
+        $this->db->join("tbl_fees_realtion","tbl_fees_realtion.course_id=tbl_student.course_id AND tbl_fees_realtion.stream_id=tbl_student.stream_id");
+        $stu = $this->db->get("tbl_student")->row();
+        $result = array();
+        if(!empty($stu)){
+            $result["Student_UID"] = $stu->enrollment_number;
+            $result["Student_Name"] = $stu->student_name;
+            $result["Class_Name"] = $stu->course_mode==1?$stu->year_sem." year":$stu->year_sem." sem";
+            $result["School_Name"] = "BIR TIKENDRAJIT UNIVERSITY";
+            $result["Total_Fee_Due"] = $stu->fees;
+            $result["Total_Fee"] = $stu->fees;
+            $result["Response_Reason"] = "Success";
+            $result["Fees_Type"] = "1";
+        }
+        return $result;
+    }
+    public function set_stu_information($data){
+        $this->db->where("tbl_student.is_deleted","0");
+        $this->db->where("tbl_student.status","1");
+        $this->db->where("tbl_student.enrollment_number",$data["Student_UID"]);
+        $stu_data = $this->db->get("tbl_student")->row();
+        $set_data["student_id"] = $stu_data->id;
+        $set_data["fees_type"] = $data["Fees_Type"];
+        $set_data["payment_mode"] = 1;
+        $set_data["bank_id"] = 3;
+        $set_data["payment_date"] = date("Y-m-d");
+        if($data["Transaction_Status"]=="Successful"){  
+            $set_data["payment_status"] = '1'; 
+        }else{ 
+            $set_data["payment_status"] = '0'; 
+        } 
+        $set_data["transaction_id"] = !empty($data["TransactionID"])?$data["TransactionID"]:"";  
+        $set_data["original_amount"] = $data["Amount_Paid"]; 
+        $set_data["amount"] = $data["Amount_Paid"]; 
+        $set_data["total_fees"] = $data["Amount_Paid"];  
+        $set_data["year_sem"] = $stu_data->year_sem; 
+        $set_data["created_on"] = $data["Payment_Date"];   
+        if($this->db->insert("tbl_student_fees",$set_data)){ 
+            $response_data = array( 
+                "Payment_Date"=> $data["Payment_Date"],  
+                // "VoucherNo"=> "2001161238501304",  
+                "BBPS_Ref_No"=> $data["BBPS_TRANSACTION_ID"],  
+                "StudentName"=>$stu_data->student_name,  
+                // "RMN"=> "9999999999",  
+                "Payment_status"=> $data["Transaction_Status"],  
+                "School_Name"=> "BIR TIKENDRAJIT UNIVERSITY",  
+                "Paid_Amount"=> $data["Amount_Paid"],  
+                "BBPS_Biller_ID"=> $data["BBPS_TRANSACTION_ID"],  
+                // "Response Code":000,   
+                "Response_Reason"=> "Success"   
+            ); 
+        }else{ 
+            $response_data = array( 
+                "Payment_Date"=> $data["Payment_Date"],  
+                // "VoucherNo"=> "2001161238501304",  
+                "BBPS_Ref_No"=> $data["BBPS_TRANSACTION_ID"],  
+                "StudentName"=>$stu_data->student_name,  
+                // "RMN"=> "9999999999",  
+                "Payment_status"=> $data["Transaction_Status"],  
+                "School_Name"=> "BIR TIKENDRAJIT UNIVERSITY",  
+                "Paid_Amount"=> $data["Amount_Paid"],  
+                "BBPS_Biller_ID"=> $data["BBPS_TRANSACTION_ID"],  
+                // "Response Code":000,   
+                "Response_Reason"=> "Failed"   
+            ); 
+        } 
+        return $response_data; 
+    } 
+	
+}

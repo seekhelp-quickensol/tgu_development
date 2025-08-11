@@ -1,0 +1,296 @@
+<?php include('header.php');?>
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+					<ul class="nav nav-tabs tab-no-active-fill" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active pl-2 pr-2" id="revenue-for-last-month-tab" data-toggle="tab" href="#revenue-for-last-month" role="tab" aria-controls="revenue-for-last-month" aria-selected="true">Self & Parent Assessment Form</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link pl-2 pr-2" id="data-managed-tab" data-toggle="tab" href="#data-managed" role="tab" aria-controls="data-managed" aria-selected="false">Teachers Assessment Form</a>
+						</li>
+						
+						<li class="nav-item">
+							<a class="nav-link pl-2 pr-2" id="data-managed-tab1" data-toggle="tab" href="#data-managed-tab-assignment" role="tab" aria-controls="data-managed" aria-selected="false">Assignment Form</a>
+						</li>
+					</ul>
+					<div class="tab-content tab-no-active-fill-tab-content">
+						<div class="tab-pane fade show active" id="revenue-for-last-month" role="tabpanel" aria-labelledby="revenue-for-last-month-tab">
+							<div class="d-lg-flex justify-content-between">
+								<div class="col-lg-12">
+									<form method="post" name="self_form" id="self_form" enctype="multipart/form-data">
+										<table class="table table-responsive table-bordered" width="100%">
+											<tbody>
+												<tr>
+													<td>Form Name</td>
+													<td style="text-align:center">Download Form</td>
+													<td>Sem/Year</td>
+													<td>Upload Form(pdf,jpg,png)</td>
+												</tr>
+												<tr>
+													<td>SELF ASSESSMENT & PARENT ASSESSMENT FORM</td>
+													<td style="text-align:center">
+														<a target="_blank" href="<?=$this->Digitalocean_model->get_photo('images/assessment/self-&-parent-assessment-form.pdf')?>" download="" class="btn btn-primary">Download Form</a>
+													</td>
+													<td style="text-align:center">
+														<select class="form-control" name="year_sem" id="year_sem" >
+															<option value="">Select Your Sem/Year</option>
+															<?php for($y=1;$y<=12;$y++){?>
+															<option value="<?=$y?>"><?=$y?></option>
+															<?php }?>
+														</select>
+													</td>
+													<td style="text-align:center">
+														<input type="file" width="25%" class="form-control" name="userfile" id="userfile" >
+													</td>
+													<td style="text-align:center">
+														<input class="btn btn-sm btn-primary" type="submit" name="save" value="Upload Form">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										
+									</form>	
+									<table class="table  table-bordered" width="100%">
+										<tbody>
+											<tr>
+												<td>Year/Sem</td>
+												<td>View</td>
+											</tr>
+											<?php if(!empty($self_assement)){ foreach($self_assement as $self_assement_result){?>
+												<tr>
+													<td><?=$self_assement_result->year_sem?></td>
+													<td><a href="<?=$this->Digitalocean_model->get_photo('uploads/assessment_form_seperate_student/self_assement/'.$self_assement_result->file)?>" target="_blank"><i class="mdi mdi-eye"></i></a></td>
+												</tr>
+											<?php }}?>
+										</tbody>
+									</table>
+							</div>
+							</div> 
+						</div> 
+						<div class="tab-pane fade" id="data-managed" role="tabpanel" aria-labelledby="data-managed-tab">
+							<div class="d-flex justify-content-between">
+								<div class="col-lg-12">
+									<form method="post" name="teacher_form" id="teacher_form" enctype="multipart/form-data">
+										<table class="table table-responsive table-bordered" width="100%">
+											<tbody>
+												<tr>
+													<td>Form Name</td>
+													<td style="text-align:center">Download Form</td>
+													<td>Sem/Year</td>
+													<td>Upload Form(pdf,jpg,png)</td>
+												</tr>
+												<tr>
+													<td>TEACHER ASSESSMENT FORM</td>
+													<td style="text-align:center">
+														<a target="_blank" href="<?=$this->Digitalocean_model->get_photo('images/assessment/teacher-assessment-form.pdf')?>" download="" class="btn btn-primary">Download Form</a>
+													</td>
+													<td style="text-align:center">
+														<select class="form-control" name="year_sem" id="year_sem" required="">
+															<option value="">Select Your Sem/Year</option>
+															<?php for($y=1;$y<=12;$y++){?>
+															<option value="<?=$y?>"><?=$y?></option>
+															<?php }?>
+														</select>
+													</td>
+													<td style="text-align:center">
+														<input type="file" width="25%" class="form-control" name="userfile" id="userfile" >
+													</td>
+													<td style="text-align:center">
+														<input class="btn btn-sm btn-primary" type="submit" name="teacher" value="Upload Form">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										
+									</form>	
+									<table class="table  table-bordered" width="100%">
+										<tbody>
+											<tr>
+												<td>Year/Sem</td>
+												<td>View</td>
+											</tr>
+											<?php 
+                     if(!empty($teacher_assement)){ foreach($teacher_assement as $teacher_assement_result){?>
+												<tr>
+													<td><?=$teacher_assement_result->year_sem?></td>
+													<td><a href="<?=$this->Digitalocean_model->get_photo('uploads/assessment_form_seperate_student/teacher_assement/'.$teacher_assement_result->file)?>" target="_blank"><i class="mdi mdi-eye"></i></a></td>
+												</tr>
+											<?php }}?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="tab-pane fade" id="data-managed-tab-assignment" role="tabpanel" aria-labelledby="data-managed-tab1">
+							<div class="d-flex justify-content-between">
+								<div class="col-lg-12">
+									<form method="post" name="assignment_form" id="assignment_form" enctype="multipart/form-data">
+										<table class="table table-responsive table-bordered" width="100%">
+											<tbody>
+												<tr>
+													<td>Form Name</td>
+													<td >Title</td>
+													<td>Sem/Year</td>
+													<!-- <td>Upload Form(pdf,jpg,png)</td> -->
+												</tr>
+												<tr>
+													<td> ASSIGNMENT FORM</td>
+													<td style="text-align:center">
+												<input type="text" name="assignment_title" class="form-control" id ="assignment_title" 	>
+												</td>
+													<td style="text-align:center">
+														<select class="form-control" name="year_sem" id="year_sem" >
+															<option value="">Select Your Sem/Year</option>
+															<?php for($y=1;$y<=12;$y++){?>
+															<option value="<?=$y?>"><?=$y?></option>
+															<?php }?>
+														</select>
+													</td>
+													<td style="text-align:center">
+														<input type="file" width="25%" class="form-control" name="userfile" id="userfile" >
+													</td>
+													<td style="text-align:center">
+														<input class="btn btn-sm btn-primary" type="submit" name="assignement" value="Upload Form">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										
+									</form>	
+									<table class="table  table-bordered" width="100%">
+										<tbody>
+											<tr><td>Title</td>
+												<td>Year/Sem</td>
+												<td>View</td>
+											</tr>
+											<?php if(!empty($assignment)){ foreach($assignment as $assignment_result){?>
+												<tr>
+												<td><?=$assignment_result->assignment_title?></td>
+													<td><?=$assignment_result->year_sem?></td>
+													<td><a href="<?=$this->Digitalocean_model->get_photo('uploads/assessment_form_seperate_student/assignment/'.$assignment_result->file)?>" target="_blank"><i class="mdi mdi-eye"></i></a></td>
+												</tr>
+											<?php }}?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+
+
+					</div>
+				</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+<?php include('footer.php');?>
+ <script>
+ $(document).ready(function () {		
+	jQuery.validator.addMethod("validate_email", function(value, element) {
+		if (/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/.test(value)) {
+			return true;
+		}else {
+			return false;
+		}
+	}, "Please enter a valid Email.");	
+	$('#self_form').validate({
+		rules: {
+			year_sem: {
+				required: true,
+			},
+			userfile: {
+				required: true,
+			},
+			
+		},
+		messages: {
+			year_sem: {
+				required: "please select year/sem",
+			},
+			userfile: {
+				required: "please select file to upload",
+			},
+			
+		},
+		
+	});
+	$('#teacher_form').validate({
+		rules: {
+			year_sem: {
+				required: true,
+			},
+			userfile: {
+				required: true,
+			},
+			
+		},
+		messages: {
+			year_sem: {
+				required: "please select year/sem",
+			},
+			userfile: {
+				required: "please select file to upload",
+			},
+			
+		},
+	});
+
+	$('#assignment_form').validate({
+		rules: {
+			year_sem: {
+				required: true,
+			},
+			userfile: {
+				required: true,
+			},
+			assignment_title: {
+				required: true,
+			},
+			
+		},
+		messages: {
+			year_sem: {
+				required: "please select year/sem",
+			},
+			userfile: {
+				required: " please select file to upload",
+			},
+			assignment_title: {
+				required: "please enter assignment title",
+			},
+			
+		},
+	});
+
+	});
+	
+$("#old_password").keyup(function(){
+	$.ajax({
+	   type: "POST",
+	   url: "<?=base_url();?>student/Student_controller/get_old_password",
+	   data:{'old_password':$("#old_password").val()},
+	   success: function(data){console.log(data);
+		 if(data == "0"){
+			 $(".password_submit").hide();
+			 $("#password_error").html("Password does not match");
+		 }else{
+			 $(".password_submit").show();
+			 $("#password_error").html("");
+		 }
+	   },
+	  error: function(jqXHR, textStatus, errorThrown) {
+		console.log(textStatus, errorThrown);
+	   }
+	});  
+});
+ </script>
+ 

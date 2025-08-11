@@ -1,0 +1,22 @@
+@media screen and (min-width:0px) and (max-width:767px) {
+    .login-form-holder {
+        margin: 0;
+        width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background: #fff;
+        transform: translate(-50%, -50%);
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(118, 119, 118, 0.05) 0px 8px 32px;
+    }
+    .shape_left,
+    .shape_right {
+        display: none;
+    }
+    .close-sidebar {
+        display: none;
+    }
+    .close-sidebar {
+        display: none;
+    }
+}

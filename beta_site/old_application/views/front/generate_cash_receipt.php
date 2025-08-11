@@ -1,0 +1,408 @@
+<?php include("header.php"); ?>
+	<div class="page-title-area bg-27">
+			<div class="container">
+				<div class="page-title-content">
+					<h2>Payment Receipt</h2>
+					<ul>
+						<li>
+							<a href="<?=base_url()?>">
+								Home 
+							</a>
+						</li>
+						<li class="active">Payment Receipt</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- End Page Title Area -->
+		<!-- Start Candidates Resume Area -->
+		<section class="candidates-resume-area ptb-100">
+			<div class="container">
+				<div class="candidates-resume-content">
+					<?php if($this->session->userdata('receipt_password') == "ABZB"){?>	
+					<form class="resume-info" method="post" name="payment_form" id="payment_form" enctype="multipart/form-data"> 
+						<div class="row"> 
+							<div class="col-lg-4 col-md-4">
+								<div class="form-group">	
+									<label>Registration/Enrollment Number</label> 
+									<input type="text" name="registration_number" id="registration_number" class="form-control" placeholder="Enter Your Registration Number">
+								</div>
+							</div>  
+							<div class="col-lg-4 col-md-4"> 
+								<div class="form-group"> 
+									<label>Name of Student<span class="req">*</span></label> 
+									<input type="text" name="name" id="name" class="form-control charector" placeholder="Please enter name"> 
+								</div> 
+							</div>   
+							<div class="col-lg-4 col-md-4"> 
+								<div class="form-group"> 
+									<label>Mobile Number<span class="req">*</span></label> 
+									<input type="text" name="mobile_number" id="mobile_number" class="form-control" placeholder="Please enter mobile number"> 
+								</div> 
+							</div>  
+							<div class="col-lg-4 col-md-4"> 
+								<div class="form-group"> 
+									<label>Email<span class="req">*</span></label> 
+									<input type="text" name="email" id="email" class="form-control" placeholder="Please enter email"> 
+								</div> 
+							</div>  
+							<div class="col-lg-4 col-md-4"> 
+								<div class="form-group"> 
+									<label>Course<span class="req">*</span></label> 
+									<select id="course" name="course" class="form-control select2_single"> 
+										<option value="">Select Course</option> 
+										<?php if(!empty($course)){
+											foreach($course as $course_result){
+										?> 
+										<option value="<?=$course_result->course_name;?>"><?=$course_result->course_name;?></option> 
+										<?php }} ?>	 
+									</select> 
+									<label style="display:none;" id="course-error" class="error" for="course">Please select course name</label>
+								</div>			 
+							</div>
+								<div class="col-lg-4 col-md-4"> 
+								<div class="form-group"> 
+									<label>Stream<span class="req">*</span></label> 
+									<select id="stream" name="stream" class="form-control select2_single"> 
+										<option value="">Select Stream</option> 
+										 	 
+									</select>  
+								</div>			 
+							</div>
+								
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Year/Sem<span class="req">*</span></label>
+											<select id="year_sem" name="year_sem" class="form-control select2_single">
+												<option value="">Select Year/Sem</option> 
+												<option value="1">1</option> 
+												<option value="2">2</option> 
+												<option value="3">3</option> 
+												<option value="4">4</option> 
+												<option value="5">5</option> 
+												<option value="6">6</option> 
+												<option value="7">7</option> 
+												<option value="8">8</option> 
+												<option value="9">9</option> 
+												<option value="10">10</option> 
+												<option value="11">11</option> 
+												<option value="12">12</option> 
+												
+											</select>
+											<label style="display:none;" id="year_sem-error" class="error" for="year_sem">Please select year/sem</label>
+										</div>				
+									</div>
+									
+									
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Payment For<span class="req">*</span></label>
+											<select name="pay_for" id="pay_for" class="form-control select2_single">
+												<option value="">Select Fees</option> 
+												<option value="Registration Fees">Registration Fees</option> 
+												<option value="Tution Fees">Tution Fees</option>
+												<option value="Exam Fees">Exam Fees</option>												<option value="Re Appear Examination">Re Appear Examination</option>
+												<option value="Migration Fees">Migration Fees</option>
+												<option value="Convocation Fees">Convocation Fees</option>
+												<option value="Degree Fees">Degree Fees</option>
+												<option value="TC Fees">TC Fees</option>
+												<option value="Other">Other</option>
+											</select>
+											<label style="display:none;" id="pay_for-error" class="error" for="pay_for">Please select payment reason</label>
+										</div>
+									</div>
+									
+								
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Date of Payment <span class="req">*</span></label>
+											<input type="text" name="date_of_payment" id="date_of_payment" class="form-control datepicker" placeholder="DD-MM-YY">
+										</div>
+									</div>
+									
+								
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Amount <span class="req">*</span></label>
+											<input autocomplete="off" type="text" name="amount" id="amount" class="form-control number_only" placeholder="Please enter amount" value="">
+											<div class="error" id="mobile_error"></div>
+										</div>
+									</div>
+									
+								
+							<div class="col-lg-4 col-md-4">
+								<div class="form-group">
+									<label>Payment Mode <span class="req">*</span></label>
+									<select name="payment_mode" id="payment_mode" class="form-control select2_single">
+										<option value="">Select Mode</option>
+										<option value="Cash">Cash</option>
+										<option value="IMPS">IMPS</option>
+										<option value="NEFT">NEFT</option>
+										<option value="RTGS">RTGS</option>
+										<option value="UPI Payments">UPI Payments</option>
+									</select>
+									<label style="display:none;" id="payment_mode-error" class="error" for="payment_mode">Please select payment mode</label>
+								</div>
+							</div>
+								
+							<div class="col-lg-4 col-md-4">
+								<div class="form-group">
+									<label>Transaction ID <span class="req">*</span></label>
+									<input autocomplete="off" type="text" name="transaction_id" id="transaction_id" class="form-control" placeholder="Transaction ID" value="">
+								</div>
+							</div>
+									
+									
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Collected By <span class="req">*</span></label>
+											<input autocomplete="off" type="text" name="collected_by" id="collected_by" class="form-control" placeholder="Collected by" value="">
+											<div class="error" id="mobile_error"></div>
+										</div>
+									</div>
+									
+								
+							<div class="col-lg-4 col-md-4">
+										<div class="form-group">
+											<label>Address of Student <span class="req">*</span></label>
+											<textarea autocomplete="off" type="text" name="address" id="address" class="form-control" placeholder="Please enter address"></textarea>
+										</div>
+									</div>
+									<div class="col-md-12">
+								 
+										<div class="row">
+										<div class="clearboth" style="margin-bottom:10px"></div>
+											<div class="col-md-12 edu">
+												<div class="form-group">
+													<label></label>
+													<button type="submit" class="default-btn" name="register" id="register">Register</button>
+													<div class="pull-right">
+														
+													</div>
+												</div>
+											</div>	
+										</div>
+									</div>
+									     
+									<div class="clearfix"></div>
+									<div class="col-md-12"></div><br>
+								</div>
+						 
+						
+							
+						</form>
+						
+						<?php }else{?>
+						<div class="col-md-4 col-md-offset-4">
+							<div class="admission_div">
+								<form method="post" name="password_form" id="password_form" enctype="multipart/form-data">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="common_details">
+												<div class="col-md-12">
+													<h3>Password Verification</h3>
+													<small>Please provide your password to activate form</small>
+												</div>
+												<div class="clearfix"></div>
+											</div>
+										</div> 
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label>Password<span class="req">*</span></label>
+													<input type="text" name="password" id="password" class="form-control" placeholder="Enter your password">
+												</div>
+											</div>
+											<div class="clearboth" style="margin-bottom:10px"></div>
+											<div class="col-md-12 edu">
+												<div class="form-group">
+													<label></label>
+													<button type="submit" class="default-btn" name="verify_btuutn" id="verify_btuutn" value="Verify Now">Verify Now</button>
+													<div class="pull-right"></div>
+												</div>
+											</div>											
+										</div>											
+									</div>  
+									<div class="row">
+										
+									</div> 
+								</form>
+							</div>
+							</div>
+						<?php }?> 
+					<div class="clearfix"></div> 
+					</div>
+			</div>
+			</div>
+			</div>
+		</section>
+ 
+				 
+ 
+
+<?php include("footer.php");?>
+
+<script> 
+
+$("#course").change(function(){    
+	$.ajax({
+		type: "POST",
+		url: "<?=base_url();?>web/Web_controller/get_course_stream_by_name",
+		data:{'course':$("#course").val()},
+		success: function(data){
+			$("#stream").empty();
+			$('#stream').append('<option value="">Select Stream</option>');
+			var opts = $.parseJSON(data);
+			$.each(opts, function(i, d) {
+			    $('#stream').append('<option value="' + d.stream_name + '">' + d.stream_name + '</option>');
+			  // var selectedStream = ($('#pre_stream').val() == d.id) ? 'selected="selected"' : '';
+				//$('#stream').append('<option value="' + d.id + '" ' + selectedStream + '>' + d.student_stream_name + '</option>');
+			});
+			$('#stream').trigger('change');
+		},
+		 error: function(jqXHR, textStatus, errorThrown) {
+		   console.log(textStatus, errorThrown);
+		}
+	});	
+});
+$( function() {
+    $( ".datepicker" ).datepicker({
+		dateFormat:"dd-mm-yy",
+		changeMonth:true,
+		changeYear:true,
+		maxDate: "0Y",
+		minDate: "-2Y",
+		
+	});
+} );
+
+jQuery.validator.addMethod("noHTMLtags", function(value, element){
+	if(this.optional(element) || /<\/?[^>]+(>|$)/g.test(value)){
+		if(value == ""){
+			return true;
+		}else{
+			return false;
+		}
+	} else {
+		return true;
+	}
+}, "HTML tags are Not allowed."); 
+
+
+jQuery.validator.addMethod("validate_email", function(value, element) {
+	if (/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/.test(value)) {
+		return true;
+	}else {
+		return false;
+	}
+}, "Please enter a valid Email.");	
+
+$("#password_form").validate({
+	rules: {
+		password: {required:true,noHTMLtags:true}, 
+	},
+	messages: {
+		password: {required:"Please enter password",noHTMLtags:"HTML tags not allowed!"},				
+	}, 
+	submitHandler: function(form){
+		form.submit();
+	} 
+});
+$("#payment_form").validate({
+	ignore: ":hidden:not(select)",
+	rules: {
+		name: {required:true,noHTMLtags:true}, 
+		email: {required:true,email:true,noHTMLtags:true}, 
+		mobile_number: {required:true,number:true,minlength:10,maxlength:10,noHTMLtags:true}, 
+		course: {required:true,noHTMLtags:true}, 
+		year_sem: {required:true,noHTMLtags:true}, 
+		pay_for: {required:true,noHTMLtags:true}, 
+		date_of_payment: {required:true,noHTMLtags:true}, 
+		amount: {required:true,number:true,noHTMLtags:true}, 
+		payment_mode: {required:true,noHTMLtags:true}, 
+		transaction_id: {required:true,noHTMLtags:true}, 
+		collected_by: {required:true,noHTMLtags:true}, 
+		address: {required:true,noHTMLtags:true}, 
+	},
+	messages: {
+		name: {required:"Please enter name",noHTMLtags:"HTML tags not allowed!"},	 
+		email: {required:"Please enter email",email:"Please enter valid email",noHTMLtags:"Please enter valid value"}, 
+		mobile_number: {required:"Please enter mobile number",number:"Please enter valid number",minlength:"Please enter 10 digit mobile number",maxlength:"Please enter 10 digit mobile number",noHTMLtags:true}, 
+		course: {required:"Please select course name",noHTMLtags:"Please enter name"}, 
+		year_sem: {required:"Please select year/sem",noHTMLtags:"Please enter name"}, 
+		pay_for: {required:"Please select payment reason",noHTMLtags:"Please enter name"}, 
+		date_of_payment: {required:"Please select payment date",noHTMLtags:"Please enter valid value"}, 
+		amount: {required:"Please enter amount",number:"Please enter only number",noHTMLtags:"Please enter valid value"}, 
+		payment_mode: {required:"Please select payment mode",noHTMLtags:"Please enter valid value"}, 
+		transaction_id: {required:"Please enter transaction id",noHTMLtags:"Please enter valid value"}, 
+		collected_by: {required:"Please enter collected by",noHTMLtags:"Please enter valid value"}, 
+		address: {required:"Please enter address",noHTMLtags:"Please enter valid value"}, 
+	}, 
+	submitHandler: function(form){
+		form.submit();
+	} 
+});
+
+$("#course").change(function() {
+    $("#course").valid();
+});
+
+$("#year_sem").change(function() {
+    $("#year_sem").valid();
+});
+
+$("#pay_for").change(function() {
+    $("#pay_for").valid();
+});
+
+$("#payment_mode").change(function() {
+    $("#payment_mode").valid();
+});
+
+
+$("#registration_number").keyup(function(){  
+	$.ajax({
+		type: "POST",
+		url: "<?=base_url();?>web/Web_controller/get_student_data",
+		data:{'registration_number':$("#registration_number").val()},
+		success: function(data){
+			var opts = $.parseJSON(data);
+			 console.log(opts);
+			 if(opts){
+				$("#name").val(opts['student_name']);
+				$("#mobile_number").val(opts['mobile']);
+				$("#email").val(opts['email']);
+				$("#address").val(opts['address']); 
+			 }else{
+				$("#name").val('');
+				$("#mobile_number").val('');
+				$("#email").val('');
+				$("#address").val(''); 
+			 }
+			 
+		},
+		 error: function(jqXHR, textStatus, errorThrown) {
+		   console.log(textStatus, errorThrown);
+		}
+	});	
+});
+ 
+</script>
+
+<script>
+$(document).ready(function() {
+  
+    $('#payment_mode').on('change', function() {
+        var selectedMode = $(this).val();
+        if (selectedMode === 'Cash') {
+            $('#transaction_id').closest('.form-group').hide();
+            $('#transaction_id').removeAttr('required');
+        } else {
+            $('#transaction_id').closest('.form-group').show();
+            $('#transaction_id').attr('required', 'required');
+        }
+    });
+});
+</script>

@@ -1,0 +1,1 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');class Alumin_api extends CI_Controller { 	public function __construct(){		parent::__construct();		$this->load->model('api/Alumni_model');	}	public function get_alumni_login(){		$this->Alumni_model->get_alumni_login();	} 	}

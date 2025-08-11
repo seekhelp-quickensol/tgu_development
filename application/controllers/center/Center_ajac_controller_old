@@ -1,0 +1,461 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+class Center_ajax_controller extends CI_Controller { 
+	public function __construct(){
+		parent::__construct();
+		$this->activate = '<span class="btn btn-success btn-sm" title="Activated" data-toggle="tooltip"><i class="fa fa-check-circle"></i></span>';
+		$this->deactivate = '<span class="btn btn-danger btn-sm" title="Deactivated" data-toggle="tooltip"><i class="fa fa-times-circle"></i></span>';
+	}
+	public function get_center_unique_contact_number(){
+		$this->Center_details_model->get_center_unique_contact_number();
+	}
+	public function get_center_unique_email(){
+		$this->Center_details_model->get_center_unique_email();
+	}
+	public function get_old_password(){
+		$this->Center_details_model->get_old_password();
+	}
+	public function get_all_pending_admission_list(){
+		$draw = intval($this->input->post("draw"));
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+		$search = $search['value'];
+		$col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+		if($dir != "asc" && $dir != "desc"){
+            $dir = "desc";
+        }		
+		$valid_columns = $this->db->list_fields('tbl_student');
+		if(!isset($valid_columns[$col])){
+            $order = null;
+        }else{
+            $order = $valid_columns[$col];
+        }
+        if($order !=null){
+           // $this->db->order_by('tbl_topic.id'.$order,$dir);
+        }
+		
+		if(!empty($search)){
+			$x = 0;
+           /*foreach($valid_columns as $sterm){
+                if($x==0){
+                    $this->db->like("tbl_designation.".$sterm,$search);
+                }else{
+                    $this->db->or_like("tbl_designation.".$sterm,$search);
+                }
+                $x++;
+            }*/
+			
+        }
+		
+		$document = $this->Center_details_model->get_all_new_admission_pending_ajax($length,$start,$search);
+        $data = array();
+        if(!empty($document)){
+			$zz=1;
+			foreach($document as $print){
+				$sub_array = array();
+				$sub_array[] = $zz++;
+				$sub_array[] = $print->id;
+				$sub_array[] = $print->center_name;
+				$sub_array[] = $print->student_name;
+				$sub_array[] = $print->father_name;
+				$sub_array[] = $print->mother_name;
+				$sub_array[] = $print->mobile;
+				$sub_array[] = $print->email;
+				$sub_array[] = $print->session_name;
+				$sub_array[] = $print->faculty_name;
+				$sub_array[] = $print->course_type_name;
+				$sub_array[] = $print->course_name;
+				$sub_array[] = $print->stream_name;
+				if($print->course_mode == "1"){
+					$sub_array[] = "Year";
+					$mode = "Year";
+				}else{
+					$sub_array[] = "Semester";
+					$mode = "Semester";
+				}
+				if($print->admission_type == "0"){
+					$sub_array[] = "Regular Entry";
+				}else if($print->admission_type == "1"){
+					$sub_array[] = "Lateral Entry";
+				}else{
+					$sub_array[] = "Credit Transfer";
+				}
+				$sub_array[] = $print->year_sem." ".$mode;
+				
+				$sub_array[] = "<a data-toggle='tooltip' title='Upload/View Qualifications Document' href=" . base_url() . "center_student_qualification/" . base64_encode($print->id) . " target='_blank' class='btn btn-success btn-sm'><i class='mdi mdi mdi-eye'></i></a>
+				";
+				
+				$data[] = $sub_array; 
+			}
+		}
+		$TotalProducts = $this->Center_details_model->get_all_new_admission_pending_count($search);
+		$output = array(
+            "draw" 				=> $draw,
+            "recordsTotal" 		=> $TotalProducts,
+            "recordsFiltered" 	=> $TotalProducts,
+            "data" 				=> $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+	public function get_all_active_admission_list(){
+		$draw = intval($this->input->post("draw"));
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+		$search = $search['value'];
+		$col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+		if($dir != "asc" && $dir != "desc"){
+            $dir = "desc";
+        }		
+		$valid_columns = $this->db->list_fields('tbl_student');
+		if(!isset($valid_columns[$col])){
+            $order = null;
+        }else{
+            $order = $valid_columns[$col];
+        }
+        if($order !=null){
+           // $this->db->order_by('tbl_topic.id'.$order,$dir);
+        }
+		
+		if(!empty($search)){
+			$x = 0;
+           /*foreach($valid_columns as $sterm){
+                if($x==0){
+                    $this->db->like("tbl_designation.".$sterm,$search);
+                }else{
+                    $this->db->or_like("tbl_designation.".$sterm,$search);
+                }
+                $x++;
+            }*/
+			
+        }
+		
+		$document = $this->Center_details_model->get_all_admission_ajax($length,$start,$search);
+        $data = array();
+        if(!empty($document)){
+			$zz=1;
+			foreach($document as $print){
+				$sub_array = array();
+				$sub_array[] = $zz++;
+				$sub_array[] = $print->id;
+				$sub_array[] = $print->enrollment_number;
+				$sub_array[] = date("d-m-Y",strtotime($print->enrollment_date));
+				if($print->admission_status == "1"){
+					$sub_array[] = "Active";
+				}else if($print->admission_status == "2"){
+					$sub_array[] = "Cancel";
+				}else if($print->admission_status == "3"){
+					$sub_array[] = "Hold";
+				}else if($print->admission_status == "4"){
+					$sub_array[] = "Passout";
+				}else{
+					$sub_array[] = "Pending";
+				}
+				$sub_array[] = $print->center_name;
+				$sub_array[] = $print->student_name;
+				$sub_array[] = $print->father_name;
+				$sub_array[] = $print->mother_name;
+				$sub_array[] = $print->mobile;
+				$sub_array[] = $print->email;
+				$sub_array[] = $print->session_name;
+				$sub_array[] = $print->faculty_name;
+				$sub_array[] = $print->course_type_name;
+				$sub_array[] = $print->course_name;
+				$sub_array[] = $print->stream_name;
+				if($print->course_mode == "1"){
+					$sub_array[] = "Year";
+					$mode = "Year";
+				}else if($print->course_mode == "2"){
+					$sub_array[] = "Semester";
+					$mode = "Semester";
+				}else if($print->course_mode == "4"){
+					$sub_array[] = "Month";
+					$mode = "Month";
+				}
+				if($print->admission_type == "0"){
+					$sub_array[] = "Regular Entry";
+				}else if($print->admission_type == "1"){
+					$sub_array[] = "Lateral Entry";
+				}else{
+					$sub_array[] = "Credit Transfer";
+				}
+
+				if($print->study_mode == "1"){
+					$sub_array[] = "Regular";
+				}else if($print->study_mode == "2"){
+					$sub_array[] = "Online";
+				}else{
+					$sub_array[] = "Part-Time";
+				}
+
+
+				$sub_array[] = $print->year_sem." ".$mode;
+				
+				$sub_array[] = "<a data-toggle='tooltip' title='Print Admission Form' href=" . base_url() . "center_print_admission_form/" . base64_encode($print->id) . " target='_blank' class='btn btn-success btn-sm'><i class='mdi mdi mdi-printer'></i></a>
+				<a data-toggle='tooltip' title='Upload/View Qualifications Document' href=" . base_url() . "center_student_qualification/" . base64_encode($print->id) . " target='_blank' class='btn btn-success btn-sm'><i class='mdi mdi mdi-eye'></i></a>
+				<a data-toggle='tooltip' title='Print ID Card' href=" . base_url() . "center__print_id/" . base64_encode($print->id) . " target='_blank' class='btn btn-success btn-sm'><i class='mdi mdi mdi-printer'></i></a>
+				<a data-toggle='tooltip' title='Re-registration' href=" . base_url() . "center_student_reregistration/" . base64_encode($print->id) . " target='_blank' class='btn btn-success btn-sm'>Re-reg.</i></a>
+				";
+				$data[] = $sub_array; 
+			}
+		}
+		$TotalProducts = $this->Center_details_model->get_all_admission_count($search);
+		$output = array(
+            "draw" 				=> $draw,
+            "recordsTotal" 		=> $TotalProducts,
+            "recordsFiltered" 	=> $TotalProducts,
+            "data" 				=> $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+	public function get_course_stream_fees(){
+		$this->Center_details_model->get_course_stream_fees();
+	}
+	public function get_all_added_subject(){
+		$draw = intval($this->input->post("draw"));
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+		$search = $search['value'];
+		$col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+		if($dir != "asc" && $dir != "desc"){
+            $dir = "desc";
+        }		
+		$valid_columns = $this->db->list_fields('tbl_subject');
+		if(!isset($valid_columns[$col])){
+            $order = null;
+        }else{
+            $order = $valid_columns[$col];
+        }
+        if($order !=null){
+           // $this->db->order_by('tbl_topic.id'.$order,$dir);
+        }
+		
+		if(!empty($search)){
+			$x = 0;
+           /*foreach($valid_columns as $sterm){
+                if($x==0){
+                    $this->db->like("tbl_designation.".$sterm,$search);
+                }else{
+                    $this->db->or_like("tbl_designation.".$sterm,$search);
+                }
+                $x++;
+            }*/
+			
+        }
+		
+		$document = $this->Center_details_model->get_all_added_subject($length,$start,$search);
+        $data = array();
+        if(!empty($document)){
+			$zz=1;
+			foreach($document as $print){
+				$sub_array = array();
+				$sub_array[] = $zz++;
+				
+				$sub_array[] = $print->subject_code;
+				$sub_array[] = $print->subject_name;
+				$sub_array[] = $print->course_name;
+				$sub_array[] = $print->stream_name;
+				if($print->subject_type == "1"){
+					$sub_array[] = "Practical";
+				}else{
+					$sub_array[] = "Theory";
+				}
+				
+				if($print->mode == "1"){
+					$sub_array[] = "Year";
+					$mode = "Year";
+				}else{
+					$sub_array[] = "Semester";
+					$mode = "Semester";
+				}
+				$sub_array[] = $print->year_sem;
+				if($print->status == "1"){
+					$sub_array[] = "Approved";
+				}else{
+					$sub_array[] = "Pending";
+				}
+				$data[] = $sub_array; 
+			}
+		}
+		$TotalProducts = $this->Center_details_model->get_all_added_subject_count($search);
+		$output = array(
+            "draw" 				=> $draw,
+            "recordsTotal" 		=> $TotalProducts,
+            "recordsFiltered" 	=> $TotalProducts,
+            "data" 				=> $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+	public function get_course_stream_ajax(){
+		$this->Center_details_model->get_course_stream_ajax();
+	}
+	public function get_active_hall_ticket_list(){
+		$draw = intval($this->input->post("draw"));
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+		$search = $search['value'];
+		$col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+		if($dir != "asc" && $dir != "desc"){
+            $dir = "desc";
+        }		
+		$valid_columns = $this->db->list_fields('tbl_subject');
+		if(!isset($valid_columns[$col])){
+            $order = null;
+        }else{
+            $order = $valid_columns[$col];
+        }
+        if($order !=null){
+           // $this->db->order_by('tbl_topic.id'.$order,$dir);
+        }
+		
+		if(!empty($search)){
+			$x = 0;
+        }
+		
+		$document = $this->Center_details_model->get_active_hall_ticket_list($length,$start,$search);
+        $data = array();
+        if(!empty($document)){
+			$zz=1;
+			foreach($document as $print){
+				$sub_array = array();
+				$sub_array[] = $zz++;
+				
+				$sub_array[] = $print->enrollment_number;
+				$sub_array[] = $print->student_name;
+				$sub_array[] = $print->father_name;
+				$sub_array[] = $print->mother_name;
+				$sub_array[] = date("d-m-Y",strtotime($print->date_of_birth));
+				$sub_array[] = $print->mobile;
+				$sub_array[] = $print->email;
+				$sub_array[] = $print->session_name;
+				$sub_array[] = $print->course_name;
+				$sub_array[] = $print->stream_name;
+				if($print->exam_type == "0"){
+					$sub_array[] = "Main Exam";
+				}else{
+					$sub_array[] = "Re-Exam";
+				}
+				$sub_array[] = "<a data-toggle='tooltip' title='Download Hall Ticket' href=" . base_url() . "hallticket/" .$print->enrollment_number. " target='_blank' class='btn btn-success btn-sm'><i class='mdi mdi mdi-eye'></i></a>";
+				$data[] = $sub_array; 
+			}
+		}
+		$TotalProducts = $this->Center_details_model->get_active_hall_ticket_list_count($search);
+		$output = array(
+            "draw" 				=> $draw,
+            "recordsTotal" 		=> $TotalProducts,
+            "recordsFiltered" 	=> $TotalProducts,
+            "data" 				=> $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+	public function get_consolidate_center_list(){
+		$draw = intval($this->input->post("draw"));
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+		$search = $search['value'];
+		$col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+		if($dir != "asc" && $dir != "desc"){
+            $dir = "desc";
+        }		
+		$document = $this->Center_details_model->get_consolidate_center_list($length,$start,$search);
+        $data = array();
+        if(!empty($document)){
+			$zz=1;
+			foreach($document as $print){
+				$sub_array = array();
+				if($print->issue_status == "1"){
+					$issue = "Issued";
+				}else{
+					$issue = "Pending";
+				}
+				if($print->payment_status == "1"){
+					$payment = "Success";
+				}else{
+					$payment = "Failed";
+				}
+				$sub_array[] = $zz++;
+				$sub_array[] = $print->enrollment;
+				$sub_array[] = $print->student_name;
+				$sub_array[] = $issue;
+				$sub_array[] = $payment;
+				$sub_array[] = $print->payment_id;
+				$sub_array[] = date("d/m/Y",strtotime($print->created_on));
+				$sub_array[] = $print->course_name;
+				$sub_array[] = $print->stream_name;
+				if($print->issue_status == "1"){
+					$sub_array[] = "<a type='button' title='Marksheet Print' data-toggle='tooltip' href=" . base_url() . "consolidate-marksheet-print-center/".base64_encode($print->id)."  class='btn btn-success btn-sm'><i class='mdi mdi-printer'></i></a>";
+				}else{
+					
+				}
+					if($print->status == "1"){
+					$sub_array[] = " "; 
+								/*<a type='button' title='Marksheet Print' data-toggle='tooltip' href=" . base_url() . "consolidate-marksheet-print-center/".$print->id."  class='btn btn-success btn-sm'><i class='mdi mdi-printer'></i></a>
+								<a type='button' title='Edit' data-toggle='tooltip' href=" . base_url() . "edit-consolidate-marksheet-center/".$print->id."  class='btn btn-success btn-sm'><i class='mdi mdi-table-edit'></i></a>";*/
+				}else{
+					$sub_array[] = "";
+								/*<a type='button' title='Marksheet Print' data-toggle='tooltip' href=" . base_url() . "consolidate-marksheet-print-center/".$print->id."  class='btn btn-success btn-sm'><i class='mdi mdi-printer'></i></a>
+								<a type='button' title='Edit' data-toggle='tooltip' href=" . base_url() . "edit-consolidate-marksheet-center/".$print->id."  class='btn btn-success btn-sm'><i class='mdi mdi-table-edit'></i></a>";*/
+				}
+
+				$data[] = $sub_array; 
+			}
+		}
+		$TotalProducts = $this->Center_details_model->get_consolidate_center_list_count($search);
+		
+        $output = array(
+            "draw" 				=> $draw,
+            "recordsTotal" 		=> $TotalProducts,
+            "recordsFiltered" 	=> $TotalProducts,
+            "data" 				=> $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+}

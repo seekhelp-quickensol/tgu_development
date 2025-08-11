@@ -1,0 +1,2 @@
+[01-Mar-2023 23:51:57 Asia/Kolkata] PHP Fatal error:  Cannot redeclare User_controller::transfer_certificate() in /home/stagingl/public_html/btu.staginglink.org/new_student/application/controllers/front/User_controller.php on line 233
+[02-Jan-2024 19:09:39 Asia/Kolkata] PHP Fatal error:  Cannot redeclare Welcome::accept_transfer_terms() in /home/tguacin/public_html/testing_package/student-corner/application/controllers/Welcome.php on line 83

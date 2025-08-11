@@ -1,0 +1,365 @@
+ @import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&display=swap";
+        @import "https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap";
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #FAFAFA;
+            font-family: 'Abel', sans-serif;
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            color: #444444;
+            font-size: 13px;
+        } 
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        
+        .page {
+            width: 250mm;
+            min-height: 350mm;
+            padding: 0mm;
+            margin: 0mm auto;
+            border-radius: 5px;
+            background: white;
+            
+			position: relative;
+        }
+        
+        .subpage {
+           
+			position:relative;
+            min-height: 353.5mm;
+            /*border: 2px solid transparent;*/
+			background-size: cover;
+            background-position: center;
+			/*border: none;*/
+			/*border-left: 6px solid #fff;
+			border-right: 7px solid #fff;*/
+        }
+        
+        .print {
+            background: #ed1765;
+            color: #fff;
+            width: 100px;
+            font-weight: 500;
+            border: none;
+            outline: navajowhite;
+            padding: 10px;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 14px;
+        }
+        
+        .print-title {
+            text-align: center;
+            font-weight: 600;
+            color: #262626;
+            font-size: 32px;
+        }
+        
+        .right-bar-code p {
+            color: #000;
+            font-size: 14px;
+            text-align: center;
+            padding: 0 0 0 90px;
+            margin-bottom: 0;
+			margin-top: 0;
+			font-weight: 600;
+        }
+        
+        .scan-img {
+            float: left;
+        }
+        
+        .right-bar-code {
+            float: right;
+        }
+        
+        .markshit-header {
+            text-align: center;
+        }
+        
+        .markshit-header {
+            text-align: center;
+            padding-top:90px;
+			padding-right: 15px;
+        }
+        
+        .markshit-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            color: #b73710;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            position: relative;
+            margin-top: 15px;
+        }
+        
+        .statement::before {
+            position: absolute;
+            top: 0%;
+            left: 30px;
+            content: " ";
+            width: 94%;
+            height: 2px;
+            background: #a60000;
+            background-image: -webkit-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -moz-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -ms-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -o-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+        }
+        
+        .statement::after {
+            position: absolute;
+            top: 100%;
+            left: 30px;
+            content: " ";
+            width: 94%;
+            height: 2px;
+            background: #a60000;
+            background-image: -webkit-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -moz-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -ms-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+            background-image: -o-linear-gradient(left, #d53a9d, #743ad5, #d53a9d);
+        }
+        
+        .markshit-header h3 {
+            color: #05549e;
+            text-align: center;
+            font-size: 24px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            padding-left: 28px;
+            padding-right: 28px;
+        }
+        
+        .students-info.student-info-left {
+            float: left;
+            width: 50%;
+            padding-left: 30px;
+            margin-bottom: 10px;
+        }
+        
+		
+        .students-info.student-info-right {
+            float: left;
+            width: 50%;
+            padding-left: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .students-info p {
+            font-size: 13px;
+            font-weight: 500;
+            color: #000;
+            line-height: 1;
+            margin-top: 5px;
+            margin-bottom: 9px;
+        }
+        
+        .students-exam-details th {
+            color: #d53a9d;
+        }
+        .students-exam-details .heading_table {
+			height: 47px;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        .students-exam-details th,
+        td {
+            font-size:10px;
+            font-weight: 500;
+            border-collapse: collapse !important;
+            /*background: #ffffffa3 !important;*/
+            border-color: #8a6eaf;
+            border: 1px solid #8a6eaf;
+            border-collapse: collapse;
+            padding:2px 3px;
+        }
+        
+        tbody tr {
+            border-image-source: linear-gradient(to left, #743ad5, #d53a9d) !important;
+            border-collapse: collapse !important;
+        }
+        
+        .student-marks-total {
+            text-align: center;
+        }
+        
+        .remark-info {
+            font-size: 12px;
+			color: #000;
+			font-weight: 500;
+        }
+        .result-date span{
+            font-size: 12px;
+			color: #000;
+			font-weight: 500;
+        }
+        
+        .result-date {
+            font-size: 15px;
+            color: #000000ba;
+        }
+        
+        .result-date span {
+            display: inline-block;
+        }
+        
+        .result-date p {
+            display: inline;
+            padding: 0 5px;
+        }
+        .first-row{
+			display: block;
+			height: 80px;
+			padding: 35px 15px 0px;
+		}
+ .left-remark {
+    float: left;
+    width: 32.5%;
+    position: relative;
+    top: 80px;
+}
+        
+		.barcode-middle {
+			
+			  float: left;
+            width:32.5%;
+		}
+		
+		.bottom-sign-section {
+			/*height: 90px;*/
+			position: absolute;
+			width: 20.4cm;
+			bottom: 95px;
+			width: 100%;
+			padding:0px 15px;
+		}
+.barcode-img {
+    max-width: 85%;
+    height: 33px;
+    position: relative;
+    top: 77px;
+}
+        .right-controller {
+            float: left;
+            width: 32.5%;
+		
+			position:relative;
+			top:46px;
+        }
+        
+        .marks-center {
+            text-align: center;
+        }
+        
+        .students-exam-details {
+            margin-bottom: 15px;
+			width: 100%;	
+			margin: 0px auto;
+        }
+		
+		.bottom_strip{
+			position: relative;
+			bottom: 0px;
+			display: none;
+
+		
+		}
+		.bottom_strip img{
+			width: 100%;
+			height: 35px;
+			position:absolute;
+bottom:0px;		}
+		.scan-img img{
+			width: 75%;
+		}
+		.total_marks{
+		    width: 92%;
+            margin: 15px auto;
+		}
+        
+    
+		.credit_note {
+		      position: absolute;
+				padding: 0px 15px;
+				margin: 2px 0px;
+		}
+		.col-lg-6{
+			width: 50%;
+			float:left;
+		}
+		.row {
+			display: table;
+			width: 97%;
+			clear: both;
+			margin: 0px auto;
+		}
+		.rotate {
+    -ms-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+
+ 
+
+   /* -ms-transform-origin: left top 0;
+    -moz-transform-origin: left top 0;
+    -webkit-transform-origin: center top 0; 
+ transform-origin: center top 0; */
+}
+.month-and-year {
+	font-size: 12px;
+	margin:2px 15px;
+	font-weight: 500;
+}
+.month-and-year  span {font-weight:600;}
+        @media print {
+            html,
+            body {
+				width: 250mm;
+            min-height: 350mm;
+			margin: 0px;
+			padding:0px;
+            }
+            .print {
+                display: none;
+            }
+			
+			.col-lg-6{
+				width: 50%;
+				float:left;
+			}
+			.row {
+				display: table;
+				width: 97%;
+				clear: both;
+				margin: 0px auto;
+			}
+			
+        }
+		
+		
+		/*@page {
+            size: 9.78in 13.77n;
+            margin: 0;
+        }*/
+		/*@media all{
+			.rotate{
+				writing-mode: vertical-rl;
+				transform: rotate(-90deg);
+				white-space: nowrap;
+				vertical-align: middle;
+			}
+		}*/
+		

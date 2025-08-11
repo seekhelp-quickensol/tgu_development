@@ -1,0 +1,458 @@
+<?php include('header.php');?>
+
+<style type="text/css">
+
+	table tr td{
+
+		padding-top: 10px;
+
+		padding-right: 0px;
+
+		color: black;
+
+		font:bold;
+
+		font-weight: 600
+
+	}
+
+</style>
+
+    <div class="container-fluid page-body-wrapper">
+
+      <div class="main-panel">
+
+        <div class="content-wrapper">
+
+          <div class="row">
+
+            <div class="col-md-12 grid-margin stretch-card">
+
+              <div class="card">
+
+                <div class="card-body">
+
+                  <h4 class="card-title">Transfer Certificate</h4>
+
+                  <p class="card-description">
+
+                    
+
+                  </p>
+
+
+
+					<?php if(empty($transfer)): ?>
+
+					<?php if($student_profile->transfer_cert =="1"){?>
+Model Village Naharlagun, Itanagar, Arunachal Pradesh - 791110
+						<a href="<?=base_url("pay_transfer_certificate_fees");?>" class="btn btn-success">Pay Transfer Certificate fees</a>
+
+						<?php }else{?>
+
+						<a href="<?=base_url("accept_transfer_undertaking");?>" class="btn btn-success">I Accpet Terms & Conditions</a> 
+
+						<?php }?>
+
+						<?php else: ?>
+
+
+
+							<?php if($transfer->status == '0'): ?>
+
+								<button  class="btn btn-primary">Waiting for UNIVERSITY confirmation .....</button>
+
+							<?php else: ?>
+
+
+
+
+
+
+
+							<div class="container" id="container">
+
+      <div class="main-panel">
+
+        <div class="content-wrapper" style="background: #fff;position: relative;">
+
+			<div class="row" id="letter_section">
+
+				<div class="col-md-10">
+
+					<div style="background-image:url(<?=base_url();?>images/marksheet-bg-with-logo.jpeg);background-position: center;background-size: cover;padding: 327px 25px;border: 2px solid #e8612b;">
+
+
+
+					
+
+
+
+
+
+						
+
+						<p style="text-align: center;margin-top: 50px "><b>University Campus: </b>Canchipur, South View, Imphal West, Arunachal Pradesh, Pincode - 795003</p>
+
+						
+
+						
+
+
+
+						<div class="row" style="margin-top: 20px" >
+
+							<div class="col-lg-12 col-md-12">
+
+								<a href="javascript:void(0)"><h3 style="text-align: center;font-weight: 900;font-size: x-large;color: black;">ORIGINAL </h3></a>
+
+								<a href="javascript:void(0)"><h3 style="text-align: center;font-size: x-large;font-weight: 900;color: black;">TRANSFER CERTIFICATE </h3></a>
+
+
+
+							</div>
+
+						</div>
+
+						<br>
+
+						<div class="row" style="padding-right: 20px;padding-left: 20px">
+
+							
+
+							<!-- <div class="col-lg-12 col-md-12">
+
+								<p style="font-size: 15px;color: #000;font-weight: 700;margin-top: 10px;margin-bottom: 10px;">Enrollment No.: <?=$migration->enrollment_number;?></p>
+
+							</div> -->
+
+							<br>
+
+							<div class="col-lg-12 col-md-12">
+
+							
+
+								<br>
+
+
+
+								<table style="margin-left: 50px">
+
+									<tr>
+
+										<td>S.NO. <?=$transfer->id;?></td>
+
+										<td></td>
+
+										<td></td>
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Name of the Student</td>
+
+										<td></td>
+
+										
+
+										<td><?=$transfer->student_name;?></td>
+
+
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Name of the Father</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->father_name;?></td>	
+
+
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Enrollment No.</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->enrollment_number;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Date of Birth</td>
+
+										<td></td>
+
+
+
+										<td><span>AS PER SECONDARY SCHOOL <br> CERTIFICATE</span></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Gender(Male/Female)</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->gender;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Nationality & Religion</td>
+
+										<td></td>
+
+
+
+										<td><span>AS PER SECONDARY SCHOOL <br> CERTIFICATE</span></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Course of Study</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->course_name;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Discipline</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->stream_name;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Medium of Instruction</td>
+
+										<td></td>
+
+
+
+										<td><span>ENGLISH</span></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Reason of Transfer</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->reason_of_transfer;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>Character & Conduct</td>
+
+										<td></td>
+
+
+
+										<td><?=$transfer->character_conduct;?></td>
+
+
+
+									</tr>
+
+
+
+									<tr>
+
+										<td>TC Issue Date</td>
+
+										<td></td>
+
+
+
+										<td><?=date("Y-m-d");?></td>
+
+
+
+									</tr>
+
+									<tr class="mt-3">
+
+										<td>Imphal <br>
+
+											Date : <?=date("Y-m-d")?>
+
+										</td>
+
+										<td>	
+
+											
+
+												<img style="width: 400px;" src="<?=base_url();?>images/spacial_officer.png">
+
+											
+
+											
+
+										</td>
+
+										
+
+									</tr>
+
+								</table>
+
+								
+
+
+
+							</div>
+
+							
+
+							
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<div style="position: absolute;top: 25px;right: 85px;">
+
+				<button type="button" class="btn btn-primary" id="print_btn">Print &nbsp <i class="fas fa-print"></i></button>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	</div>
+
+
+
+
+
+
+
+							<?php endif; ?>
+
+						<?php endif; ?>
+
+
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      
+
+<?php include('footer.php');?>
+
+
+
+<script type="text/javascript">
+
+	
+
+	$("#print_btn").click(()=>{
+
+		$("#print_btn").hide();
+
+		let contain = document.getElementById("container").innerHTML;
+
+		let newWindow = window.open('','',900,600);
+
+		newWindow.document.write(contain);
+
+		newWindow.focus();
+
+		newWindow.print();
+
+		newWindow.close();
+
+		$("#print_btn").show();
+
+
+
+	});
+
+</script>
+

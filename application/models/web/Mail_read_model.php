@@ -1,0 +1,1 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); class Mail_read_model extends CI_Model { 	public function get_read_mail(){		$this->db->where('id',base64_decode($this->uri->segment(2)));		$this->db->where('expiry_date >=',date("Y-m-d"));		$result = $this->db->get('tbl_mail_link');		return $result->row();	} 	} 

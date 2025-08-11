@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Best Courses |THE GLOBAL UNIVERSITY</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="landing_assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="landing_assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="landing_assets/js/bootstrap.bundle.min.js"></script>
+	
+    <link rel="icon" href="https://www.theglobaluniversity.edu.in/favicon.ico">
+	
+	<link rel="shortcut icon" href="https://www.theglobaluniversity.edu.in/images/logo/5946920e9234e40ca915a088283a8e5c.png" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+			
+    font-family: helvetica, sans-serif;
+        }
+		 .thank_you_wrapper{
+      padding: 50px 0;
+  }
+  .thankyou_details i{
+    border: 1px solid #ccc;
+    padding: 40px 30px 15px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 20%) !important;
+    text-align: center;
+   
+    margin: 0 auto;
+  }
+  .thankyou_details{
+    border: 1px solid #ccc;
+    padding: 40px 30px 15px;
+    background-color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    text-align: center;
+    width: 50%;
+    margin: 0 auto;
+    border: 3px solid #008000;
+  }
+  .thankyou_details img{
+      width: 100px;
+      height: 100px;
+      margin:0 auto;
+  }
+  .thankyou_details h2{
+    font-size: 34px;
+    color: #0d0040;
+    font-weight: 900;
+    margin-top: 10px;
+  }
+  .thankyou_details p{
+    font-size: 16px;
+    color: #333;
+    width: 83%;
+    margin: 15px auto 0;
+  }
+  .thankyou_details h3 {
+    font-size: 20px;
+    text-align: center;
+    margin: 15px auto 0 !important;
+    color: #000;
+}
+.cdev {
+    position: relative;
+    height: 100px;
+    width: 100px;
+    margin:30px auto;
+  }
+   
+  .cdev div {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+  }
+   
+  .cdev div span {
+    position: absolute;
+    font-family: Arial;
+    font-size: 22px;
+    line-height: 75px;
+    height: 75px;
+    width: 75px;
+    left: 12.5px;
+    top: 12.5px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: white;
+  }
+   
+  .cdev .background { background-color: #b3cef6; }
+   
+  .cdev .rotate {
+    clip: rect(0 50px 100px 0);
+    background-color: #4b86db;
+  }
+   
+  .cdev .left {
+    clip: rect(0 50px 100px 0);
+    opacity: 1;
+    background-color: #b3cef6;
+  }
+   
+  .cdev .right {
+    clip: rect(0 50px 100px 0);
+    transform: rotate(180deg);
+    opacity: 0;
+    background-color: #4b86db;
+  }
+  
+.chart_details{
+    text-align: center;
+    margin: 0px auto 0px;
+    width: 170px;
+}
+.chart_details a{
+    background: #0d0040;
+    padding: 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 12px;
+    margin: 21px auto 30px 30px;
+    display: inline-block;
+    text-align: center;
+    width: 125px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+    </style>
+    <!-- Global site tag (gtag.js) - Google Ads: 595335465 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-595335465"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'AW-595335465');
+    </script>
+
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg_p1 shadow mob_bg">
+        <div class="container">
+            <a class="navbar-brand" href="<?=base_url()?>"> <img src="<?=$this->Digitalocean_model->get_photo('landing_assets/logo/btu_new.png')?>" class="logo">
+            </a>
+
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content">
+        <div class="hamburger-toggle">
+          <div class="hamburger">
+<img src="landing_assets/images/more.png" width="16" height="16">
+          </div>
+        </div>
+      </button>
+            <div class="collapse navbar-collapse" id="navbar-content">
+                <h1 class="heading_1">BIR TIKENDRAJIT UNIVERSITY<br><span class="heading_inner_text">Complete Learning Management Solution Process</span> </h1>
+
+                <form class="d-flex ms-auto">
+                    <div class="input-group">
+
+                        <a class="hreftext" href="mailto:info@theglobaluniversity.edu.in"> <i class="fa fa-envelope" style="font-size:18px"></i> info@theglobaluniversity.edu.in</a>
+                        <!-- <input class="form-control border-0 mr-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-primary border-0" type="submit">Search</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <section class="thank_you_wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="thankyou_details"> 
+						 <div class="cdev">
+							<img src="<?=$this->Digitalocean_model->get_photo('landing_assets/images/success.png')?>">
+						 </div>                                
+                        <h2>Thank You !</h2>   
+                        <p>Your details has been submitted successfully, we will get back to you soon!</p> 
+                        <div class="chart_details">
+                            <a href="<?=base_url();?>">Back to home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+	
+
+    <footer class="bg_p2 text-white text-center">
+        <div class="row">
+
+
+
+            <div class="col-lg-6 ">
+                <a class="navbar-brand" href="#"> <img src="<?=$this->Digitalocean_model->get_photo('landing_assets/logo/btu_new.png')?>" class="logo_f">
+                    <span class="footer_pipe">|</span>
+                    <a class="footer_line"> 	&#169;THE GLOBAL UNIVERSITY</a>
+            </div>
+            <div class="col-lg-6">
+                <div class="icons">
+
+                    <img alt="Image" src="<?=$this->Digitalocean_model->get_photo('landing_assets/images/web.jpg')?>" title="Image">
+                    <a class="contact_no" href="#" target="_blank" rel="noopener">www.theglobaluniversity.edu.in</a>
+                    <span class="second_icon_footer"> 
+						<img alt="Image" src="<?=$this->Digitalocean_model->get_photo('landing_assets/images/mobile_icon.jpg')?>" title="Image"> 
+						<strong><a class="contact_no" href="919354665694"> 91 93546 65694</a> </strong>
+					</span> 
+                </div> 
+            </div>
+        </div>  
+    </footer> 
+    <script>
+     $(document).ready(function(){
+      // init
+         $(".cdev").circlos();
+
+
+     });
+    </script>
+</body>
+<script type="text/javascript">
+  if(window.location.pathname=="/thankyou-enquire"){
+    gtag('event', 'conversion', {'send_to': 'AW-595335465/FFIzCIG0v7wDEKmy8JsC'});
+  }
+</script>
+</html>
+

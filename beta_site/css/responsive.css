@@ -1,0 +1,2339 @@
+@media (min-width:1500px) and (max-width:1920px) {
+    .international_innovation_edu {
+        right: 60px;
+    }
+    .dis-cls {
+        height: 600px;
+        background-position: center top;
+        margin-top: 25px;
+        border-radius: 3px;
+        position: relative;
+        margin-bottom: 30px;
+    }
+    .result_view_wrappper .panel-group {
+        margin-bottom: 40px;
+    }
+    .unvercity_accounts_heading::after {
+        width: 28%;
+    }
+    .phd_course_work_details {
+        width: 70%;
+        margin: 0 auto;
+        padding: 35px 25px;
+    }
+    .syllabus-section {
+        padding: 30px 0;
+    }
+    .main_div {
+        width: 25%;
+    }
+    .vice_chancler_wrapper {
+        padding: 10px 0 20px;
+    }
+    .chancler_details_wrapper {
+        padding: 40px 0 60px;
+    }
+    .chairman_details_wrapper {
+        min-height: 450px;
+        padding: 30px 0 50px;
+    }
+    .para_area p {
+        font-size: 18px;
+    }
+    .comon_area_h2 span {
+        padding-bottom: 15px;
+    }
+    .comon_area_h2 h2 {
+        margin-top: 40px;
+        padding-bottom: 16px;
+    }
+    .uni_header_menu ul li {
+        padding: 7px 10px;
+        font-size: 14px;
+    }
+    .aim_area h2 {
+        margin-bottom: 25px;
+    }
+    .campus_image {
+        margin-top: 40px;
+    }
+    .content_work p {
+        line-height: 28px;
+    }
+    .btu_who_we_are_text {
+        margin-top: 15px;
+    }
+    .content_work h2 {
+        margin-bottom: 25px;
+        font-size: 36px;
+    }
+    .class_center p {
+        width: 60%;
+        text-align: center;
+        font-size: 18px;
+        margin: 0 auto;
+    }
+    .uni_welcome_left li {
+        min-height: 170px;
+    }
+    .Play_Box h3 {
+        font-size: 60px;
+    }
+    .uni_mainWrapper {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .bg_uni:before {
+        right: 700px;
+    }
+    .uni_facilites_uni {
+        min-height: 550px;
+    }
+    .uni_info p {
+        width: 100%;
+        font-size: 20px;
+        line-height: 27px;
+    }
+    .uni_info h6 {
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+    .Play_Box p {
+        font-size: 40px;
+        width: 90%;
+        margin: 20px auto;
+    }
+    .hero-slider .slide-inner {
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .bir_logo h4 {
+        font-size: 13px;
+    }
+    .bir_logo p {
+        font-size: 14px;
+        line-height: 16.36px;
+    }
+    .call-container {
+        padding-left: 10px;
+    }
+}
+
+@media screen and (orientation:landscape) and (min-device-width:992) and (max-device-width:1366px) {
+    .bir_logo h4 {
+        font-size: 13px;
+    }
+    .bir_logo p {
+        font-size: 14px;
+        line-height: 16.36px;
+    }
+    .call-container {
+        padding-left: 10px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .video-bg-section {
+        height: auto;
+    }
+    .why-choose-section {
+        padding-bottom: 0px;
+    }
+    .facilities-section {
+        padding: 60px 0px 60px;
+    }
+    .international_innovation_edu {
+        right: 40px;
+    }
+    .accrediation_info {
+        padding: 10px 0 20px;
+    }
+    .members_info {
+        padding: 10px 0 20px;
+    }
+    .all_rti {
+        margin: 20px auto;
+    }
+    .online_wrapper_details {
+        min-height: 480px;
+        margin: 100px auto 0;
+    }
+    .examination_form .personal_details h3 {
+        margin-top: 10px;
+        margin-bottom: 4px;
+    }
+    .result_view_wrappper .panel-group {
+        margin-bottom: 40px;
+    }
+    .dis-cls {
+        margin-top: 40px;
+        height: 420px;
+    }
+    .e_libraries_wrapper {
+        margin: 100px auto;
+        width: 40%;
+    }
+    .appointment_letter_wrapper {
+        margin: 200px auto;
+    }
+    .appointment_letter_details_wrapper {
+        min-height: 700px;
+    }
+    .phd_course_work_details {
+        width: 100%;
+    }
+    .main_div {
+        width: 50%;
+    }
+    .captcha_text {
+        font-size: 11px;
+    }
+    .Continue_btn {
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+    .common_height {
+        padding: 15px 0 25px;
+    }
+    .chancler_details_wrapper {
+        padding: 30px 0 50px;
+    }
+    .aim_area h2 {
+        margin-top: 0px;
+        margin-bottom: 16px;
+    }
+    .btu_who_we_are_text p {
+        font-size: 16px;
+        text-align: justify;
+    }
+    .uni_facilites_uni {
+        min-height: 220px;
+    }
+    .uni_info p {
+        font-size: 18px;
+        line-height: 28px;
+    }
+    .bg_uni:before {
+        right: 460px;
+    }
+    .Play_Box {
+        margin-top: 30px;
+    }
+    .bg_uni p {
+        width: 70%;
+        font-size: 14px;
+    }
+    .uni_header_menu ul li {
+        padding: 7px 2px;
+        font-size: 12px;
+    }
+    .help_desk {
+        width: 300px;
+    }
+    .help_desk h5 {
+        font-size: 16px;
+    }
+    .discrimination_top_tab h5 a {
+        font-size: 16px;
+    }
+    .discrimination_top_tab {
+        width: 200px;
+    }
+    .center_login {
+        font-size: 14px;
+        padding: 8px 11px;
+    }
+    .hero-slider .slide-inner {
+        background-size: cover;
+        background-position: center;
+    }
+    .news-height {
+        height: auto;
+    }
+    .testimonial-area .owl-carousel {
+        overflow: hidden;
+        margin: 0px 0px;
+        padding: inherit;
+    }
+    .testimonial-area .owl-stage-outer {
+        padding: 30px 0px;
+        margin-left: 0px;
+        width: calc(100% + 100px);
+    }
+    .single-testimonial::before {
+        left: 8px;
+        top: -12px;
+        width: 40px;
+        height: 40px;
+        transform: rotate(180deg);
+        background-position: 9px 9px;
+        border-radius: 40px;
+    }
+    .single-testimonial::after {
+        right: -13px;
+        bottom: -13px;
+        width: 40px;
+        height: 40px;
+        background-position: 11px 10px;
+        border-radius: 40px;
+    }
+    .single-testimonial p {
+        /* color: #fff;
+        font-size: 15px;
+        line-height: 24px;
+        padding: 50px 0px;
+        padding-bottom: 30px;
+        position: relative;
+        z-index: 3; */
+    }
+    .video-play-button::before {
+        width: 75px;
+        height: 75px;
+    }
+    .video-play-button::after {
+        width: 58px;
+        height: 58px;
+    }
+    .video-play-button span {
+        border-left: 22px solid #fff;
+        border-top: 21px solid transparent;
+        border-bottom: 22px solid transparent;
+        margin: auto;
+        top: 4px;
+    }
+    .video-bg-section {
+        height: auto;
+    }
+    .facilities-section {
+        padding: 60px 0px 60px;
+    }
+}
+
+@media screen and (orientation:landscape) and (min-device-width:820px) and (max-device-width:1199px) {
+    .bir_logo h4 {
+        font-size: 13px;
+    }
+    .bir_logo p {
+        font-size: 14px;
+        line-height: 16.36px;
+    }
+    .call-container {
+        padding-left: 10px;
+    }
+    .uni_header_menu li a {
+        font-size: 11px;
+    }
+}
+
+@media screen and (orientation:landscape) and (min-device-width:810px) and (max-device-width:1080px) {
+    .bir_logo h4 {
+        font-size: 13px;
+    }
+    .call-container {
+        padding-left: 10px;
+    }
+    .bir_logo p {
+        font-size: 14px;
+        line-height: 16.36px;
+    }
+    .become-collaborator-head-content,
+    .courses-head-content {
+        max-width: 85%;
+    }
+    .faculty-content p {
+        max-width: 85%;
+    }
+    .guide-content {
+        width: 85%;
+    }
+    .recruiters-content {
+        max-width: 85%;
+    }
+    .facilities-content {
+        max-width: 85%;
+    }
+    .why-choose-content {
+        max-width: 85%;
+    }
+    .activities-content {
+        max-width: 85%;
+    }
+    .video-bg-section {
+        height: auto;
+    }
+    .facilities-section {
+        padding: 60px 0px 60px;
+    }
+    .testimonial-area .owl-carousel {
+        overflow: hidden;
+        margin: 0px 0px;
+        padding: inherit;
+    }
+    .testimonial-area .owl-stage-outer {
+        padding: 30px 0px;
+        margin-left: 0px;
+        width: calc(100% + 100px);
+    }
+    .single-testimonial::before {
+        left: 8px;
+        top: -12px;
+        width: 40px;
+        height: 40px;
+        transform: rotate(180deg);
+        background-position: 9px 9px;
+        border-radius: 40px;
+    }
+    .video-play-button::before {
+        width: 75px;
+        height: 75px;
+    }
+    .video-play-button::after {
+        width: 58px;
+        height: 58px;
+    }
+    .video-play-button span {
+        border-left: 22px solid #fff;
+        border-top: 21px solid transparent;
+        border-bottom: 22px solid transparent;
+        margin: auto;
+        top: 4px;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    /* .fixed-div {
+        display: none;
+    } */
+    .header-menu-img-res {
+        font-size: 26px !important;
+        line-height: 44px;
+    }
+    .header-call {
+        display: inline-block;
+        position: relative;
+        top: 8px;
+        background: #fff;
+        text-align: center;
+        height: 44px;
+        border: 1px solid #39373733;
+        width: 44px;
+        border-radius: 50%;
+        padding-bottom: 0px;
+    }
+    .call-container {
+        background: #fff;
+        padding-left: 15px;
+        height: 55px;
+    }
+    .top-side-menu li {
+        text-align: left;
+        border-bottom: 1px solid #e3dede;
+    }
+    .top-side-menu li:hover {
+        background: crimson;
+        transition: 0.7s;
+    }
+    .top-side-menu li a {
+        font-size: 18px;
+        display: inline-flex;
+        padding: 5px 15px 4px 15px;
+    }
+    .top-side-menu li:hover a {
+        color: #fff;
+    }
+    .call-an {
+        margin: 0;
+        padding: 8px !important;
+    }
+    .header-menu-img {
+        border: 1px solid #39373733;
+        padding: 5px;
+        background: #fff;
+    }
+    .top-h-title {
+        position: relative;
+        top: 12px;
+        left: 12px;
+    }
+    .res-size {
+        padding: 0px;
+        margin: 0px -22px;
+    }
+    .uni_header_menu_main ul.submenu {
+        padding: 0px 0px;
+    }
+    .header_area {
+        height: 129px;
+    }
+    .first-menubar {
+        display: block;
+    }
+    .show-first-menu {
+        display: none;
+        background: #fff;
+        width: 100%;
+        position: absolute;
+        top: 17px;
+    }
+    .top-side-menu {
+        height: auto;
+        display: block;
+        align-items: left;
+        justify-content: left;
+        z-index: 88888888;
+        position: relative;
+        background: white;
+        margin: auto 0px;
+        float: none !important;
+    }
+    .uni_info p {
+        width: 100%;
+    }
+    .testimonial-area .owl-carousel {
+        overflow: hidden;
+        margin: 0px 0px;
+        padding: inherit;
+    }
+    .testimonial-area .owl-stage-outer {
+        padding: 30px 0px;
+        margin-left: 0px;
+        width: calc(100% + 100px);
+    }
+    .single-testimonial::before {
+        top: 15px;
+    }
+    .video-play-button::before {
+        width: 75px;
+        height: 75px;
+    }
+    .video-play-button::after {
+        width: 58px;
+        height: 58px;
+    }
+    .video-play-button span {
+        border-left: 22px solid #fff;
+        border-top: 21px solid transparent;
+        border-bottom: 22px solid transparent;
+        margin: auto;
+        top: 4px;
+    }
+    .tile-height {
+        height: 17vh;
+    }
+    .international_innovation_edu {
+        right: 30px;
+    }
+    .accrediation_info {
+        padding: 10px 0 20px;
+    }
+    .members_info {
+        padding: 10px 0 20px;
+    }
+    .all_rti {
+        margin: 20px auto;
+    }
+    .online_wrapper_details {
+        min-height: inherit;
+        margin: 0 auto;
+    }
+    .examination_form .personal_details h3 {
+        margin-top: 10px;
+        margin-bottom: 4px;
+    }
+    .result_view_wrappper .panel-group {
+        margin-bottom: 40px;
+    }
+    .dis-cls {
+        height: 700px;
+        margin-bottom: 40px;
+    }
+    .e_libraries_wrapper {
+        margin: 70px auto;
+        width: 40%;
+    }
+    .appointment_letter_wrapper {
+        margin: 50px auto;
+    }
+    .appointment_letter_details_wrapper {
+        min-height: inherit;
+    }
+    .phd_course_work_details {
+        width: 100%;
+        padding: 15px 15px;
+    }
+    .Continue_btn {
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+    .common_height {
+        padding: 15px 0 25px;
+    }
+    .para_area_frame img {
+        width: 100%;
+    }
+    .chancler_details_wrapper {
+        padding: 15px 0 25px;
+    }
+    .chairman_details_wrapper {
+        padding: 0 0 20px;
+    }
+    .btu_who_we_are_text p {
+        font-size: 16px;
+        text-align: justify;
+    }
+    .class_center p {
+        width: 100%;
+    }
+    .uni_facilites_uni {
+        height: 220px;
+    }
+    .uni_section_footer_main h3 {
+        margin-bottom: 0px;
+        min-height: 60px;
+    }
+    .about_bir p {
+        font-size: 16px;
+    }
+    .address_uni p {
+        font-size: 14px;
+    }
+    .uni_section_footer_main h3 {
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .uni_welcome_left h2 {
+        font-size: 22px;
+    }
+    .uni_facilites {
+        margin-top: 0px;
+    }
+    .approved_inner {
+        margin-bottom: 25px;
+    }
+    #myCarousel2 .carousel-indicators {
+        top: 60%;
+    }
+    .our_recruiters li {
+        height: 100px;
+        text-align: center;
+        position: relative;
+        padding: 25px 15px;
+    }
+    .bir_logo {
+        padding: 0;
+    }
+    .bir_logo h4 {
+        font-size: 17px;
+    }
+    .bir_logo p {
+        font-size: 15px;
+        letter-spacing: 0;
+    }
+    .header_area {
+        height: 129px;
+    }
+    .bir_logo img {
+        margin-top: -8px;
+    }
+    .uni_header_menu_main {
+        display: none;
+    }
+    .header_box {
+        float: none;
+        margin-top: 25px;
+    }
+    .center_login {
+        margin: 0px 2px;
+        border-radius: 0;
+        padding: 7px 13px
+    }
+    .hide_sm {
+        display: none;
+    }
+    .uni_header_menu {
+        height: 34px;
+        position: relative;
+    }
+    .nav_bar {
+        display: block !important;
+        position: absolute;
+        right: 10px;
+        top: -23px;
+        color: #fff;
+        font-size: 25px;
+    }
+    .get_index_mobile {
+        display: block;
+        color: #fff;
+        font-weight: 400;
+        font-size: 41px;
+        text-transform: uppercase;
+        line-height: 47px;
+    }
+    .get_index {
+        display: none;
+    }
+    .bg_uni {
+        width: 100%;
+    }
+    .bg_uni h2 {
+        font-size: 39px;
+        line-height: 43px;
+    }
+    .bg_uni:before {
+        content: '';
+        background-color: rgb(4 91 89);
+        position: absolute;
+        top: 0;
+        /* right: 70px; */
+        right: 210px;
+    }
+    .uni_welcome h1 {
+        margin-top: 0;
+        font-size: 23px;
+    }
+    .latest_date_para {
+        float: left;
+        padding: 0px 10px 0px 5px;
+        width: 69%;
+    }
+    .latest_date {
+        width: 69px;
+    }
+    .latest_date_para {
+        width: 78%;
+    }
+    .uni_latest {
+        padding: 40px 0px;
+    }
+    .Play_Box {
+        margin-top: 60px;
+    }
+    .Play_Box h3 {
+        font-size: 29px;
+    }
+    .Play_Box p {
+        font-size: 24px;
+        width: 100%;
+    }
+    .uni_welcome_box {
+        padding: 40px 10px;
+    }
+    .uni_info h6 {
+        font-size: 19px;
+    }
+    .uni_info p {
+        font-size: 14px;
+        line-height: 17px;
+        text-transform: capitalize;
+    }
+    .uni_welcome_left li {
+        height: 105px;
+        padding-top: 14px;
+        padding-left: 24px;
+    }
+    .uni_section_footer_subFooter {
+        padding: 0px 20px;
+    }
+    .uni_section_footer_subFooter p {
+        text-align: center;
+        font-size: 20px;
+    }
+    .uni_section_footer_subFooter {
+        line-height: 35px;
+    }
+    .uni_section_footer_subFooter {
+        height: 133px;
+        padding-top: 30px;
+    }
+    .uni_section_footer_subFooter a {
+        float: none;
+        margin: 0px auto;
+    }
+    .uni_section_footer_main {
+        padding: 4px 20px;
+    }
+    .latest_date_para {
+        padding-left: 10px;
+    }
+    .bg_uni {
+        padding: 45px 20px 25px 20px;
+    }
+    .uni_header_menu_main {
+        position: absolute;
+        left: 0;
+        background-color: #000;
+        top: 35px;
+        z-index: 99999999;
+    }
+    .uni_header_menu ul li {
+        width: 100%;
+        border-bottom: 1px solid #383737;
+        padding: 13px 20px;
+    }
+    .mega_bar .submenu li {
+        padding: 8px 20px;
+    }
+    .uni_header_menu ul li i {
+        float: right;
+    }
+    .submenu {
+        display: block;
+        width: 100% !important;
+        position: relative !important;
+        margin: 0 !important;
+        top: 0 !important;
+        left: 0 !important;
+        border: none !important;
+    }
+    .submenu_ul {
+        background-color: #fff;
+        left: unset !important;
+        right: 0px !important;
+    }
+    .header_cc_area {
+        text-align: left;
+    }
+    .about_area_gh p {
+        font-size: 17px;
+        color: #fff;
+        text-align: justify;
+    }
+    .aim_area h2 {
+        margin-top: 0px;
+        margin-bottom: 16px;
+    }
+    .width_Box {
+        width: 50%;
+        height: 73px;
+        margin-bottom: 4px;
+    }
+    .list_strure h2 {
+        margin: 0px;
+        font-size: 15px;
+    }
+    .main_div {
+        width: 60%;
+    }
+    .personal_details h3 {
+        font-size: 18px;
+    }
+    .contact_area h4 {
+        font-size: 14px;
+    }
+    .comon_area_h2 h2 {
+        border-bottom: 2px solid #082d5d;
+        padding-bottom: 12px;
+        font-size: 23px;
+    }
+    .help_desk {
+        display: none;
+    }
+    .discrimination_top_tab {
+        display: none;
+    }
+    .mob_help_desk {
+        color: #fff;
+        display: block;
+    }
+    .mob_help_desk {
+        font-weight: bold;
+        /* NAME | TIME | ITERATION */
+        animation: blinking 1s infinite;
+    }
+    .mob_discrimination_tab {
+        color: #fff;
+        display: block;
+    }
+    .mob_discrimination_tab {
+        font-weight: bold;
+        /* NAME | TIME | ITERATION */
+        animation: blinking 1s infinite;
+    }
+    .stream_inner {
+        width: 100%;
+        height: auto;
+    }
+    .course_list_heading h2 .course_name_span {
+        width: 70%;
+    }
+    .course_list_heading h2 .course_mode_span {
+        width: 15%;
+    }
+    .course_list_heading h2 .course_duration_span {
+        width: 15%;
+    }
+    @keyframes blinking {
+        0% {
+            background-color: #dc4618;
+            color: #ddd;
+        }
+        100% {
+            background-color: #222291;
+            color: #fff;
+        }
+    }
+    .hero-slider .slide-inner {
+        background-size: cover;
+        background-position: center;
+    }
+    .news-height {
+        height: auto;
+    }
+    .quality-education {
+        height: auto;
+    }
+    .banner-5-txt {
+        padding: 40px 35px;
+    }
+    .banner-5-txt img {
+        float: none;
+        top: 0;
+    }
+    .b5-txt {
+        padding-left: 0;
+    }
+    .banner-5-txt h4 {
+        margin-top: 20px;
+    }
+    .facilities-ul li {
+        width: 24%;
+    }
+    .become-collaborator-head-content,
+    .courses-head-content {
+        max-width: 85%;
+    }
+    .faculty-content p {
+        max-width: 85%;
+    }
+    .guide-content {
+        width: 85%;
+    }
+    .recruiters-content {
+        max-width: 85%;
+    }
+    .facilities-content {
+        max-width: 85%;
+    }
+    .why-choose-content {
+        max-width: 85%;
+    }
+    .activities-content {
+        max-width: 85%;
+    }
+    .title-btn {
+        margin: 20px 0px 40px 0px;
+        text-align: center;
+    }
+    .text-center-mob {
+        text-align: center;
+    }
+    .mob-center-col {
+        text-align: center;
+    }
+    .guide-list-ul li {
+        width: 25%;
+    }
+    .show-first-menu .navbar-nav>li {
+        float: left;
+        display: block;
+        position: relative;
+        width: inherit;
+        width: 100%;
+        padding: 5px 10px 5px;
+    }
+    .sidebar-contact-pulp {
+	z-index: 0 !important;
+}
+.sidebar-contact-pulp.toggle { 
+transform: rotate(90deg) !important;
+}
+}
+
+
+/* @media only screen and (min-width: 767px) {
+
+} */
+
+@media only screen and (max-width: 767px) {
+
+.apply_now .personal_details h3{
+    margin-top: 10px;
+}
+.apply_now{
+    margin-top: 15px;
+}
+	
+	.res-bot-5{margin-bottom:30px;}
+	
+    /* .uni_header_menu {
+        height: 4vh;
+    }
+    .uni_news_media {
+        background: #232323;
+        height: 4vh;
+    }
+    .header_area {
+        height: 15vh;
+    } */
+    .welcome-header {
+        display: block;
+    }
+    .bootom-tile-section {
+        height: 10vh;
+    }
+    .abox-1-txt,
+    .abox-4-txt {
+        display: none;
+    }
+    .tile-icons {
+        /* margin-top: 20px; */
+        /* margin-bottom: 10px; */
+    }
+    .toggle {
+        /*transform: rotate(0deg) !important;*/
+        color: #fff;
+        font-weight: 700;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+    .sidebar-contact {
+        width: 100%;
+        height: 100%;
+        bottom: -100%;
+    }
+    .sidebar-contact {
+        position: fixed;
+        top: unset;
+        bottom: -400px;
+        right: 0;
+        transform: translateY(0%);
+        width: 350px;
+        height: auto;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+        box-sizing: border-box;
+        transition: 0.5s;
+        z-index: 999999;
+        left: 0;
+        margin: auto;
+    }
+    .sidebar-contact .toggle {
+        top: -50px;
+        transform: translateY(-50%);
+        transition: 0.5s;
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        margin: auto;
+        width: 100%;
+    }
+    .sidebar-contact.active {
+        bottom: 0px;
+    }
+    .information_inner_wrapper {
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        min-height: 240px;
+        padding: 15px 10px 15px 10px;
+        border-radius: 10px;
+        transition: 0.6s;
+        border-top: 5px solid #ff4a12;
+        background: white;
+        /* padding-top: 0px; */
+        margin-bottom: 15px;
+    }
+    .mt-80 {
+        margin-top: 30px;
+    }
+    .approved_by_area {
+        overflow: hidden;
+    }
+    .approved_inner {
+        width: 95%;
+        margin: 0 auto 25px;
+    }
+    .mobile_awards_slider .item {
+        height: auto;
+    }
+    .accreditation_wrapper .item {
+        height: auto;
+    }
+    .member_certification_wrapper {
+        padding: 40px 0 50px;
+    }
+    .member_details {
+        width: 100%;
+        margin: 15px 0;
+    }
+    .international_innovation_edu {
+        top: 4px;
+    }
+    .mobile_awards_slider .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 45%;
+        z-index: 15;
+        width: 100%;
+        padding-left: 0;
+        margin-left: -30%;
+        text-align: center;
+        list-style: none;
+        top: 110%;
+        transform: translate(-50px, -50px);
+    }
+    /* .mobile_awards_slider .item{
+            min-height: 515px;
+        } */
+    .dis-cls {
+        height: 500px;
+        margin-bottom: 40px;
+    }
+    .all_rti {
+        margin: 20px auto;
+    }
+    .all_rti th a {
+        color: #0f2d5d;
+        font-size: 12px;
+    }
+    .all_rti_table {
+        width: 100%;
+    }
+    .online_wrapper_details {
+        min-height: inherit;
+    }
+    .examination_form .personal_details h3 {
+        margin-top: 10px;
+        margin-bottom: 4px;
+    }
+    .result_view_wrappper {
+        width: 90%;
+        margin: 0px auto;
+    }
+    .result_view_wrappper .panel-group {
+        margin-bottom: 20px;
+    }
+    .unvercity_accounts_wrapper .card {
+        padding: 15px 0px;
+    }
+    .career_details h3 {
+        padding: 20px 0 0;
+    }
+    .uni_mainWrapper .container {
+        width: 100%;
+    }
+    .e_libraries_wrapper .personal_details h3 {
+        margin-top: 15px;
+    }
+    .appointment_letter_wrapper .personal_details h3 {
+        margin-top: 15px;
+    }
+    .appointment_letter_wrapper {
+        margin: 50px auto;
+    }
+    .appointment_letter_details_wrapper {
+        min-height: inherit;
+    }
+    .phd_course_work_wrapper .custom-container {
+        width: 100%;
+    }
+    .phd_course_work_details {
+        width: 100%;
+    }
+    .ugc_wrapper_details {
+        min-height: 400px;
+    }
+    .personal_details h3 {
+        margin-top: 0px;
+    }
+    .table-responsive {
+        border: none;
+    }
+    .main_div {
+        width: 100%;
+    }
+    .captcha_details {
+        margin: 10px auto;
+    }
+    .captcha_text {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .Continue_btn {
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+    .header_cc_area {
+        text-align: center;
+    }
+    .common_height {
+        padding: 15px 0 25px;
+    }
+    .content_work ul li {
+        width: 100%;
+        text-align: justify;
+    }
+    .header_cc_area h1 {
+        font-size: 34px;
+    }
+    .para_area_frame {
+        margin: 80px auto;
+    }
+    .chancellor_photho {
+        margin-bottom: 25px;
+    }
+    .chairman_details_wrapper {
+        padding: 0 0 10px;
+    }
+    .aim_area {
+        padding: 0px;
+    }
+    .about_obej {
+        padding: 20px 0;
+    }
+    .about_obej p {
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .btu_who_we_are_text p {
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .uni_section_footer_subFooter {
+        padding-top: 10px;
+    }
+    .bg_uni p {
+        width: 74%;
+    }
+    .bg_uni:before {
+        right: 80px;
+    }
+    .Play_Box {
+        margin-top: 30px;
+    }
+    .uni_latest {
+        padding: 25px 0px;
+    }
+    .our_recruiters_wrapper .mt-20 {
+        margin-top: 15px;
+    }
+    .btu_enquiry_form {
+        margin-top: -290px;
+    }
+    .uni_latest {
+        margin-top: 0px;
+    }
+    /* .uni_mainWrapper{
+            min-height: 900px;
+            } */
+    .our_recruiters_wrapper {
+        height: 850px;
+    }
+    .our_recruiters li {
+        height: 70px;
+        padding: 15px;
+    }
+    #myCarousel2 .carousel-indicators {
+        top: 35%;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .uni_header_menu_main {
+        z-index: 99999;
+    }
+    .noti_link {
+        top: 3px !important;
+        left: 0% !important;
+        z-index: 9999;
+        position: absolute;
+        background-color: green;
+        border-radius: 4px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        text-align: center;
+        padding-top: 10px;
+    }
+    .noti_link i {
+        margin-right: 1px;
+    }
+    .blink_noti.size {
+        font-size: 9px;
+        line-height: 0px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+    .noti_link_view_result i {
+        margin-right: 1px;
+    }
+    .noti_link_view_result {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 27% !important;
+    }
+    .noti_link_view_result .blink_noti.size {
+        padding-top: 4px;
+    }
+    .approved_inner {
+        margin-bottom: 25px;
+    }
+    .shortcut_link_top {
+        padding-top: 5px;
+        padding-bottom: 15px;
+    }
+    .online_class_btn {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 54% !important;
+    }
+    .online_class_btn .blink_noti.size {
+        padding-top: 4px;
+    }
+    .stream_inner {
+        width: 100%;
+        height: auto;
+    }
+    .course_list_heading h2 .course_name_span {
+        width: 100%;
+        padding-top: 0px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span {
+        width: 50%;
+    }
+    .course_list_heading h2 .course_duration_span {
+        width: 50%;
+    }
+    .course_button_area .course_enquiry_text {
+        width: 100%;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span p {
+        width: 65px;
+        font-size: 12px;
+    }
+    .course_list_heading h2 .course_duration_span p {
+        font-size: 12px;
+    }
+    .width_Box ul li {
+        text-align: left;
+    }
+    .course_button_area {
+        text-align: center;
+    }
+    /* .mobile_certificate_slider .item{
+                height:510px;
+                } */
+    .mobile_certificate_slider .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        z-index: 15;
+        width: 100%;
+        padding-left: 0;
+        margin-left: -30%;
+        text-align: center;
+        list-style: none;
+        top: 112%;
+        transform: translate(-50px, -50px);
+    }
+    .accreditation_wrapper h3 {
+        padding: 0 4px;
+        font-size: 30px;
+    }
+    .head-title-swiper {
+        font-size: 20px;
+        max-width: 100%;
+        line-height: 27px;
+        text-align: center;
+    }
+    .hero-style .slide-text p {
+        opacity: 1;
+        width: 100%;
+        text-align: center;
+    }
+    .hero-slider .slide-inner {
+        background-size: cover;
+        background-position: center;
+    }
+    .hero-style {
+        /* height: 100vh; */
+        height: 75vh;
+    }
+    .hero-slider .swiper-button-prev,
+    .hero-slider .swiper-button-next {
+        display: none;
+    }
+    .hero-slider .swiper-container-horizontal>.swiper-pagination-bullets {
+        bottom: 30px;
+    }
+    .counter-container {
+        text-align: center;
+        float: inline-start;
+        background: transparent;
+        padding: 6px;
+        width: auto;
+    }
+    .counter-title {
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .counter-number {
+        font-size: 15px;
+    }
+    .tile-height {
+        height: auto;
+    }
+    .d-flex-block {
+        display: block !important;
+    }
+    .ul_class_imp {
+        height: 70px !important;
+    }
+    .bottom-tile-slider {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+    .align-ic-center {
+        position: relative;
+        left: 0;
+        right: 0;
+        top: 40%;
+        transform: translateY(-50%);
+    }
+    /* .bottom-tile-slider {
+        margin-bottom: 5px;
+        margin-top: 5px;
+    } */
+    .slider-content-hero {
+        /* margin-bottom: 250px; */
+        /* margin-bottom: 90px; */
+        position: absolute;
+        /* top: 30px; */
+        text-align: center;
+        /* position: absolute; */
+        left: 0;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .quality-education {
+        height: auto;
+    }
+    .banner-5-txt {
+        padding: 40px 25px;
+    }
+    .b5-txt {
+        padding-left: 20px;
+    }
+    .mob-center-col {
+        text-align: center;
+    }
+    .facilities-ul li {
+        width: 30%;
+    }
+    .guide-list-ul li {
+        width: 35%;
+    }
+    .placement_content h3 {
+        font-size: 24px;
+    }
+    .slick-dots {
+        display: none !important;
+    }
+    .sec-title p {
+        max-width: 100%;
+    }
+    .testimonial-area .owl-carousel {
+        overflow: hidden;
+        margin: 0px 0px;
+        padding: inherit;
+    }
+    .testimonial-area .owl-stage-outer {
+        padding: 30px 0px;
+        margin-left: 0px;
+        width: calc(100% + 100px);
+    }
+    .single-testimonial p {
+        /* color: #fff;
+        font-size: 15px;
+        line-height: 24px;
+        padding: 50px 0px;
+        padding-bottom: 30px;
+        position: relative;
+        z-index: 3; */
+    }
+    .video-play-button::before {
+        width: 75px;
+        height: 75px;
+    }
+    .video-play-button::after {
+        width: 58px;
+        height: 58px;
+    }
+    .video-play-button span {
+        border-left: 22px solid #fff;
+        border-top: 21px solid transparent;
+        border-bottom: 22px solid transparent;
+        margin: auto;
+        top: 4px;
+    }
+    .sub-title-abt {
+        font-size: 18px;
+    }
+    .about-heading-title {
+        font-size: 24px;
+    }
+    .card-content h3 {
+        font-size: 18px;
+    }
+    .uni_facilites {
+        margin-top: 60px;
+    }
+    .become-collaborator {
+        padding: 10px 0px 0px;
+    }
+    .faculty-section {
+        padding: 10px 0px;
+    }
+    .title-btn {
+        margin: 20px 0px 40px 0px;
+        text-align: center;
+    }
+    .faculty-content {
+        position: relative;
+        text-align: center;
+    }
+    .text-center-mob {
+        text-align: center !important;
+    }
+    .become-collaborator-head-content,
+    .courses-head-content {
+        max-width: 100%;
+    }
+    .faculty-content p {
+        max-width: 100%;
+    }
+    .guide-content {
+        width: 100%;
+    }
+    .recruiters-content {
+        max-width: 100%;
+    }
+    .facilities-content {
+        max-width: 100%;
+    }
+    .why-choose-content {
+        max-width: 100%;
+    }
+    .activities-content {
+        max-width: 100%;
+    }
+    .video-bg-section {
+        height: auto;
+    }
+    .facilities-section {
+        padding: 60px 0px 60px;
+    }
+    .guide-list-ul li {
+        width: 49%;
+        margin: 50px auto;
+    }
+    .thesis-large {
+        margin-bottom: 120px !important;
+    }
+    .guide-list-ul {
+        padding-bottom: 0px;
+    }
+    .awards-section-slider {
+        margin-top: 80px;
+    }
+    .single-testimonial {
+        border: 1px solid #57545436;
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0) 0px 2px 16px 0px;
+    }
+    .facilities-ul li img {
+        margin-bottom: 15px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .bir_logo h4 {
+        font-size: 17px;
+        margin-bottom: 12px;
+        position: relative;
+        top: 7px;
+    }
+    .facilities-ul li {
+        width: 49%;
+    }
+    .activities .owl-nav>div {
+        display: none;
+    }
+    /* .mobile_awards_slider .item{
+            min-height: 515px;
+        } */
+    .main_div {
+        width: 100%;
+    }
+    .captcha_details {
+        margin: 10px auto;
+    }
+    .header_cc_area {
+        text-align: center;
+    }
+    .content_work ul li {
+        width: 100%;
+        text-align: justify;
+    }
+    .chancellor_photho {
+        margin-bottom: 25px;
+    }
+    .Play_Box {
+        margin-top: 30px;
+    }
+    .uni_latest {
+        padding: 25px 0px;
+    }
+    .our_recruiters_wrapper .mt-20 {
+        margin-top: 15px;
+    }
+    .btu_enquiry_form {
+        margin-top: -290px;
+    }
+    .uni_latest {
+        margin-top: 0px;
+    }
+    /* .uni_mainWrapper{
+            min-height: 900px;
+            } */
+    .our_recruiters_wrapper {
+        height: 850px;
+    }
+    .our_recruiters li {
+        height: 70px;
+        padding: 15px;
+    }
+    #myCarousel2 .carousel-indicators {
+        top: 35%;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .uni_header_menu_main {
+        z-index: 99999;
+    }
+    .noti_link {
+        top: 3px !important;
+        left: 0% !important;
+        z-index: 9999;
+        position: absolute;
+        background-color: green;
+        border-radius: 4px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        text-align: center;
+        padding-top: 10px;
+    }
+    .noti_link i {
+        margin-right: 1px;
+    }
+    .blink_noti.size {
+        font-size: 9px;
+        line-height: 0px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+    .noti_link_view_result i {
+        margin-right: 1px;
+    }
+    .noti_link_view_result {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 27% !important;
+    }
+    .noti_link_view_result .blink_noti.size {
+        padding-top: 4px;
+    }
+    .approved_inner {
+        margin-bottom: 25px;
+    }
+    .shortcut_link_top {
+        padding-top: 5px;
+        padding-bottom: 15px;
+    }
+    .online_class_btn {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 54% !important;
+    }
+    .online_class_btn .blink_noti.size {
+        padding-top: 4px;
+    }
+    .stream_inner {
+        width: 100%;
+        height: auto;
+    }
+    .course_list_heading h2 .course_name_span {
+        width: 100%;
+        padding-top: 0px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span {
+        width: 50%;
+    }
+    .course_list_heading h2 .course_duration_span {
+        width: 50%;
+    }
+    .course_button_area .course_enquiry_text {
+        width: 100%;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span p {
+        width: 65px;
+        font-size: 12px;
+    }
+    .course_list_heading h2 .course_duration_span p {
+        font-size: 12px;
+    }
+    .width_Box ul li {
+        text-align: left;
+    }
+    .course_button_area {
+        text-align: center;
+    }
+    /* .mobile_certificate_slider .item{
+                height:510px;
+                } */
+    .mobile_certificate_slider .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        z-index: 15;
+        width: 100%;
+        padding-left: 0;
+        margin-left: -30%;
+        text-align: center;
+        list-style: none;
+        top: 112%;
+        transform: translate(-50px, -50px);
+    }
+    .accreditation_wrapper h3 {
+        padding: 0 4px;
+        font-size: 30px;
+    }
+    .text-center-mob {
+        text-align: center !important;
+    }
+    .guide-content {
+        width: 100%;
+    }
+    .recruiters-content {
+        max-width: 100%;
+    }
+    .facilities-content {
+        max-width: 100%;
+    }
+    .why-choose-content {
+        max-width: 100%;
+    }
+    .activities-content {
+        max-width: 100%;
+    }
+    .section-head {
+        font-size: 24px;
+    }
+    .quality-education {
+        height: auto;
+    }
+    .facilities-ul li {
+        width: 48%;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 479.95px) {
+    .uni_facilites {
+        margin-top: 120px;
+    }
+    .banner-5-txt {
+        padding: 40px 25px;
+    }
+    .banner-5-txt img {
+        float: none;
+        top: 0;
+    }
+    .b5-txt {
+        padding-left: 0;
+    }
+    .banner-5-txt h4 {
+        margin-top: 20px;
+        font-size: 21px;
+    }
+}
+
+@media only screen and (max-device-width: 360px) {
+    /* .mobile_awards_slider .item{
+            min-height: 515px;
+        } */
+    .main_div {
+        width: 100%;
+    }
+    .header_cc_area {
+        text-align: center;
+    }
+    .content_work ul li {
+        width: 100%;
+        text-align: justify;
+    }
+    .Play_Box {
+        margin-top: 30px;
+    }
+    .ul_class_imp {
+        min-height: 100px;
+    }
+    .uni_latest {
+        padding: 25px 0px;
+    }
+    .our_recruiters_wrapper .mt-20 {
+        margin-top: 15px;
+    }
+    .btu_enquiry_form {
+        margin-top: -290px;
+    }
+    .uni_latest {
+        margin-top: 0px;
+    }
+    /* .uni_mainWrapper{
+            min-height: 900px;
+            } */
+    .our_recruiters_wrapper {
+        height: 850px;
+    }
+    .our_recruiters li {
+        height: 70px;
+        padding: 15px;
+    }
+    #myCarousel2 .carousel-indicators {
+        top: 35%;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .uni_header_menu_main {
+        z-index: 99999;
+    }
+    .noti_link {
+        top: 3px !important;
+        left: 0% !important;
+        z-index: 9999;
+        position: absolute;
+        background-color: green;
+        border-radius: 4px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        text-align: center;
+        padding-top: 10px;
+    }
+    .noti_link i {
+        margin-right: 1px;
+    }
+    .blink_noti.size {
+        font-size: 9px;
+        line-height: 0px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+    .noti_link_view_result i {
+        margin-right: 1px;
+    }
+    .noti_link_view_result {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 27% !important;
+    }
+    .noti_link_view_result .blink_noti.size {
+        padding-top: 4px;
+    }
+    .approved_inner {
+        margin-bottom: 25px;
+    }
+    .shortcut_link_top {
+        padding-top: 5px;
+        padding-bottom: 15px;
+    }
+    .online_class_btn {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 54% !important;
+    }
+    .online_class_btn .blink_noti.size {
+        padding-top: 4px;
+    }
+    .stream_inner {
+        width: 100%;
+        height: auto;
+    }
+    .course_list_heading h2 .course_name_span {
+        width: 100%;
+        padding-top: 0px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span {
+        width: 50%;
+    }
+    .course_list_heading h2 .course_duration_span {
+        width: 50%;
+    }
+    .course_button_area .course_enquiry_text {
+        width: 100%;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span p {
+        width: 65px;
+        font-size: 12px;
+    }
+    .course_list_heading h2 .course_duration_span p {
+        font-size: 12px;
+    }
+    .width_Box ul li {
+        text-align: left;
+    }
+    .course_button_area {
+        text-align: center;
+    }
+    /* .mobile_certificate_slider .item{
+                height:510px;
+                } */
+    .mobile_certificate_slider .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        z-index: 15;
+        width: 100%;
+        padding-left: 0;
+        margin-left: -30%;
+        text-align: center;
+        list-style: none;
+        top: 112%;
+        transform: translate(-50px, -50px);
+    }
+    .accreditation_wrapper h3 {
+        padding: 0 4px;
+        font-size: 30px;
+    }
+    .quality-education {
+        height: auto;
+    }
+}
+
+@media only screen and (min-device-width: 280px) and (max-device-width: 480px) {
+    .mt-80 {
+        margin-top: 30px;
+    }
+    /* .mobile_awards_slider .item{
+            min-height: 515px;
+        } */
+    .form_area p {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .information_email {
+        font-size: 20px;
+    }
+    .email_info {
+        word-break: break-all;
+    }
+    .main_div {
+        width: 90%;
+    }
+    .Continue_btn {
+        margin-bottom: 5px;
+        margin-top: 15px;
+    }
+    .header_cc_area {
+        text-align: center;
+    }
+    .content_work ul li {
+        width: 100%;
+        text-align: justify;
+    }
+    .header_cc_area h1 {
+        font-size: 34px;
+        margin-top: 20px;
+    }
+    .uni_section_footer_subFooter p {
+        font-size: 18px;
+        line-height: 30px;
+        padding-top: 6px;
+    }
+    .bg_uni:before {
+        right: 20px;
+    }
+    .uni_box_Camp {
+        padding-bottom: 10px;
+    }
+    .Play_Box p {
+        font-size: 20px;
+    }
+    .Play_Box {
+        margin-top: 30px;
+    }
+    .uni_latest {
+        padding: 25px 0px;
+    }
+    .our_recruiters_wrapper .mt-20 {
+        margin-top: 15px;
+    }
+    .btu_enquiry_form {
+        margin-top: -290px;
+    }
+    .uni_latest {
+        margin-top: 0px;
+    }
+    /* .uni_mainWrapper{
+            min-height: 900px;
+            } */
+    .our_recruiters_wrapper {
+        height: 850px;
+    }
+    .our_recruiters li {
+        height: 70px;
+        padding: 15px;
+    }
+    #myCarousel2 .carousel-indicators {
+        top: 35%;
+        margin: 0px auto;
+        text-align: center;
+    }
+    .uni_header_menu_main {
+        z-index: 99999;
+    }
+    .noti_link {
+        top: 3px !important;
+        left: 0% !important;
+        z-index: 9999;
+        position: absolute;
+        background-color: green;
+        border-radius: 4px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        text-align: center;
+        padding-top: 10px;
+    }
+    .noti_link i {
+        margin-right: 1px;
+    }
+    .blink_noti.size {
+        font-size: 9px;
+        line-height: 0px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+    .noti_link_view_result i {
+        margin-right: 1px;
+    }
+    .noti_link_view_result {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 29% !important;
+    }
+    .noti_link_view_result .blink_noti.size {
+        padding-top: 4px;
+    }
+    .approved_inner {
+        margin-bottom: 25px;
+    }
+    .shortcut_link_top {
+        padding-top: 5px;
+        padding-bottom: 15px;
+    }
+    .online_class_btn {
+        padding-top: 10px;
+        height: 30px;
+        padding: 6px;
+        width: 95px;
+        border-radius: 4px;
+        top: 3px !important;
+        left: 58% !important;
+    }
+    .online_class_btn .blink_noti.size {
+        padding-top: 4px;
+    }
+    .stream_inner {
+        width: 100%;
+        height: auto;
+    }
+    .course_list_heading h2 .course_name_span {
+        width: 100%;
+        padding-top: 0px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span {
+        width: 50%;
+    }
+    .course_list_heading h2 .course_duration_span {
+        width: 50%;
+    }
+    .course_button_area .course_enquiry_text {
+        width: 100%;
+        text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span p {
+        width: 65px;
+        font-size: 12px;
+    }
+    .course_list_heading h2 .course_duration_span p {
+        font-size: 12px;
+    }
+    .width_Box ul li {
+        text-align: left;
+        float: left;
+        margin-right: 6px;
+    }
+    .course_button_area {
+        text-align: center;
+    }
+    .accreditation_wrapper {
+        min-height: 680px;
+    }
+    /* .mobile_certificate_slider .item{
+            height:570px;
+          } */
+    .mobile_certificate_slider .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        z-index: 15;
+        width: 100%;
+        padding-left: 0;
+        margin-left: -35%;
+        text-align: center;
+        list-style: none;
+        top: 115%;
+        transform: translate(-50px, -50px);
+    }
+    .accreditation_wrapper h3 {
+        padding: 0 4px;
+        font-size: 30px;
+    }
+    .accreditation_wrapper {
+        padding: 40px 0 10px;
+    }
+}
+
+
+/* landscape css start from here */
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (orientation: landscape) {
+    .mt-80 {
+        margin-top: 30px;
+    }
+    .accrediation_details {
+        width: 50%;
+        margin: 0 auto;
+    }
+    .member_details {
+        width: 50%;
+        margin: 0 auto;
+    }
+    .uni_section_footer_subFooter {
+        padding-top: 26px;
+    }
+    /* .mobile_certificate_slider .item {
+            min-height: 920px;
+        } */
+    .mobile_certificate_slider .carousel-indicators {
+        left: 40%;
+        width: 100%;
+        margin-left: -30%;
+        top: 107%;
+        transform: translate(-50px, -50px);
+    }
+}
+
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (orientation: landscape) {
+    .mt-80 {
+        margin-top: 30px;
+    }
+    .member_details {
+        width: 50%;
+        margin: 0 auto;
+    }
+    .accrediation_details {
+        width: 50%;
+        margin: 15px auto 0;
+    }
+    .uni_section_footer_subFooter {
+        padding-top: 26px;
+    }
+    .bg_uni p {
+        font-size: 22px;
+    }
+    /* .mobile_certificate_slider .item {
+            min-height: 780px;
+        } */
+    .mobile_certificate_slider .carousel-indicators {
+        left: 40%;
+        width: 100%;
+        margin-left: -30%;
+        top: 109%;
+        transform: translate(-50px, -50px);
+    }
+}
+
+
+/* @media (min-width:320px) and (max-width: 767px) {
+    .uni_latest{
+    padding: 25px 0px;
+    }
+    .our_recruiters_wrapper .mt-20{
+    margin-top:15px;
+    }
+    .btu_enquiry_form{
+    margin-top:-290px;
+    }
+    .uni_latest{
+    margin-top:0px;
+    }
+    .our_recruiters_wrapper{
+    height: 850px;
+    }
+    .our_recruiters li{
+    height: 70px;
+    padding: 15px;
+    }
+    #myCarousel2 .carousel-indicators {
+    top: 35%;
+    margin: 0px auto;
+    text-align: center;
+    }
+    .uni_header_menu_main{
+    z-index: 99999;
+    }
+    .noti_link {
+    top: 3px !important;
+    left: 0% !important;
+    z-index: 9999;
+    position: absolute;
+    background-color: green;
+    border-radius: 4px;
+    height: 30px;
+    padding: 6px;
+    width: 95px;
+    text-align: center;
+    padding-top: 10px;
+    }
+    .noti_link i{
+    margin-right: 1px;
+    }
+    .blink_noti.size {
+    font-size: 9px;
+    line-height: 0px;
+    text-transform: uppercase;
+    color: #fff;
+    }
+    .noti_link_view_result i{
+    margin-right: 1px;
+    }
+    .noti_link_view_result{
+    padding-top: 10px;
+    height: 30px;
+    padding: 6px;
+    width: 95px;
+    border-radius: 4px;
+    top: 3px !important;
+    left: 27% !important;
+    }
+    .noti_link_view_result .blink_noti.size{
+    padding-top: 4px;
+    }
+    .approved_inner {
+    margin-bottom: 25px;
+    }
+    .shortcut_link_top{
+    padding-top: 5px;
+    padding-bottom: 15px;
+    }
+    .online_class_btn{
+    padding-top: 10px;
+    height: 30px;
+    padding: 6px;
+    width: 95px;
+    border-radius: 4px;
+    top: 3px !important;
+    left: 54% !important;
+    }
+    .online_class_btn .blink_noti.size{
+    padding-top: 4px;
+    }
+    .stream_inner{
+    width:100%;
+    height: auto;
+    }
+    .course_list_heading h2 .course_name_span{
+    width: 100%;
+    padding-top: 0px;
+    margin-bottom: 10px;
+    text-align: center;
+    }
+    .course_list_heading h2 .course_mode_span{
+    width: 50%;
+    }
+    .course_list_heading h2 .course_duration_span{
+    width: 50%;
+    }
+    .course_button_area .course_enquiry_text{
+    width: 100%;
+    text-align:center;
+    }
+    .course_list_heading h2 .course_mode_span p{
+    width: 65px;
+    font-size: 12px;
+    }
+    .course_list_heading h2 .course_duration_span p{
+    font-size: 12px;
+    }
+    .width_Box ul li{
+    text-align: left;
+    }
+    .course_button_area{
+    text-align: center;
+    }
+    } */
