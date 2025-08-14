@@ -1,7 +1,7 @@
-<?php
-
-namespace PhpOffice\PhpSpreadsheet;
-
-class Exception extends \Exception
-{
-}
+<?php
+
+namespace PhpOffice\PhpSpreadsheet;
+
+class Exception extends \Exception
+{
+}

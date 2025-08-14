@@ -1,11 +1,11 @@
-<?php
-namespace Aws\Exception;
-
-/**
- * Class CryptoPolyfillException
- * @package Aws\Exception
- */
-class CryptoPolyfillException extends \RuntimeException
-{
-
-}
+<?php
+namespace Aws\Exception;
+
+/**
+ * Class CryptoPolyfillException
+ * @package Aws\Exception
+ */
+class CryptoPolyfillException extends \RuntimeException
+{
+
+}

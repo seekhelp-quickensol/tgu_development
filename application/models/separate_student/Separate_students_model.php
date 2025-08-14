@@ -1,697 +1,697 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
-class Separate_students_model extends CI_Model{ 
-	public function get_my_all_result(){
-		$this->db->where('is_deleted','0');	
-		$this->db->where('status','1');	
-		$this->db->where('created_on BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 DAY)');	
-		$this->db->where('student_id',$this->session->userdata('separate_student_id'));	
-		$this->db->order_by('year_sem','ASC');
-		$result = $this->db->get('tbl_separate_student_exam_results');
-		return $result->result();
-	}
-
-	public function get_single_marksheet(){
-		$this->db->select('tbl_separate_student_marksheet.*,tbl_separate_student_exam_results.result,tbl_separate_student_exam_results.examination_month,tbl_separate_student_exam_results.examination_year,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.mother_name,tbl_separate_student.date_of_birth,tbl_course.course_name,tbl_course.id as course_id,tbl_stream.stream_name,tbl_session.session_name,tbl_session.pre_session');
-		$this->db->where('tbl_separate_student_marksheet.is_deleted','0');
-		$this->db->where('tbl_separate_student_marksheet.status','1');
-		$this->db->where('tbl_separate_student_exam_results.is_deleted','0');
-		$this->db->where('tbl_separate_student_marksheet.id',$this->uri->segment(2));
-		$this->db->join('tbl_separate_student_exam_results','tbl_separate_student_exam_results.id = tbl_separate_student_marksheet.result_id');
-		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_marksheet.student_id');
-		$this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
-		$this->db->join('tbl_session','tbl_session.id = tbl_separate_student.session_id');
-		$result = $this->db->get('tbl_separate_student_marksheet');
-		return $result->row();
-	} 
-	public function get_migration_certificate(){
-		$this->db->select("tbl_separate_student_migration.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_course.course_name,tbl_course.sort_name,tbl_session.session_start_date");
-		$this->db->where("tbl_separate_student_migration.is_deleted","0");
-		$this->db->where('tbl_separate_student_migration.payment_status',"1");
-		$this->db->where("tbl_separate_student_migration.student_id",$this->session->userdata("separate_student_id"));
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_migration.student_id");
-		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id"); 
-		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id"); 
-		$result = $this->db->get("tbl_separate_student_migration")->row();
-		return $result;
-	}
-
-	public function set_pay_migration_certificate_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("separate_student_id"),
-			"amount"		=> '500',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		); 
-		$this->db->insert("tbl_separate_student_migration",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_separate_student_migration.id,tbl_separate_student_migration.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
-		$this->db->where("tbl_separate_student_migration.id",$id);
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_migration.student_id");
-
-		$result = $this->db->get("tbl_separate_student_migration")->row();
-		return $result;
-	}
-
-	public function update_migration_certificate_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_separate_student_migration',$data);
-			}
-		}
-	}
-
-
-	public function get_transfer_certificate(){
-		$this->db->select("tbl_separate_student_transfer.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_separate_student.gender,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_separate_student_transfer.is_deleted","0");
-		$this->db->where('tbl_separate_student_transfer.payment_status',"1");
-		$this->db->where("tbl_separate_student_transfer.student_id",$this->session->userdata("separate_student_id"));
-		
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_transfer.student_id");
-		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
-
-		$result = $this->db->get("tbl_separate_student_transfer")->row();
-		return $result;
-	}
-
-
-	public function set_pay_transfer_certificate_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("separate_student_id"),
-			"amount"		=> '500',
-			//"amount"		=> '1',
-			"created_on"	=>date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_separate_student_transfer",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_separate_student_transfer.id,tbl_separate_student_transfer.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
-
-		$this->db->where("tbl_separate_student_transfer.id",$id);
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_transfer.student_id");
- 		$result = $this->db->get("tbl_separate_student_transfer")->row();
-
-		return $result;
-
-	}	
-
-
-	public function update_transfer_certificate_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_separate_student_transfer',$data);
-			}
-		}	
-	}
-
-	public function get_recommendation_letter(){
-		$this->db->select("tbl_separate_student_recommendation_letter.*,tbl_separate_student.student_name,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_separate_student_recommendation_letter.is_deleted","0");
-		$this->db->where("tbl_separate_student_recommendation_letter.payment_status","1");
-		$this->db->where("tbl_separate_student_recommendation_letter.student_id",$this->session->userdata("separate_student_id"));
-		
-
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_recommendation_letter.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
-
-		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
-
-
-		$result = $this->db->get("tbl_separate_student_recommendation_letter")->row();
-		return $result;
-	}
-
-	public function set_pay_recommendation_letter_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("separate_student_id"),
-			"amount"		=> '1000',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_separate_student_recommendation_letter",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_separate_student_recommendation_letter.id,tbl_separate_student_recommendation_letter.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
-
-		$this->db->where("tbl_separate_student_recommendation_letter.id",$id);
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_recommendation_letter.student_id");
- 		$result = $this->db->get("tbl_separate_student_recommendation_letter")->row();
-
-		return $result;
-	}
-
-	public function update_recommendation_letter_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_separate_student_recommendation_letter',$data);
-			}
-		}	
-	}
-
-	public function get_degree(){
-		$this->db->select("tbl_separate_student_degree.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_separate_student_degree.is_deleted","0");
-		$this->db->where("tbl_separate_student_degree.payment_status","1");
-		$this->db->where("tbl_separate_student_degree.student_id",$this->session->userdata("separate_student_id"));
-		
-
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_degree.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
-
-		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
-
-
-		$result = $this->db->get("tbl_separate_student_degree")->row();
-		return $result;
-	}
-
-
-	public function set_pay_degree_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("separate_student_id"),
-			"amount"		=> '1500',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_separate_student_degree",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_separate_student_degree.id,tbl_separate_student_degree.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
-
-		$this->db->where("tbl_separate_student_degree.id",$id);
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_degree.student_id");
- 		$result = $this->db->get("tbl_separate_student_degree")->row();
-
-		return $result;
-	}
-
-	public function update_degree_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_separate_student_degree',$data);
-			}
-		}	
-	}
-
-	public function get_student_division_for_degree(){
-		$this->db->select("examination_year,internal_max_marks,internal_marks_obtained,external_max_marks,external_marks_obtained,created_on");
-		$this->db->where("is_deleted","0");
-		$this->db->where("status","1");
-		$this->db->where("result","0");
-		$this->db->where("student_id",$this->session->userdata("separate_student_id"));
-		$this->db->order_by("id","DESC");
-		$result = $this->db->get("tbl_separate_student_exam_results")->result();
-		$total_marks = 0;
-		$gained_marks = 0;
-		foreach($result as $res){
-			$total_marks = $total_marks + $res->internal_max_marks + $res->external_max_marks;
-			$gained_marks = $gained_marks + $res->internal_marks_obtained + $res->external_marks_obtained;
-		}
-	
-		$percentage = $total_marks == 0?0:($gained_marks/$total_marks)*100;
-
-		if($percentage >= 60){
-			$data["division"] = "First Division";
-		}else if($percentage < 60 & $percentage>= 45){
-			$data["division"] = "Second Division";
-		}else{
-			$data["division"] = "Third Division";
-		}
-		$data["date"] = $result[0]->examination_year;
-		return $data;
-	}
-
-	//10/11/2021
-
-	public function get_student_provisional_degree(){
-		$this->db->select("tbl_separate_student_provisional_degree.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_separate_student_provisional_degree.is_deleted","0");
-		$this->db->where("tbl_separate_student_provisional_degree.payment_status","1");
-
-		$this->db->where("tbl_separate_student_provisional_degree.student_id",$this->session->userdata("separate_student_id"));
-		
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_provisional_degree.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
-
-		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
-
-
-		$result = $this->db->get("tbl_separate_student_provisional_degree")->row();
-		return $result;
-	}
-
-	public function set_pay_provisional_degree_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("separate_student_id"),
-			"amount"		=> '1100',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_separate_student_provisional_degree",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_separate_student_provisional_degree.id,tbl_separate_student_provisional_degree.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
-
-		$this->db->where("tbl_separate_student_provisional_degree.id",$id);
-		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_provisional_degree.student_id");
- 		$result = $this->db->get("tbl_separate_student_provisional_degree")->row();
- 		return $result;
-	}
-
-	public function update_provisional_degree_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_separate_student_provisional_degree',$data);
-			}
-		}	
-	}
-	
-	 
-	public function get_all_student_marksheet(){
-		$profile = $this->get_student_profile();
-		if($profile->course_id == "23"){
-			$this->db->where('student_id',$this->session->userdata('separate_student_id'));
-			//$this->db->where('issue_status','1');
-			$this->db->where('status','1');
-			$this->db->where('is_deleted','0');
-			$this->db->order_by('id','DESC');
-			$result = $this->db->get('tbl_separate_student_course_work_result');
-			return $result->result();
-		}else{ //echo $this->session->userdata("student_id");exit;
-		    $this->db->select('tbl_separate_student_marksheet.*');
-			$this->db->where("tbl_separate_student_marksheet.is_deleted","0");
-			$this->db->where("tbl_separate_student_marksheet.status","1");
-			$this->db->where("tbl_separate_student_exam_results.is_deleted","0");
-			$this->db->where("tbl_separate_student_exam_results.status","1"); 
-			$this->db->where("tbl_separate_student_marksheet.student_id",$this->session->userdata("separate_student_id"));
-			$this->db->join('tbl_separate_student_exam_results','tbl_separate_student_exam_results.id = tbl_separate_student_marksheet.result_id');
-			$result = $this->db->get("tbl_separate_student_marksheet")->result();
-			return $result;
-		}
-	}
-	
-	
-	public function get_student_profile(){
-		$this->db->where('id',$this->session->userdata('separate_student_id'));
-		$result = $this->db->get('tbl_separate_student');
-		return $result->row();
-	}
-	public function get_student_profile_with_course(){
-	    $this->db->select('tbl_separate_student.*,tbl_course.print_name,tbl_stream.stream_name');
-		$this->db->where('tbl_separate_student.id',$this->session->userdata('separate_student_id'));
-		$this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
-		$result = $this->db->get('tbl_separate_student');
-		return $result->row();
-	}
-	
-	public function get_stu_data($id){
-		$this->db->select("tbl_separate_student.*,tbl_stream.stream_name");
-		$this->db->where("tbl_separate_student.id",$id);
-		$this->db->join("tbl_stream","tbl_stream.id=tbl_separate_student.stream_id");
-		$result = $this->db->get("tbl_separate_student");
-		return $result->row();
-	}
-	public function get_single_coursework_marksheet(){ 
-		$this->db->select('tbl_separate_student_course_work_result.* ,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_stream.stream_name');
-		$this->db->where('tbl_separate_student_course_work_result.is_deleted','0');
-		$this->db->where('tbl_separate_student_course_work_result.status','1');
-		$this->db->where('tbl_separate_student_course_work_result.id',$this->uri->segment(2));
-		$this->db->where('tbl_separate_student_course_work_result.student_id',$this->session->userdata('separate_student_id'));
-		//$this->db->where('tbl_separate_student_course_work_result.issue_status','1');
-		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_course_work_result.student_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
-		$query = $this->db->get('tbl_separate_student_course_work_result');
-		$row = $query->row();
-		return $row;
-	} 
-	public function get_course_work_marksheet_details($id){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('result_id',$id);
-		$result = $this->db->get('tbl_separate_course_work_result_details');
-     	$result = $result->result();
-        return $result;		  
-	}
-	public function get_my_qualification(){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('student_id',$this->session->userdata('separate_student_id'));
-		$result = $this->db->get('tbl_separate_student_qualification');
-		return $result->row();
-	}
-	public function upload_old_migration_certificate($file){ 
-		if(isset($_REQUEST['save'])){
-			if($_REQUEST['save'] == 'Upload_Form'){ 
-				$data = array(
-					'old_migration' 	=> $file,
-				);
-				$this->db->where('id',$this->session->userdata('separate_student_id'));
-				$this->db->update('tbl_separate_student',$data);
-			}
-		}
-
-	}
-	
-    public function set_transcript_form(){  
-        $data = array(
-                'enrollment_number' => $this->input->post('enrollment_number'),
-                'registration_id'   => $this->session->userdata('separate_student_id'),
-                'course_duration'   => $this->input->post('duration_of_course'),
-                'year_of_passing'   => $this->input->post('year_of_passing'),
-                'payment_date'      => date("Y-m-d"),
-                'created_on'        => date("Y-m-d H:i:s")
-            );
-            $this->db->insert('tbl_separate_transcript',$data);
-            $last_id = $this->db->insert_id();
-            $sem = $this->input->post('sem');
-            $subject = $this->input->post('subject');
-            $type = $this->input->post('type');
-            $max_mark = $this->input->post('max_mark');
-            $obtained = $this->input->post('obtained');
-            $detail_arr = array();
-            for($i=0;$i<count($sem);$i++){
-                $detail_arr[] = array(
-                        'transcript_id' => $last_id,
-                        'sem'           => $sem[$i],
-                        'subject'       => $subject[$i],
-                        'type'          => $type[$i],
-                        'max_mark'      => $max_mark[$i],
-                        'obtained'      => $obtained[$i],
-                        'created_on'    => date("Y-m-d H:i:s")
-                    );    
-            }
-            if(!empty($detail_arr)){
-                $this->db->insert_batch('tbl_separate_transcript_details',$detail_arr);
-            }
-            return true;
-    }	
-    public function get_transcript(){
-        $this->db->where('registration_id',$this->session->userdata('separate_student_id'));
-        $this->db->where('is_deleted','0');
-        $this->db->where('status','1');
-        $result = $this->db->get('tbl_separate_transcript');
-        return $result->row();
-    }
-    public function get_print_transcript(){
-        $this->db->select('tbl_separate_transcript.*,tbl_separate_transcript_details.sem,tbl_separate_student.student_name,tbl_separate_student.enrollment_number,tbl_course.print_name,tbl_stream.stream_name');
-        $this->db->where('tbl_separate_transcript.registration_id',$this->session->userdata('separate_student_id'));
-        $this->db->where('tbl_separate_transcript.is_deleted','0');
-        $this->db->where('tbl_separate_transcript.status','1');
-        $this->db->where('tbl_separate_transcript.approve_status','1');
-        $this->db->join('tbl_separate_transcript_details','tbl_separate_transcript_details.transcript_id = tbl_separate_transcript.id');
-        $this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_transcript.registration_id');
-        $this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
-        $this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
-        $this->db->group_by('tbl_separate_transcript_details.sem');
-		$this->db->order_by('tbl_separate_transcript_details.sem','DESC');
-        $result = $this->db->get('tbl_separate_transcript');
-        return $result->row();
-    }
-    public function get_this_transcript_subject($sem,$id){  
-		$this->db->where('sem',$sem);
-		$this->db->where('transcript_id',$id);
-		$this->db->order_by('type','DESC');
-		$result = $this->db->get('tbl_separate_transcript_details');
-		return $result->result(); 
-	}  
-	public function get_this_transcript_total($id){ 
-		$this->db->select('sum(obtained) as total_obt,sum(max_mark) as total_mk');
-		$this->db->where('transcript_id',$id);
-		$result = $this->db->get('tbl_separate_transcript_details');
-		return $result->row(); 
-	}
-	public function insert_separate_student_thesis_submission($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("softcopy");
-		}		
-		$data = array(
-	 		          'student_id'   	  => $this->session->userdata('separate_student_id'),
-	 		          'stream_id'         => $student->stream_id,
-	 		          'center_id'         => $student->center_id,
-	 		          'thesis_title'      => $this->input->post('thesis_title'),
-	 		          'softcopy'		  => $file1,
-	 		          'paper_journal1'    => $this->input->post('paper_journal1'),
-	 		          'guide_id'          => $this->input->post('name'),
-			          
-		        );
-
-		if($this->input->post('hidden_id') == ""){
-			$date=array(
-				'created_on'=> date('Y-m-d H:i:s'),
-			);
-			$new_arr=array_merge($data,$date);
-			$this->db->insert('tbl_seprate_thesis',$new_arr);
-			return 1;
-		}else{
-			$this->db->where('id',$this->input->post('hidden_id'));
-			$this->db->update('tbl_seprate_thesis',$data);
-			return 0;
-		}
-	}
-	 public function get_single_separate_thesis(){
-	 	$this->db->select('tbl_seprate_thesis.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_guide_application.name as guide_name');
-		$this->db->where('tbl_seprate_thesis.student_id',$this->session->userdata('separate_student_id'));
-		$this->db->where('tbl_seprate_thesis.is_deleted','0');
-		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_seprate_thesis.student_id');
-		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_seprate_thesis.guide_id');
-		$result = $this->db->get('tbl_seprate_thesis'); 
-	   	return $result->row();
-	  }
-	  public function get_active_separate_thesis_guide_list(){
-	  	$this->db->where('is_deleted','0');
-	  	$this->db->where('status','1');
-	  	$this->db->where('appliation_status','1');
-	  	$result = $this->db->get('tbl_guide_application');
-	  	return $result->result();
-	  }
-	  public function insert_synopsis_submission($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("soft_copy");
-		}		
-		$data = array(
-	 		          'student_id'    => $this->session->userdata('separate_student_id'),
-	 		          'student_name'	  => $student->student_name,
-	 		          'father_name'	      => $student->father_name,
-	 		          'stream_id'         => $student->stream_id,
-	 		          'center_id'         => $student->center_id,
-	 		          'thesis_title'      => $this->input->post('thesis_title'),
-	 		          'soft_copy'		  => $file1,
-	 		          'guide_id'          => $this->input->post('name'),
-			          
-		        );
-
-		if($this->input->post('hidden_id') == ""){
-			$date=array(
-				'created_on'=> date('Y-m-d H:i:s'),
-			);
-			$new_arr=array_merge($data,$date);
-			$this->db->insert('tbl_separate_synopsis',$new_arr);
-			return 1;
-		}else{
-			$this->db->where('id',$this->input->post('hidden_id'));
-			$this->db->update('tbl_separate_synopsis',$data);
-			return 0;
-		}
-	}
-	  public function get_single_synopsis(){
-	 	$this->db->select('tbl_separate_synopsis.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_guide_application.name as guide_name');
-		$this->db->where('tbl_separate_synopsis.student_id',$this->session->userdata('separate_student_id'));
-		$this->db->where('tbl_separate_synopsis.is_deleted','0');
-		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_synopsis.student_id');
-		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_separate_synopsis.guide_id');
-		$result = $this->db->get('tbl_separate_synopsis');
-	   	return $result->row();
-	  }
-	  public function get_active_guide_synopsis_list(){
-	  	$this->db->where('is_deleted','0');
-	  	$this->db->where('status','1');
-	  	$this->db->where('appliation_status','1');
-	  	$result = $this->db->get('tbl_guide_application');
-	  	return $result->result();
-	  }
-	  public function update_student_document($identity_file){
-		$data = array(
-		  'id_number'	      	=> $this->input->post('identity_numer'),
-		  'identity_softcopy'  	=> $identity_file,
-		);
-		$this->db->where('id',$this->session->userdata('separate_student_id'));
-		$this->db->update('tbl_separate_student',$data);
-		return true;
-	  }
-	  public function insert_separate_abstract_report($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("upload_report");
-		}		
-		$data = array(
-					  'student_id'           => $this->session->userdata('separate_student_id'),
-					  'upload_report'	     => $file1,
-			          'remark'               => $this->input->post('remark'),
-					  'created_on'           => date('Y-m-d H:i:s'),
-			          
-		        );
-			$this->db->insert('tbl_separate_abstract',$data);
-			return 1;
-		
-	}
-		public function get_single_abstract_report(){
-		   $this->db->select('tbl_separate_abstract.*,tbl_separate_student.student_name');
-		   $this->db->where('tbl_separate_abstract.student_id',$this->session->userdata('separate_student_id'));
-		   $this->db->where('tbl_separate_abstract.is_deleted','0');
-		   $this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_abstract.student_id');
-		   $result = $this->db->get('tbl_separate_abstract');
-			  return $result->row();
-		 }
-		 public function insert_separate_progress_report($file1){
-			$student = $this->get_student_profile();
-			if($file1 == ""){
-				$file1 = $this->input->post("progress_report");
-			}		
-			$data = array(
-						   'student_id'           => $this->session->userdata('separate_student_id'),
-						   'progress_report'	  => $file1,
-						   'remark'               => $this->input->post('remark'),
-						   'created_on'           => date('Y-m-d H:i:s'),
-					);
-	
-				$this->db->insert('tbl_separate_progress_report',$data);
-				return 1;
-		
-			}
-		
-		public function get_single_progress_report(){
-			$this->db->select('tbl_separate_progress_report.*,tbl_separate_student.student_name');
-			$this->db->where('tbl_separate_progress_report.student_id',$this->session->userdata('separate_student_id'));
-			$this->db->where('tbl_separate_progress_report.is_deleted','0');
-			$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_progress_report.student_id');
-			$result = $this->db->get('tbl_separate_progress_report');
-			   return $result->row();
-		  }
-		  
-		  
-		  public function upload_self_assesment($file){
-			$data = array(
-				'separate_student_id'	=> $this->session->userdata('separate_student_id'),
-				'year_sem' 		=> $this->input->post('year_sem'),
-				'file' 			=> $file,
-				'created_on'	=> date("Y-m-d H:i:s")
-			);
-			$this->db->insert('tbl_separate_student_self_assesments',$data);
-			return true;
-	 }
-	 public function get_my_self_assesment(){
-		$this->db->where('separate_student_id',$this->session->userdata('separate_student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_separate_student_self_assesments');
-		return $result->result();
-	 }
-	 public function upload_teacher_assesment($file){
-		$data = array(
-			'seperate_student_id'	=> $this->session->userdata('separate_student_id'),
-			'year_sem' 		=> $this->input->post('year_sem'),
-			'file' 			=> $file,
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_teacher_assesments_separate_student',$data);
-		return true;
-	}
-	public function get_my_teacher_assesment(){
-		$this->db->where('seperate_student_id',$this->session->userdata('separate_student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_teacher_assesments_separate_student');
-		return $result->result();
-	 
-	}
-
-	public function upload_assignment($file){
-		$data = array(
-			'seperate_student_id'			=> $this->session->userdata('separate_student_id'),
-			'year_sem' 						=> $this->input->post('year_sem'),
-			'assignment_title'				=> $this->input->post('assignment_title'),
-			'file' 							=> $file,
-			'created_on'					=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_assignment_separate_student',$data);
-		return true;
-	 }
-	public function get_assignment(){
-		$this->db->where('seperate_student_id',$this->session->userdata('separate_student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_assignment_separate_student');
-		return $result->result();
-	}
-	public function get_all_ebook(){
-	    $profile = $this->get_student_profile();
-        $this->db->where('is_deleted','0');
-        $this->db->where('course',$profile->course_id);
-        $this->db->where('stream',$profile->stream_id);
-        $this->db->where('year_sem',$profile->course->year_sem);
-        $result = $this->db->get('tbl_ebook_library');
-        return $result->result();
-    }
-	public function get_single_marksheet_result_separate_student(){
-		$this->db->select('tbl_separate_student_course_work_result.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_stream.stream_name');
-		$this->db->where('tbl_separate_student_course_work_result.is_deleted','0');
-        $this->db->where('tbl_separate_student_course_work_result.status','1');
-        //$this->db->where('tbl_separate_student_course_work_result.issue_status','1');
-		$this->db->where('tbl_separate_student_course_work_result.student_id',$this->session->userdata('separate_student_id'));
-		
-		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_course_work_result.student_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
-		
-		$query = $this->db->get('tbl_separate_student_course_work_result');
-		return $query->row();
-	}
-	public function get_course_work_marksheet_details_separate_student($id){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('result_id',$id);
-		$result = $this->db->get('tbl_separate_course_work_result_details');
-     	$result = $result->result();
-        return $result;		  
-	}
-	 
- 
-}
-
-?>
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+class Separate_students_model extends CI_Model{ 
+	public function get_my_all_result(){
+		$this->db->where('is_deleted','0');	
+		$this->db->where('status','1');	
+		$this->db->where('created_on BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 DAY)');	
+		$this->db->where('student_id',$this->session->userdata('separate_student_id'));	
+		$this->db->order_by('year_sem','ASC');
+		$result = $this->db->get('tbl_separate_student_exam_results');
+		return $result->result();
+	}
+
+	public function get_single_marksheet(){
+		$this->db->select('tbl_separate_student_marksheet.*,tbl_separate_student_exam_results.result,tbl_separate_student_exam_results.examination_month,tbl_separate_student_exam_results.examination_year,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.mother_name,tbl_separate_student.date_of_birth,tbl_course.course_name,tbl_course.id as course_id,tbl_stream.stream_name,tbl_session.session_name,tbl_session.pre_session');
+		$this->db->where('tbl_separate_student_marksheet.is_deleted','0');
+		$this->db->where('tbl_separate_student_marksheet.status','1');
+		$this->db->where('tbl_separate_student_exam_results.is_deleted','0');
+		$this->db->where('tbl_separate_student_marksheet.id',$this->uri->segment(2));
+		$this->db->join('tbl_separate_student_exam_results','tbl_separate_student_exam_results.id = tbl_separate_student_marksheet.result_id');
+		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_marksheet.student_id');
+		$this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+		$this->db->join('tbl_session','tbl_session.id = tbl_separate_student.session_id');
+		$result = $this->db->get('tbl_separate_student_marksheet');
+		return $result->row();
+	} 
+	public function get_migration_certificate(){
+		$this->db->select("tbl_separate_student_migration.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_course.course_name,tbl_course.sort_name,tbl_session.session_start_date");
+		$this->db->where("tbl_separate_student_migration.is_deleted","0");
+		$this->db->where('tbl_separate_student_migration.payment_status',"1");
+		$this->db->where("tbl_separate_student_migration.student_id",$this->session->userdata("separate_student_id"));
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_migration.student_id");
+		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id"); 
+		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id"); 
+		$result = $this->db->get("tbl_separate_student_migration")->row();
+		return $result;
+	}
+
+	public function set_pay_migration_certificate_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("separate_student_id"),
+			"amount"		=> '500',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		); 
+		$this->db->insert("tbl_separate_student_migration",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_separate_student_migration.id,tbl_separate_student_migration.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
+		$this->db->where("tbl_separate_student_migration.id",$id);
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_migration.student_id");
+
+		$result = $this->db->get("tbl_separate_student_migration")->row();
+		return $result;
+	}
+
+	public function update_migration_certificate_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_separate_student_migration',$data);
+			}
+		}
+	}
+
+
+	public function get_transfer_certificate(){
+		$this->db->select("tbl_separate_student_transfer.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_separate_student.gender,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_separate_student_transfer.is_deleted","0");
+		$this->db->where('tbl_separate_student_transfer.payment_status',"1");
+		$this->db->where("tbl_separate_student_transfer.student_id",$this->session->userdata("separate_student_id"));
+		
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_transfer.student_id");
+		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
+
+		$result = $this->db->get("tbl_separate_student_transfer")->row();
+		return $result;
+	}
+
+
+	public function set_pay_transfer_certificate_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("separate_student_id"),
+			"amount"		=> '500',
+			//"amount"		=> '1',
+			"created_on"	=>date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_separate_student_transfer",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_separate_student_transfer.id,tbl_separate_student_transfer.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
+
+		$this->db->where("tbl_separate_student_transfer.id",$id);
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_transfer.student_id");
+ 		$result = $this->db->get("tbl_separate_student_transfer")->row();
+
+		return $result;
+
+	}	
+
+
+	public function update_transfer_certificate_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_separate_student_transfer',$data);
+			}
+		}	
+	}
+
+	public function get_recommendation_letter(){
+		$this->db->select("tbl_separate_student_recommendation_letter.*,tbl_separate_student.student_name,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_separate_student_recommendation_letter.is_deleted","0");
+		$this->db->where("tbl_separate_student_recommendation_letter.payment_status","1");
+		$this->db->where("tbl_separate_student_recommendation_letter.student_id",$this->session->userdata("separate_student_id"));
+		
+
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_recommendation_letter.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
+
+		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
+
+
+		$result = $this->db->get("tbl_separate_student_recommendation_letter")->row();
+		return $result;
+	}
+
+	public function set_pay_recommendation_letter_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("separate_student_id"),
+			"amount"		=> '1000',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_separate_student_recommendation_letter",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_separate_student_recommendation_letter.id,tbl_separate_student_recommendation_letter.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
+
+		$this->db->where("tbl_separate_student_recommendation_letter.id",$id);
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_recommendation_letter.student_id");
+ 		$result = $this->db->get("tbl_separate_student_recommendation_letter")->row();
+
+		return $result;
+	}
+
+	public function update_recommendation_letter_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_separate_student_recommendation_letter',$data);
+			}
+		}	
+	}
+
+	public function get_degree(){
+		$this->db->select("tbl_separate_student_degree.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_separate_student_degree.is_deleted","0");
+		$this->db->where("tbl_separate_student_degree.payment_status","1");
+		$this->db->where("tbl_separate_student_degree.student_id",$this->session->userdata("separate_student_id"));
+		
+
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_degree.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
+
+		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
+
+
+		$result = $this->db->get("tbl_separate_student_degree")->row();
+		return $result;
+	}
+
+
+	public function set_pay_degree_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("separate_student_id"),
+			"amount"		=> '1500',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_separate_student_degree",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_separate_student_degree.id,tbl_separate_student_degree.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
+
+		$this->db->where("tbl_separate_student_degree.id",$id);
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_degree.student_id");
+ 		$result = $this->db->get("tbl_separate_student_degree")->row();
+
+		return $result;
+	}
+
+	public function update_degree_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_separate_student_degree',$data);
+			}
+		}	
+	}
+
+	public function get_student_division_for_degree(){
+		$this->db->select("examination_year,internal_max_marks,internal_marks_obtained,external_max_marks,external_marks_obtained,created_on");
+		$this->db->where("is_deleted","0");
+		$this->db->where("status","1");
+		$this->db->where("result","0");
+		$this->db->where("student_id",$this->session->userdata("separate_student_id"));
+		$this->db->order_by("id","DESC");
+		$result = $this->db->get("tbl_separate_student_exam_results")->result();
+		$total_marks = 0;
+		$gained_marks = 0;
+		foreach($result as $res){
+			$total_marks = $total_marks + $res->internal_max_marks + $res->external_max_marks;
+			$gained_marks = $gained_marks + $res->internal_marks_obtained + $res->external_marks_obtained;
+		}
+	
+		$percentage = $total_marks == 0?0:($gained_marks/$total_marks)*100;
+
+		if($percentage >= 60){
+			$data["division"] = "First Division";
+		}else if($percentage < 60 & $percentage>= 45){
+			$data["division"] = "Second Division";
+		}else{
+			$data["division"] = "Third Division";
+		}
+		$data["date"] = $result[0]->examination_year;
+		return $data;
+	}
+
+	//10/11/2021
+
+	public function get_student_provisional_degree(){
+		$this->db->select("tbl_separate_student_provisional_degree.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_separate_student_provisional_degree.is_deleted","0");
+		$this->db->where("tbl_separate_student_provisional_degree.payment_status","1");
+
+		$this->db->where("tbl_separate_student_provisional_degree.student_id",$this->session->userdata("separate_student_id"));
+		
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_provisional_degree.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_separate_student.session_id");
+
+		$this->db->join("tbl_course","tbl_course.id = tbl_separate_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_separate_student.stream_id");
+
+
+		$result = $this->db->get("tbl_separate_student_provisional_degree")->row();
+		return $result;
+	}
+
+	public function set_pay_provisional_degree_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("separate_student_id"),
+			"amount"		=> '1100',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_separate_student_provisional_degree",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_separate_student_provisional_degree.id,tbl_separate_student_provisional_degree.amount,tbl_separate_student.student_name,tbl_separate_student.email,tbl_separate_student.mobile,tbl_separate_student.address");
+
+		$this->db->where("tbl_separate_student_provisional_degree.id",$id);
+		$this->db->join("tbl_separate_student","tbl_separate_student.id = tbl_separate_student_provisional_degree.student_id");
+ 		$result = $this->db->get("tbl_separate_student_provisional_degree")->row();
+ 		return $result;
+	}
+
+	public function update_provisional_degree_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_separate_student_provisional_degree',$data);
+			}
+		}	
+	}
+	
+	 
+	public function get_all_student_marksheet(){
+		$profile = $this->get_student_profile();
+		if($profile->course_id == "23"){
+			$this->db->where('student_id',$this->session->userdata('separate_student_id'));
+			//$this->db->where('issue_status','1');
+			$this->db->where('status','1');
+			$this->db->where('is_deleted','0');
+			$this->db->order_by('id','DESC');
+			$result = $this->db->get('tbl_separate_student_course_work_result');
+			return $result->result();
+		}else{ //echo $this->session->userdata("student_id");exit;
+		    $this->db->select('tbl_separate_student_marksheet.*');
+			$this->db->where("tbl_separate_student_marksheet.is_deleted","0");
+			$this->db->where("tbl_separate_student_marksheet.status","1");
+			$this->db->where("tbl_separate_student_exam_results.is_deleted","0");
+			$this->db->where("tbl_separate_student_exam_results.status","1"); 
+			$this->db->where("tbl_separate_student_marksheet.student_id",$this->session->userdata("separate_student_id"));
+			$this->db->join('tbl_separate_student_exam_results','tbl_separate_student_exam_results.id = tbl_separate_student_marksheet.result_id');
+			$result = $this->db->get("tbl_separate_student_marksheet")->result();
+			return $result;
+		}
+	}
+	
+	
+	public function get_student_profile(){
+		$this->db->where('id',$this->session->userdata('separate_student_id'));
+		$result = $this->db->get('tbl_separate_student');
+		return $result->row();
+	}
+	public function get_student_profile_with_course(){
+	    $this->db->select('tbl_separate_student.*,tbl_course.print_name,tbl_stream.stream_name');
+		$this->db->where('tbl_separate_student.id',$this->session->userdata('separate_student_id'));
+		$this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+		$result = $this->db->get('tbl_separate_student');
+		return $result->row();
+	}
+	
+	public function get_stu_data($id){
+		$this->db->select("tbl_separate_student.*,tbl_stream.stream_name");
+		$this->db->where("tbl_separate_student.id",$id);
+		$this->db->join("tbl_stream","tbl_stream.id=tbl_separate_student.stream_id");
+		$result = $this->db->get("tbl_separate_student");
+		return $result->row();
+	}
+	public function get_single_coursework_marksheet(){ 
+		$this->db->select('tbl_separate_student_course_work_result.* ,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_stream.stream_name');
+		$this->db->where('tbl_separate_student_course_work_result.is_deleted','0');
+		$this->db->where('tbl_separate_student_course_work_result.status','1');
+		$this->db->where('tbl_separate_student_course_work_result.id',$this->uri->segment(2));
+		$this->db->where('tbl_separate_student_course_work_result.student_id',$this->session->userdata('separate_student_id'));
+		//$this->db->where('tbl_separate_student_course_work_result.issue_status','1');
+		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_course_work_result.student_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+		$query = $this->db->get('tbl_separate_student_course_work_result');
+		$row = $query->row();
+		return $row;
+	} 
+	public function get_course_work_marksheet_details($id){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('result_id',$id);
+		$result = $this->db->get('tbl_separate_course_work_result_details');
+     	$result = $result->result();
+        return $result;		  
+	}
+	public function get_my_qualification(){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('student_id',$this->session->userdata('separate_student_id'));
+		$result = $this->db->get('tbl_separate_student_qualification');
+		return $result->row();
+	}
+	public function upload_old_migration_certificate($file){ 
+		if(isset($_REQUEST['save'])){
+			if($_REQUEST['save'] == 'Upload_Form'){ 
+				$data = array(
+					'old_migration' 	=> $file,
+				);
+				$this->db->where('id',$this->session->userdata('separate_student_id'));
+				$this->db->update('tbl_separate_student',$data);
+			}
+		}
+
+	}
+	
+    public function set_transcript_form(){  
+        $data = array(
+                'enrollment_number' => $this->input->post('enrollment_number'),
+                'registration_id'   => $this->session->userdata('separate_student_id'),
+                'course_duration'   => $this->input->post('duration_of_course'),
+                'year_of_passing'   => $this->input->post('year_of_passing'),
+                'payment_date'      => date("Y-m-d"),
+                'created_on'        => date("Y-m-d H:i:s")
+            );
+            $this->db->insert('tbl_separate_transcript',$data);
+            $last_id = $this->db->insert_id();
+            $sem = $this->input->post('sem');
+            $subject = $this->input->post('subject');
+            $type = $this->input->post('type');
+            $max_mark = $this->input->post('max_mark');
+            $obtained = $this->input->post('obtained');
+            $detail_arr = array();
+            for($i=0;$i<count($sem);$i++){
+                $detail_arr[] = array(
+                        'transcript_id' => $last_id,
+                        'sem'           => $sem[$i],
+                        'subject'       => $subject[$i],
+                        'type'          => $type[$i],
+                        'max_mark'      => $max_mark[$i],
+                        'obtained'      => $obtained[$i],
+                        'created_on'    => date("Y-m-d H:i:s")
+                    );    
+            }
+            if(!empty($detail_arr)){
+                $this->db->insert_batch('tbl_separate_transcript_details',$detail_arr);
+            }
+            return true;
+    }	
+    public function get_transcript(){
+        $this->db->where('registration_id',$this->session->userdata('separate_student_id'));
+        $this->db->where('is_deleted','0');
+        $this->db->where('status','1');
+        $result = $this->db->get('tbl_separate_transcript');
+        return $result->row();
+    }
+    public function get_print_transcript(){
+        $this->db->select('tbl_separate_transcript.*,tbl_separate_transcript_details.sem,tbl_separate_student.student_name,tbl_separate_student.enrollment_number,tbl_course.print_name,tbl_stream.stream_name');
+        $this->db->where('tbl_separate_transcript.registration_id',$this->session->userdata('separate_student_id'));
+        $this->db->where('tbl_separate_transcript.is_deleted','0');
+        $this->db->where('tbl_separate_transcript.status','1');
+        $this->db->where('tbl_separate_transcript.approve_status','1');
+        $this->db->join('tbl_separate_transcript_details','tbl_separate_transcript_details.transcript_id = tbl_separate_transcript.id');
+        $this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_transcript.registration_id');
+        $this->db->join('tbl_course','tbl_course.id = tbl_separate_student.course_id');
+        $this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+        $this->db->group_by('tbl_separate_transcript_details.sem');
+		$this->db->order_by('tbl_separate_transcript_details.sem','DESC');
+        $result = $this->db->get('tbl_separate_transcript');
+        return $result->row();
+    }
+    public function get_this_transcript_subject($sem,$id){  
+		$this->db->where('sem',$sem);
+		$this->db->where('transcript_id',$id);
+		$this->db->order_by('type','DESC');
+		$result = $this->db->get('tbl_separate_transcript_details');
+		return $result->result(); 
+	}  
+	public function get_this_transcript_total($id){ 
+		$this->db->select('sum(obtained) as total_obt,sum(max_mark) as total_mk');
+		$this->db->where('transcript_id',$id);
+		$result = $this->db->get('tbl_separate_transcript_details');
+		return $result->row(); 
+	}
+	public function insert_separate_student_thesis_submission($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("softcopy");
+		}		
+		$data = array(
+	 		          'student_id'   	  => $this->session->userdata('separate_student_id'),
+	 		          'stream_id'         => $student->stream_id,
+	 		          'center_id'         => $student->center_id,
+	 		          'thesis_title'      => $this->input->post('thesis_title'),
+	 		          'softcopy'		  => $file1,
+	 		          'paper_journal1'    => $this->input->post('paper_journal1'),
+	 		          'guide_id'          => $this->input->post('name'),
+			          
+		        );
+
+		if($this->input->post('hidden_id') == ""){
+			$date=array(
+				'created_on'=> date('Y-m-d H:i:s'),
+			);
+			$new_arr=array_merge($data,$date);
+			$this->db->insert('tbl_seprate_thesis',$new_arr);
+			return 1;
+		}else{
+			$this->db->where('id',$this->input->post('hidden_id'));
+			$this->db->update('tbl_seprate_thesis',$data);
+			return 0;
+		}
+	}
+	 public function get_single_separate_thesis(){
+	 	$this->db->select('tbl_seprate_thesis.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_guide_application.name as guide_name');
+		$this->db->where('tbl_seprate_thesis.student_id',$this->session->userdata('separate_student_id'));
+		$this->db->where('tbl_seprate_thesis.is_deleted','0');
+		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_seprate_thesis.student_id');
+		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_seprate_thesis.guide_id');
+		$result = $this->db->get('tbl_seprate_thesis'); 
+	   	return $result->row();
+	  }
+	  public function get_active_separate_thesis_guide_list(){
+	  	$this->db->where('is_deleted','0');
+	  	$this->db->where('status','1');
+	  	$this->db->where('appliation_status','1');
+	  	$result = $this->db->get('tbl_guide_application');
+	  	return $result->result();
+	  }
+	  public function insert_synopsis_submission($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("soft_copy");
+		}		
+		$data = array(
+	 		          'student_id'    => $this->session->userdata('separate_student_id'),
+	 		          'student_name'	  => $student->student_name,
+	 		          'father_name'	      => $student->father_name,
+	 		          'stream_id'         => $student->stream_id,
+	 		          'center_id'         => $student->center_id,
+	 		          'thesis_title'      => $this->input->post('thesis_title'),
+	 		          'soft_copy'		  => $file1,
+	 		          'guide_id'          => $this->input->post('name'),
+			          
+		        );
+
+		if($this->input->post('hidden_id') == ""){
+			$date=array(
+				'created_on'=> date('Y-m-d H:i:s'),
+			);
+			$new_arr=array_merge($data,$date);
+			$this->db->insert('tbl_separate_synopsis',$new_arr);
+			return 1;
+		}else{
+			$this->db->where('id',$this->input->post('hidden_id'));
+			$this->db->update('tbl_separate_synopsis',$data);
+			return 0;
+		}
+	}
+	  public function get_single_synopsis(){
+	 	$this->db->select('tbl_separate_synopsis.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_guide_application.name as guide_name');
+		$this->db->where('tbl_separate_synopsis.student_id',$this->session->userdata('separate_student_id'));
+		$this->db->where('tbl_separate_synopsis.is_deleted','0');
+		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_synopsis.student_id');
+		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_separate_synopsis.guide_id');
+		$result = $this->db->get('tbl_separate_synopsis');
+	   	return $result->row();
+	  }
+	  public function get_active_guide_synopsis_list(){
+	  	$this->db->where('is_deleted','0');
+	  	$this->db->where('status','1');
+	  	$this->db->where('appliation_status','1');
+	  	$result = $this->db->get('tbl_guide_application');
+	  	return $result->result();
+	  }
+	  public function update_student_document($identity_file){
+		$data = array(
+		  'id_number'	      	=> $this->input->post('identity_numer'),
+		  'identity_softcopy'  	=> $identity_file,
+		);
+		$this->db->where('id',$this->session->userdata('separate_student_id'));
+		$this->db->update('tbl_separate_student',$data);
+		return true;
+	  }
+	  public function insert_separate_abstract_report($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("upload_report");
+		}		
+		$data = array(
+					  'student_id'           => $this->session->userdata('separate_student_id'),
+					  'upload_report'	     => $file1,
+			          'remark'               => $this->input->post('remark'),
+					  'created_on'           => date('Y-m-d H:i:s'),
+			          
+		        );
+			$this->db->insert('tbl_separate_abstract',$data);
+			return 1;
+		
+	}
+		public function get_single_abstract_report(){
+		   $this->db->select('tbl_separate_abstract.*,tbl_separate_student.student_name');
+		   $this->db->where('tbl_separate_abstract.student_id',$this->session->userdata('separate_student_id'));
+		   $this->db->where('tbl_separate_abstract.is_deleted','0');
+		   $this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_abstract.student_id');
+		   $result = $this->db->get('tbl_separate_abstract');
+			  return $result->row();
+		 }
+		 public function insert_separate_progress_report($file1){
+			$student = $this->get_student_profile();
+			if($file1 == ""){
+				$file1 = $this->input->post("progress_report");
+			}		
+			$data = array(
+						   'student_id'           => $this->session->userdata('separate_student_id'),
+						   'progress_report'	  => $file1,
+						   'remark'               => $this->input->post('remark'),
+						   'created_on'           => date('Y-m-d H:i:s'),
+					);
+	
+				$this->db->insert('tbl_separate_progress_report',$data);
+				return 1;
+		
+			}
+		
+		public function get_single_progress_report(){
+			$this->db->select('tbl_separate_progress_report.*,tbl_separate_student.student_name');
+			$this->db->where('tbl_separate_progress_report.student_id',$this->session->userdata('separate_student_id'));
+			$this->db->where('tbl_separate_progress_report.is_deleted','0');
+			$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_progress_report.student_id');
+			$result = $this->db->get('tbl_separate_progress_report');
+			   return $result->row();
+		  }
+		  
+		  
+		  public function upload_self_assesment($file){
+			$data = array(
+				'separate_student_id'	=> $this->session->userdata('separate_student_id'),
+				'year_sem' 		=> $this->input->post('year_sem'),
+				'file' 			=> $file,
+				'created_on'	=> date("Y-m-d H:i:s")
+			);
+			$this->db->insert('tbl_separate_student_self_assesments',$data);
+			return true;
+	 }
+	 public function get_my_self_assesment(){
+		$this->db->where('separate_student_id',$this->session->userdata('separate_student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_separate_student_self_assesments');
+		return $result->result();
+	 }
+	 public function upload_teacher_assesment($file){
+		$data = array(
+			'seperate_student_id'	=> $this->session->userdata('separate_student_id'),
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'file' 			=> $file,
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_teacher_assesments_separate_student',$data);
+		return true;
+	}
+	public function get_my_teacher_assesment(){
+		$this->db->where('seperate_student_id',$this->session->userdata('separate_student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_teacher_assesments_separate_student');
+		return $result->result();
+	 
+	}
+
+	public function upload_assignment($file){
+		$data = array(
+			'seperate_student_id'			=> $this->session->userdata('separate_student_id'),
+			'year_sem' 						=> $this->input->post('year_sem'),
+			'assignment_title'				=> $this->input->post('assignment_title'),
+			'file' 							=> $file,
+			'created_on'					=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_assignment_separate_student',$data);
+		return true;
+	 }
+	public function get_assignment(){
+		$this->db->where('seperate_student_id',$this->session->userdata('separate_student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_assignment_separate_student');
+		return $result->result();
+	}
+	public function get_all_ebook(){
+	    $profile = $this->get_student_profile();
+        $this->db->where('is_deleted','0');
+        $this->db->where('course',$profile->course_id);
+        $this->db->where('stream',$profile->stream_id);
+        $this->db->where('year_sem',$profile->course->year_sem);
+        $result = $this->db->get('tbl_ebook_library');
+        return $result->result();
+    }
+	public function get_single_marksheet_result_separate_student(){
+		$this->db->select('tbl_separate_student_course_work_result.*,tbl_separate_student.student_name,tbl_separate_student.father_name,tbl_separate_student.enrollment_number,tbl_stream.stream_name');
+		$this->db->where('tbl_separate_student_course_work_result.is_deleted','0');
+        $this->db->where('tbl_separate_student_course_work_result.status','1');
+        //$this->db->where('tbl_separate_student_course_work_result.issue_status','1');
+		$this->db->where('tbl_separate_student_course_work_result.student_id',$this->session->userdata('separate_student_id'));
+		
+		$this->db->join('tbl_separate_student','tbl_separate_student.id = tbl_separate_student_course_work_result.student_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_separate_student.stream_id');
+		
+		$query = $this->db->get('tbl_separate_student_course_work_result');
+		return $query->row();
+	}
+	public function get_course_work_marksheet_details_separate_student($id){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('result_id',$id);
+		$result = $this->db->get('tbl_separate_course_work_result_details');
+     	$result = $result->result();
+        return $result;		  
+	}
+	 
+ 
+}
+
+?>

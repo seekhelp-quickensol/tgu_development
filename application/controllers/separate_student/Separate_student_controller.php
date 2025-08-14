@@ -1,580 +1,580 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
-class Separate_student_controller extends CI_Controller { 
-	public function __construct(){
-		parent::__construct();
-		$this->is_logged(); 
-	}
-	public function is_logged(){
-		if($this->session->userdata('separate_student_id') == ""){
-			redirect('student-login');
-		}
-	}
-
-	public function student_dashboard(){
-		// $data['admission'] = $this->Students_model->get_admission_form();
-		$this->load->view('separate_student/index');
-	}
-
-	public function id_card_print(){
-		$data['admission'] = $this->Separate_student_model->get_admission_form();
-		$this->load->view('separate_student/id_card',$data);
-	}
-	
-	public function s_admission_form_print(){
-		$data['admission'] = $this->Separate_student_model->get_admission_form();
-		$this->load->view('separate_student/print_admission_form',$data);
-	}
-
-	public function s_logout(){
-		$this->session->unset_userdata("separate_student_id");
-		redirect("/");
-	}
-
-	public function e_library(){
-		$this->load->view('separate_student/e_library');
-	}
-
-
-	public function student_password(){
-		$this->form_validation->set_rules('old_password','old password','required');
-		$this->form_validation->set_rules('new_password','New password','required');
-		if($this->form_validation->run() === FALSE){
-			$this->load->view('separate_student/password');
-		}else{
-			$result = $this->Separate_student_model->set_password();
-			$this->session->set_flashdata('success','Password updated successfully');
-			redirect('s_student_password');
-		}
-	}
-
-	public function get_old_password(){
-		$this->Separate_student_model->get_old_password();
-	}
-
-	public function my_results(){
-		$data['result'] = $this->Separate_students_model->get_my_all_result();
-		$this->load->view('separate_student/my_results',$data);
-	}
-
-	public function show_my_result(){
-		$data['student'] = $this->Separate_student_model->get_this_result();
-		 $this->load->view('marksheet/SimpleFunctions');
-		$this->load->view('separate_student/show_my_result',$data);
-	}
-    
-    
-    // 10/15/2021 
-
-	public function s_migration_certificate(){
-		$data["migration"] = $this->Separate_students_model->get_migration_certificate();
-		$this->load->view("separate_student/migration_certificate",$data);
-	}
-
-	public function s_transfer_certificate(){
-		$data["transfer"] = $this->Separate_students_model->get_transfer_certificate();
-		$this->load->view("separate_student/transfer_certificate",$data);
-	}
-
-	public function s_latter_of_recommendation(){
-		$data["recommendation"] = $this->Separate_students_model->get_recommendation_letter();
-		$this->load->view("separate_student/latter_of_recommendation",$data);
-	}
-
-	public function s_student_degree(){
-		$data["degree"] = $this->Separate_students_model->get_degree();
-		$data["division"] = $this->Separate_students_model->get_student_division_for_degree();
-		$this->load->view("separate_student/student_degree",$data);
-	}
-
-	public function s_student_provisional_degree(){
-		$data["provisional_degree"] = $this->Separate_students_model->get_student_provisional_degree();
-		$data["division"] = $this->Separate_students_model->get_student_division_for_degree();
-		
-		$this->load->view("separate_student/student_provisional_degree",$data);
-	}
-	
-	
-	// 3 - 11 - 2021
-
-
-	public function marksheets(){
-		$data["result"] = $this->Separate_students_model->get_all_student_marksheet();
-		//print_r($data["result"]);exit();
-		$this->load->view('marksheet/SimpleFunctions');
-		$this->load->view("separate_student/marksheets",$data);
-	}
-	public function s_show_my_course_marksheet(){ 
-	/*	ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);*/
-		$data['marksheet_result'] = $this->Separate_students_model->get_single_coursework_marksheet(); 
-		//print_r($data['marksheet_result']);exit;
-		$data['subject_details'] = $this->Separate_students_model->get_course_work_marksheet_details($this->uri->segment(2));
-		$this->load->view('marksheet/SimpleFunctions');
-		$this->load->view('marksheet/separate_coursework_marksheet',$data); 
-	}
-
-	public function show_my_marksheet(){
-		$data['marksheet'] = $this->Separate_students_model->get_single_marksheet(); 
-		if(!empty($data['marksheet']) and $data['marksheet']->student_id == $this->session->userdata("separate_student_id")){
-		     $this->load->view('marksheet/SimpleFunctions');
-			$this->load->view('marksheet/separate_student_marksheet',$data);
-		}
-	}
-	public function provisional_registration_letter(){
-		$stu = $this->Separate_students_model->get_student_profile();
-		
-		if(!empty($stu) && $stu->course_id==23){
-			
-			$data["stu_data"] = $this->Separate_students_model->get_stu_data($stu->id);
-			$this->load->view("separate_student/provisional_registration_letter",$data);
-		}
-		else{
-			redirect(base_url());
-		}
-	}
-	public function student_qualification_details(){
-		$this->form_validation->set_rules('student','student','required');	
-		if($this->form_validation->run() === FALSE){
-			$data['qualification'] = $this->Separate_students_model->get_my_qualification();
-			$this->load->view('separate_student/student_qualification_details',$data);
-		}else{
-			$secondary_marksheet ='';
-			if($_FILES['secondary_marksheet']['name'] !=""){
-				$secondary_marksheet = $this->Digitalocean_model->upload_photo($filename="secondary_marksheet",$path="images/qualification/");
-				/*
-				$tmp = explode('.', $_FILES['secondary_marksheet']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/qualification",
-					'allowed_types' => "jpg|jpeg|png|pdf",
-					'file_name'		=> $this->input->post('student_id')."-secondary".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('secondary_marksheet')){
-					$data = $this->upload->data();				
-					$secondary_marksheet = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$sr_secondary_marksheet ='';
-			if($_FILES['sr_secondary_marksheet']['name'] !=""){
-				$sr_secondary_marksheet = $this->Digitalocean_model->upload_photo($filename="sr_secondary_marksheet",$path="images/qualification/");
-				/*$tmp = explode('.', $_FILES['sr_secondary_marksheet']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/qualification",
-					'allowed_types' => "jpg|jpeg|png|pdf",
-					'file_name'	=> $this->input->post('student_id')."-sr_secondary".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('sr_secondary_marksheet')){
-					$data = $this->upload->data();				
-					$sr_secondary_marksheet = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$graduation_marksheet ='';
-			if($_FILES['graduation_marksheet']['name'] !=""){
-				$graduation_marksheet = $this->Digitalocean_model->upload_photo($filename="graduation_marksheet",$path="images/qualification/");
-				/*
-				$tmp = explode('.', $_FILES['graduation_marksheet']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/qualification",
-					'allowed_types' => "jpg|jpeg|png|pdf",
-					'file_name'	=> $this->input->post('student_id')."-graduation".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('graduation_marksheet')){
-					$data = $this->upload->data();				
-					$graduation_marksheet = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$post_graduation_marksheet ='';
-			if($_FILES['post_graduation_marksheet']['name'] !=""){
-				$post_graduation_marksheet = $this->Digitalocean_model->upload_photo($filename="post_graduation_marksheet",$path="images/qualification/");
-				/*
-				$tmp = explode('.', $_FILES['post_graduation_marksheet']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/qualification",
-					'allowed_types' => "jpg|jpeg|png|pdf",
-					'file_name'	=> $this->input->post('student_id')."-pg".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('post_graduation_marksheet')){
-					$data = $this->upload->data();				
-					$post_graduation_marksheet = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$other_qualification_marksheet ='';
-			if($_FILES['other_qualification_marksheet']['name'] !=""){
-				$other_qualification_marksheet = $this->Digitalocean_model->upload_photo($filename="other_qualification_marksheet",$path="images/qualification/");
-				/*
-				$tmp = explode('.', $_FILES['other_qualification_marksheet']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/qualification",
-					'allowed_types' => "jpg|jpeg|png|pdf",
-					'file_name'	=> $this->input->post('student_id')."-oth".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('other_qualification_marksheet')){
-					$data = $this->upload->data();				
-					$other_qualification_marksheet = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$signature ='';
-			if($_FILES['signature']['name'] !=""){
-				$signature = $this->Digitalocean_model->upload_photo($filename="signature",$path="images/signature/");
-				/*
-				$tmp = explode('.', $_FILES['signature']['name']);
-				$ext = end($tmp);
-				$config = array(
-					'upload_path' 	=> "images/signature",
-					'allowed_types' => "jpg|jpeg|png",
-					'file_name'	=> $this->input->post('student_id')."-sin".".".$ext,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('signature')){
-					$data = $this->upload->data();				
-					$signature = $data['file_name'];	
-				}else{ 
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-			}
-			$result = $this->Students_model->update_qualification($secondary_marksheet,$sr_secondary_marksheet,$graduation_marksheet,$post_graduation_marksheet,$other_qualification_marksheet,$signature);
-			$this->session->set_flashdata('success','Details updated successfully!');
-			redirect('student-qualification-details');
-		}
-	}
-	public function upload_old_migration_certificate(){
-		if($this->input->post('save') == "Upload_Form"){
-			$file="";
-			$allowed = array('pdf', 'png', 'jpg');
-			$filename = $_FILES['userfile']['name'];
-			$ext = pathinfo($filename, PATHINFO_EXTENSION);
-			if (!in_array($ext, $allowed)) {
-				die('error');
-			}
-			$file = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/migration_certificate/");
-			/*$config = array(
-				'upload_path'   =>"uploads/migration_certificate",
-				'allowed_types' =>"gif|jpg|png|jpeg",
-				'encrypt_name'  =>true,
-			);
-			$this->upload->initialize($config);
-			if ($this->upload->do_upload('userfile')){
-				$data= $this->upload->data();
-				$file= $data['file_name'];
-			}else{ 
-				$error= array('error'=> $this->upload->display_errors());
-				$this->upload->display_errors();
-			}*/
-			// $result=$this->Admin_model->add_course($file);
-		}
-			// echo $file;exit();
-			$this->Separate_students_model->upload_old_migration_certificate($file);
-			$this->session->set_flashdata('success','Migration certificatt uploaded successfully!');
-			redirect('s-migration-certificate');
-    }
-    public function s_transcript_application(){
-	   $this->form_validation->set_rules('enrollment_number','enrollment number','required');	
-		if($this->form_validation->run() === FALSE){ 
-    	    $data['transcript'] = $this->Separate_students_model->get_transcript();
-    	    $data['student'] = $this->Separate_students_model->get_student_profile_with_course();
-    	    $this->load->view('separate_student/transcript_application',$data);
-		}else{
-		    $this->Separate_students_model->set_transcript_form();
-		    $this->session->set_flashdata('success','Transcript application submitted successfull!');
-		    redirect('s_transcript_application');
-		}
-	}
-	public function transcript_payment(){
-	    $data['transcript'] = $this->Separate_students_model->get_transcript();
-	    $this->load->view('separate_student/transcript_payment',$data);
-	}
-	public function s_print_transcript(){
-	    $data['transcript'] = $this->Separate_students_model->get_print_transcript();
-	    $this->load->view('separate_student/print_transcript',$data);
-	}
-	public function s_thesis_submission(){
-		$this->form_validation->set_rules('thesis_title','Thesis Title','required');
-		if($this->form_validation->run() === FALSE){
-			$data['single_thesis'] = $this->Separate_students_model->get_single_separate_thesis();
-			$data['guide_data'] = $this->Separate_students_model->get_active_separate_thesis_guide_list();
-			$this->load->view('separate_student/thesis_separate_student_submission_form',$data);
-		}else{
-			$file1 ='';
-			$file1 = $this->Digitalocean_model->upload_photo($filename="userfile2",$path="images/thesis/");
-			/*$config = array(
-				'upload_path' 	=> "images/thesis",
-				'allowed_types' => "*",
-				'encrypt_name'	=> true,
-			);
-
-			$this->upload->initialize($config);
-			if($this->upload->do_upload('userfile2')){
-				$data = $this->upload->data();				
-				$file1 = $data['file_name'];
-					
-			}else{
-				$error = array('error' => $this->upload->display_errors());	
-				$this->upload->display_errors();
-			
-			}*/
-			$res = $this->Separate_students_model->insert_separate_student_thesis_submission($file1);
-			if($res == 1){
-				$this->session->set_flashdata("success","data added successfully!");
-			}
-			else{
-			      $this->session->set_flashdata('sucess', 'Data updated successfully!!');
-			}	
-			redirect ('s-thesis_submission');
-		}
-	}
-	public function s_synopsis_submission(){
-		$this->form_validation->set_rules('thesis_title','Thesis Title','required');
-		if($this->form_validation->run() === FALSE){
-			$data['single_synopsis'] = $this->Separate_students_model->get_single_synopsis();
-			$data['guide'] = $this->Separate_students_model->get_active_guide_synopsis_list();
-			$this->load->view('separate_student/separate_synopsis_submission_form',$data);
-		}else{
-			$file1 ='';
-			$file1 = $this->Digitalocean_model->upload_photo($filename="userfile1",$path="images/thesis/");
-			/*$config = array(
-				'upload_path' 	=> "images/thesis",
-				'allowed_types' => "*",
-				'encrypt_name'	=> true,
-			);
-
-			$this->upload->initialize($config);
-			if($this->upload->do_upload('userfile1')){
-				$data = $this->upload->data();				
-				$file1 = $data['file_name'];
-					
-			}else{
-				$error = array('error' => $this->upload->display_errors());	
-				$this->upload->display_errors();
-			
-			}*/
-			$res = $this->Separate_students_model->insert_synopsis_submission($file1);
-			if($res == 1){
-				$this->session->set_flashdata("success","data added successfully!");
-			}
-			else{
-			      $this->session->set_flashdata('sucess', 'Data updated successfully!!');
-			}	
-			redirect ('s-synopsis_submission');
-		}
-	}
-	public function update_document(){
-		$this->form_validation->set_rules('identity_numer','Identity numer','required');
-		if($this->form_validation->run() === FALSE){
-			$this->load->view('separate_student/update_document');
-		}else{
-			$identity_file = "";
-			
-			if($_FILES['identity_file']['name'] !=""){
-				$identity_file = $this->Digitalocean_model->upload_photo($filename="identity_file",$path="images/separate_student_identity_softcopy/");
-				/*
-				$config = array(
-					'upload_path' 	=> "images/separate_student_identity_softcopy/",
-					'allowed_types' => "*",
-					'encrypt_name' => TRUE,
-				);			
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('identity_file')){
-					$data = $this->upload->data();				
-					$identity_file = $data['file_name'];	
-				}else{ 
-					$identity_file = $this->input->post('old_identity_file');
-				}*/
-			}
-			$res = $this->Separate_students_model->update_student_document($identity_file);
-			$this->session->set_flashdata("success","Document updated successfully!");
-			redirect ('s_student_dashboard');
-		}
-	}
-		public function s_abstract_report(){
-			$this->form_validation->set_rules('validate','Upload Report','required');
-			if($this->form_validation->run() === FALSE){
-				$data['single_abstract'] = $this->Separate_students_model->get_single_abstract_report();
-				$this->load->view('separate_student/separate_abstract_report_form',$data);
-			}else{
-				$file1 ='';
-				$file1 = $this->Digitalocean_model->upload_photo($filename="userfile2",$path="images/abstract/");
-				/*
-				$config = array(
-					'upload_path' 	=> "images/abstract",
-					'allowed_types' => "*",
-					'encrypt_name'	=> true,
-				);
-	
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('userfile2')){
-					$data = $this->upload->data();				
-					$file1 = $data['file_name'];
-						
-				}else{
-					$error = array('error' => $this->upload->display_errors());	
-					echo $this->upload->display_errors();exit();
-					$this->upload->display_errors();
-				
-				}*/
-				$res = $this->Separate_students_model->insert_separate_abstract_report($file1);
-				if($res == 1){
-					$this->session->set_flashdata("success","data added successfully!");
-				}
-				redirect ('s-abstract_report');
-			}
-		}
-		public function s_progress_report(){
-			$this->form_validation->set_rules('validate','Upload Progress Report','required');
-			if($this->form_validation->run() === FALSE){
-				$data['single_progress_report'] = $this->Separate_students_model->get_single_progress_report();
-				$this->load->view('separate_student/separate_progress_report_form',$data);
-			}else{
-				$file1 ='';
-				$file1 = $this->Digitalocean_model->upload_photo($filename="userfile1",$path="images/progress_report/");
-				/*
-				$config = array(
-					'upload_path' 	=> "images/progress_report",
-					'allowed_types' => "*",
-					'encrypt_name'	=> true,
-				);
-	
-				$this->upload->initialize($config);
-				if($this->upload->do_upload('userfile1')){
-					$data = $this->upload->data();				
-					$file1 = $data['file_name'];
-						
-				}else{
-					$error = array('error' => $this->upload->display_errors());	
-					$this->upload->display_errors();
-				}*/
-				$res = $this->Separate_students_model->insert_separate_progress_report($file1);
-				if($res == 1){
-					$this->session->set_flashdata("success","data added successfully!");
-				}
-				redirect ('s-progress_report');
-			}
-		}
-		public function upload_assessment_seperate_student(){
-			if($this->input->post('save') == "Upload Form"){
-				$self_assement = "";
-				if($_FILES['userfile']['name'] !=""){ 
-					$allowed = array('pdf', 'png', 'jpg');
-					$filename = $_FILES['userfile']['name'];
-					$ext = pathinfo($filename, PATHINFO_EXTENSION);
-					if (!in_array($ext, $allowed)) {
-						die ('error');
-					}
-
-
-					$tmp = explode('.', $_FILES['userfile']['name']);
-					$ext = end($tmp);
-					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
-					$self_assement = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/self_assement/");
-					/*
-					$config = array(
-						'upload_path' 	=> "uploads/assessment_form_seperate_student/self_assement",
-						'allowed_types' => "*",
-						'file_name'	=> $name.".".$ext,
-					);			
-					$this->upload->initialize($config);
-					if($this->upload->do_upload('userfile')){
-						$data = $this->upload->data();				
-						$self_assement = $data['file_name'];	
-					}else{ 
-						$error = array('error' => $this->upload->display_errors());	
-						$this->upload->display_errors();
-					}*/
-				}
-				$this->Separate_students_model->upload_self_assesment($self_assement);
-				$this->session->set_flashdata('success','Assesment uploaded successfully!');
-				redirect('upload_assessment_seperate_student');
-			}
-			if($this->input->post('teacher') == "Upload Form"){
-				$teacher_assement = "";
-				if($_FILES['userfile']['name'] !=""){
-					$teacher_assement = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/teacher_assement/");
-					/*
-					$tmp = explode('.', $_FILES['userfile']['name']);
-					$ext = end($tmp);
-					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
-					$config = array(
-						'upload_path' 	=> "uploads/assessment_form_seperate_student/teacher_assement",
-						'allowed_types' => "*",
-						'file_name'	=> $name.".".$ext,
-					);			
-					$this->upload->initialize($config);
-					if($this->upload->do_upload('userfile')){
-						$data = $this->upload->data();				
-						$teacher_assement = $data['file_name'];	
-					}else{ 
-						$error = array('error' => $this->upload->display_errors());	
-						$this->upload->display_errors();
-					}*/
-				}
-				$this->Separate_students_model->upload_teacher_assesment($teacher_assement);
-				$this->session->set_flashdata('success','Assesment uploaded successfully!');
-				redirect('upload_assessment_seperate_student');
-			}
-			if($this->input->post('assignement') == "Upload Form"){
-				$assignment = "";
-				if($_FILES['userfile']['name'] !=""){
-					$assignment = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/assignment/");
-					/*
-					$tmp = explode('.', $_FILES['userfile']['name']);
-					$ext = end($tmp);
-					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
-					$config = array(
-						'upload_path' 	=> "uploads/assessment_form_seperate_student/assignment",
-						'allowed_types' => "*",
-						'file_name'	=> $name.".".$ext,
-					);			
-					$this->upload->initialize($config);
-					if($this->upload->do_upload('userfile')){
-						$data = $this->upload->data();				
-						$assignment = $data['file_name'];	
-					}else{ 
-						$error = array('error' => $this->upload->display_errors());	
-						print_r($this->upload->display_errors());
-					}*/
-				}
-				$this->Separate_students_model->upload_assignment($assignment);
-				$this->session->set_flashdata('success','Assignment uploaded successfully!');
-				redirect('upload_assessment_seperate_student');
-			}
-			$data['student'] = $this->Students_model->get_this_result();
-			$data['self_assement'] = $this->Separate_students_model->get_my_self_assesment();
-			$data['teacher_assement'] = $this->Separate_students_model->get_my_teacher_assesment();
-			$data['assignment'] = $this->Separate_students_model->get_assignment();
-			$this->load->view('separate_student/upload_assessment_seperate_student',$data);
-		}
-	    public function e_book_list(){
-			$data['book'] = $this->Separate_students_model->get_all_ebook();
-			$this->load->view('separate_student/e_book_list',$data);
-		}
-		public function course_work_result_separate_student(){	 
-			$data['marksheet_result'] = $this->Separate_students_model->get_single_marksheet_result_separate_student();	
-			$this->load->view('separate_student/SimpleFunctions');
-			$this->load->view('separate_student/print_course_work_marksheet_separate_student',$data);
-		} 
-	}
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+class Separate_student_controller extends CI_Controller { 
+	public function __construct(){
+		parent::__construct();
+		$this->is_logged(); 
+	}
+	public function is_logged(){
+		if($this->session->userdata('separate_student_id') == ""){
+			redirect('student-login');
+		}
+	}
+
+	public function student_dashboard(){
+		// $data['admission'] = $this->Students_model->get_admission_form();
+		$this->load->view('separate_student/index');
+	}
+
+	public function id_card_print(){
+		$data['admission'] = $this->Separate_student_model->get_admission_form();
+		$this->load->view('separate_student/id_card',$data);
+	}
+	
+	public function s_admission_form_print(){
+		$data['admission'] = $this->Separate_student_model->get_admission_form();
+		$this->load->view('separate_student/print_admission_form',$data);
+	}
+
+	public function s_logout(){
+		$this->session->unset_userdata("separate_student_id");
+		redirect("/");
+	}
+
+	public function e_library(){
+		$this->load->view('separate_student/e_library');
+	}
+
+
+	public function student_password(){
+		$this->form_validation->set_rules('old_password','old password','required');
+		$this->form_validation->set_rules('new_password','New password','required');
+		if($this->form_validation->run() === FALSE){
+			$this->load->view('separate_student/password');
+		}else{
+			$result = $this->Separate_student_model->set_password();
+			$this->session->set_flashdata('success','Password updated successfully');
+			redirect('s_student_password');
+		}
+	}
+
+	public function get_old_password(){
+		$this->Separate_student_model->get_old_password();
+	}
+
+	public function my_results(){
+		$data['result'] = $this->Separate_students_model->get_my_all_result();
+		$this->load->view('separate_student/my_results',$data);
+	}
+
+	public function show_my_result(){
+		$data['student'] = $this->Separate_student_model->get_this_result();
+		 $this->load->view('marksheet/SimpleFunctions');
+		$this->load->view('separate_student/show_my_result',$data);
+	}
+    
+    
+    // 10/15/2021 
+
+	public function s_migration_certificate(){
+		$data["migration"] = $this->Separate_students_model->get_migration_certificate();
+		$this->load->view("separate_student/migration_certificate",$data);
+	}
+
+	public function s_transfer_certificate(){
+		$data["transfer"] = $this->Separate_students_model->get_transfer_certificate();
+		$this->load->view("separate_student/transfer_certificate",$data);
+	}
+
+	public function s_latter_of_recommendation(){
+		$data["recommendation"] = $this->Separate_students_model->get_recommendation_letter();
+		$this->load->view("separate_student/latter_of_recommendation",$data);
+	}
+
+	public function s_student_degree(){
+		$data["degree"] = $this->Separate_students_model->get_degree();
+		$data["division"] = $this->Separate_students_model->get_student_division_for_degree();
+		$this->load->view("separate_student/student_degree",$data);
+	}
+
+	public function s_student_provisional_degree(){
+		$data["provisional_degree"] = $this->Separate_students_model->get_student_provisional_degree();
+		$data["division"] = $this->Separate_students_model->get_student_division_for_degree();
+		
+		$this->load->view("separate_student/student_provisional_degree",$data);
+	}
+	
+	
+	// 3 - 11 - 2021
+
+
+	public function marksheets(){
+		$data["result"] = $this->Separate_students_model->get_all_student_marksheet();
+		//print_r($data["result"]);exit();
+		$this->load->view('marksheet/SimpleFunctions');
+		$this->load->view("separate_student/marksheets",$data);
+	}
+	public function s_show_my_course_marksheet(){ 
+	/*	ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);*/
+		$data['marksheet_result'] = $this->Separate_students_model->get_single_coursework_marksheet(); 
+		//print_r($data['marksheet_result']);exit;
+		$data['subject_details'] = $this->Separate_students_model->get_course_work_marksheet_details($this->uri->segment(2));
+		$this->load->view('marksheet/SimpleFunctions');
+		$this->load->view('marksheet/separate_coursework_marksheet',$data); 
+	}
+
+	public function show_my_marksheet(){
+		$data['marksheet'] = $this->Separate_students_model->get_single_marksheet(); 
+		if(!empty($data['marksheet']) and $data['marksheet']->student_id == $this->session->userdata("separate_student_id")){
+		     $this->load->view('marksheet/SimpleFunctions');
+			$this->load->view('marksheet/separate_student_marksheet',$data);
+		}
+	}
+	public function provisional_registration_letter(){
+		$stu = $this->Separate_students_model->get_student_profile();
+		
+		if(!empty($stu) && $stu->course_id==23){
+			
+			$data["stu_data"] = $this->Separate_students_model->get_stu_data($stu->id);
+			$this->load->view("separate_student/provisional_registration_letter",$data);
+		}
+		else{
+			redirect(base_url());
+		}
+	}
+	public function student_qualification_details(){
+		$this->form_validation->set_rules('student','student','required');	
+		if($this->form_validation->run() === FALSE){
+			$data['qualification'] = $this->Separate_students_model->get_my_qualification();
+			$this->load->view('separate_student/student_qualification_details',$data);
+		}else{
+			$secondary_marksheet ='';
+			if($_FILES['secondary_marksheet']['name'] !=""){
+				$secondary_marksheet = $this->Digitalocean_model->upload_photo($filename="secondary_marksheet",$path="images/qualification/");
+				/*
+				$tmp = explode('.', $_FILES['secondary_marksheet']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/qualification",
+					'allowed_types' => "jpg|jpeg|png|pdf",
+					'file_name'		=> $this->input->post('student_id')."-secondary".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('secondary_marksheet')){
+					$data = $this->upload->data();				
+					$secondary_marksheet = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$sr_secondary_marksheet ='';
+			if($_FILES['sr_secondary_marksheet']['name'] !=""){
+				$sr_secondary_marksheet = $this->Digitalocean_model->upload_photo($filename="sr_secondary_marksheet",$path="images/qualification/");
+				/*$tmp = explode('.', $_FILES['sr_secondary_marksheet']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/qualification",
+					'allowed_types' => "jpg|jpeg|png|pdf",
+					'file_name'	=> $this->input->post('student_id')."-sr_secondary".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('sr_secondary_marksheet')){
+					$data = $this->upload->data();				
+					$sr_secondary_marksheet = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$graduation_marksheet ='';
+			if($_FILES['graduation_marksheet']['name'] !=""){
+				$graduation_marksheet = $this->Digitalocean_model->upload_photo($filename="graduation_marksheet",$path="images/qualification/");
+				/*
+				$tmp = explode('.', $_FILES['graduation_marksheet']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/qualification",
+					'allowed_types' => "jpg|jpeg|png|pdf",
+					'file_name'	=> $this->input->post('student_id')."-graduation".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('graduation_marksheet')){
+					$data = $this->upload->data();				
+					$graduation_marksheet = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$post_graduation_marksheet ='';
+			if($_FILES['post_graduation_marksheet']['name'] !=""){
+				$post_graduation_marksheet = $this->Digitalocean_model->upload_photo($filename="post_graduation_marksheet",$path="images/qualification/");
+				/*
+				$tmp = explode('.', $_FILES['post_graduation_marksheet']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/qualification",
+					'allowed_types' => "jpg|jpeg|png|pdf",
+					'file_name'	=> $this->input->post('student_id')."-pg".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('post_graduation_marksheet')){
+					$data = $this->upload->data();				
+					$post_graduation_marksheet = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$other_qualification_marksheet ='';
+			if($_FILES['other_qualification_marksheet']['name'] !=""){
+				$other_qualification_marksheet = $this->Digitalocean_model->upload_photo($filename="other_qualification_marksheet",$path="images/qualification/");
+				/*
+				$tmp = explode('.', $_FILES['other_qualification_marksheet']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/qualification",
+					'allowed_types' => "jpg|jpeg|png|pdf",
+					'file_name'	=> $this->input->post('student_id')."-oth".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('other_qualification_marksheet')){
+					$data = $this->upload->data();				
+					$other_qualification_marksheet = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$signature ='';
+			if($_FILES['signature']['name'] !=""){
+				$signature = $this->Digitalocean_model->upload_photo($filename="signature",$path="images/signature/");
+				/*
+				$tmp = explode('.', $_FILES['signature']['name']);
+				$ext = end($tmp);
+				$config = array(
+					'upload_path' 	=> "images/signature",
+					'allowed_types' => "jpg|jpeg|png",
+					'file_name'	=> $this->input->post('student_id')."-sin".".".$ext,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('signature')){
+					$data = $this->upload->data();				
+					$signature = $data['file_name'];	
+				}else{ 
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+			}
+			$result = $this->Students_model->update_qualification($secondary_marksheet,$sr_secondary_marksheet,$graduation_marksheet,$post_graduation_marksheet,$other_qualification_marksheet,$signature);
+			$this->session->set_flashdata('success','Details updated successfully!');
+			redirect('student-qualification-details');
+		}
+	}
+	public function upload_old_migration_certificate(){
+		if($this->input->post('save') == "Upload_Form"){
+			$file="";
+			$allowed = array('pdf', 'png', 'jpg');
+			$filename = $_FILES['userfile']['name'];
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			if (!in_array($ext, $allowed)) {
+				die('error');
+			}
+			$file = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/migration_certificate/");
+			/*$config = array(
+				'upload_path'   =>"uploads/migration_certificate",
+				'allowed_types' =>"gif|jpg|png|jpeg",
+				'encrypt_name'  =>true,
+			);
+			$this->upload->initialize($config);
+			if ($this->upload->do_upload('userfile')){
+				$data= $this->upload->data();
+				$file= $data['file_name'];
+			}else{ 
+				$error= array('error'=> $this->upload->display_errors());
+				$this->upload->display_errors();
+			}*/
+			// $result=$this->Admin_model->add_course($file);
+		}
+			// echo $file;exit();
+			$this->Separate_students_model->upload_old_migration_certificate($file);
+			$this->session->set_flashdata('success','Migration certificatt uploaded successfully!');
+			redirect('s-migration-certificate');
+    }
+    public function s_transcript_application(){
+	   $this->form_validation->set_rules('enrollment_number','enrollment number','required');	
+		if($this->form_validation->run() === FALSE){ 
+    	    $data['transcript'] = $this->Separate_students_model->get_transcript();
+    	    $data['student'] = $this->Separate_students_model->get_student_profile_with_course();
+    	    $this->load->view('separate_student/transcript_application',$data);
+		}else{
+		    $this->Separate_students_model->set_transcript_form();
+		    $this->session->set_flashdata('success','Transcript application submitted successfull!');
+		    redirect('s_transcript_application');
+		}
+	}
+	public function transcript_payment(){
+	    $data['transcript'] = $this->Separate_students_model->get_transcript();
+	    $this->load->view('separate_student/transcript_payment',$data);
+	}
+	public function s_print_transcript(){
+	    $data['transcript'] = $this->Separate_students_model->get_print_transcript();
+	    $this->load->view('separate_student/print_transcript',$data);
+	}
+	public function s_thesis_submission(){
+		$this->form_validation->set_rules('thesis_title','Thesis Title','required');
+		if($this->form_validation->run() === FALSE){
+			$data['single_thesis'] = $this->Separate_students_model->get_single_separate_thesis();
+			$data['guide_data'] = $this->Separate_students_model->get_active_separate_thesis_guide_list();
+			$this->load->view('separate_student/thesis_separate_student_submission_form',$data);
+		}else{
+			$file1 ='';
+			$file1 = $this->Digitalocean_model->upload_photo($filename="userfile2",$path="images/thesis/");
+			/*$config = array(
+				'upload_path' 	=> "images/thesis",
+				'allowed_types' => "*",
+				'encrypt_name'	=> true,
+			);
+
+			$this->upload->initialize($config);
+			if($this->upload->do_upload('userfile2')){
+				$data = $this->upload->data();				
+				$file1 = $data['file_name'];
+					
+			}else{
+				$error = array('error' => $this->upload->display_errors());	
+				$this->upload->display_errors();
+			
+			}*/
+			$res = $this->Separate_students_model->insert_separate_student_thesis_submission($file1);
+			if($res == 1){
+				$this->session->set_flashdata("success","data added successfully!");
+			}
+			else{
+			      $this->session->set_flashdata('sucess', 'Data updated successfully!!');
+			}	
+			redirect ('s-thesis_submission');
+		}
+	}
+	public function s_synopsis_submission(){
+		$this->form_validation->set_rules('thesis_title','Thesis Title','required');
+		if($this->form_validation->run() === FALSE){
+			$data['single_synopsis'] = $this->Separate_students_model->get_single_synopsis();
+			$data['guide'] = $this->Separate_students_model->get_active_guide_synopsis_list();
+			$this->load->view('separate_student/separate_synopsis_submission_form',$data);
+		}else{
+			$file1 ='';
+			$file1 = $this->Digitalocean_model->upload_photo($filename="userfile1",$path="images/thesis/");
+			/*$config = array(
+				'upload_path' 	=> "images/thesis",
+				'allowed_types' => "*",
+				'encrypt_name'	=> true,
+			);
+
+			$this->upload->initialize($config);
+			if($this->upload->do_upload('userfile1')){
+				$data = $this->upload->data();				
+				$file1 = $data['file_name'];
+					
+			}else{
+				$error = array('error' => $this->upload->display_errors());	
+				$this->upload->display_errors();
+			
+			}*/
+			$res = $this->Separate_students_model->insert_synopsis_submission($file1);
+			if($res == 1){
+				$this->session->set_flashdata("success","data added successfully!");
+			}
+			else{
+			      $this->session->set_flashdata('sucess', 'Data updated successfully!!');
+			}	
+			redirect ('s-synopsis_submission');
+		}
+	}
+	public function update_document(){
+		$this->form_validation->set_rules('identity_numer','Identity numer','required');
+		if($this->form_validation->run() === FALSE){
+			$this->load->view('separate_student/update_document');
+		}else{
+			$identity_file = "";
+			
+			if($_FILES['identity_file']['name'] !=""){
+				$identity_file = $this->Digitalocean_model->upload_photo($filename="identity_file",$path="images/separate_student_identity_softcopy/");
+				/*
+				$config = array(
+					'upload_path' 	=> "images/separate_student_identity_softcopy/",
+					'allowed_types' => "*",
+					'encrypt_name' => TRUE,
+				);			
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('identity_file')){
+					$data = $this->upload->data();				
+					$identity_file = $data['file_name'];	
+				}else{ 
+					$identity_file = $this->input->post('old_identity_file');
+				}*/
+			}
+			$res = $this->Separate_students_model->update_student_document($identity_file);
+			$this->session->set_flashdata("success","Document updated successfully!");
+			redirect ('s_student_dashboard');
+		}
+	}
+		public function s_abstract_report(){
+			$this->form_validation->set_rules('validate','Upload Report','required');
+			if($this->form_validation->run() === FALSE){
+				$data['single_abstract'] = $this->Separate_students_model->get_single_abstract_report();
+				$this->load->view('separate_student/separate_abstract_report_form',$data);
+			}else{
+				$file1 ='';
+				$file1 = $this->Digitalocean_model->upload_photo($filename="userfile2",$path="images/abstract/");
+				/*
+				$config = array(
+					'upload_path' 	=> "images/abstract",
+					'allowed_types' => "*",
+					'encrypt_name'	=> true,
+				);
+	
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('userfile2')){
+					$data = $this->upload->data();				
+					$file1 = $data['file_name'];
+						
+				}else{
+					$error = array('error' => $this->upload->display_errors());	
+					echo $this->upload->display_errors();exit();
+					$this->upload->display_errors();
+				
+				}*/
+				$res = $this->Separate_students_model->insert_separate_abstract_report($file1);
+				if($res == 1){
+					$this->session->set_flashdata("success","data added successfully!");
+				}
+				redirect ('s-abstract_report');
+			}
+		}
+		public function s_progress_report(){
+			$this->form_validation->set_rules('validate','Upload Progress Report','required');
+			if($this->form_validation->run() === FALSE){
+				$data['single_progress_report'] = $this->Separate_students_model->get_single_progress_report();
+				$this->load->view('separate_student/separate_progress_report_form',$data);
+			}else{
+				$file1 ='';
+				$file1 = $this->Digitalocean_model->upload_photo($filename="userfile1",$path="images/progress_report/");
+				/*
+				$config = array(
+					'upload_path' 	=> "images/progress_report",
+					'allowed_types' => "*",
+					'encrypt_name'	=> true,
+				);
+	
+				$this->upload->initialize($config);
+				if($this->upload->do_upload('userfile1')){
+					$data = $this->upload->data();				
+					$file1 = $data['file_name'];
+						
+				}else{
+					$error = array('error' => $this->upload->display_errors());	
+					$this->upload->display_errors();
+				}*/
+				$res = $this->Separate_students_model->insert_separate_progress_report($file1);
+				if($res == 1){
+					$this->session->set_flashdata("success","data added successfully!");
+				}
+				redirect ('s-progress_report');
+			}
+		}
+		public function upload_assessment_seperate_student(){
+			if($this->input->post('save') == "Upload Form"){
+				$self_assement = "";
+				if($_FILES['userfile']['name'] !=""){ 
+					$allowed = array('pdf', 'png', 'jpg');
+					$filename = $_FILES['userfile']['name'];
+					$ext = pathinfo($filename, PATHINFO_EXTENSION);
+					if (!in_array($ext, $allowed)) {
+						die ('error');
+					}
+
+
+					$tmp = explode('.', $_FILES['userfile']['name']);
+					$ext = end($tmp);
+					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
+					$self_assement = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/self_assement/");
+					/*
+					$config = array(
+						'upload_path' 	=> "uploads/assessment_form_seperate_student/self_assement",
+						'allowed_types' => "*",
+						'file_name'	=> $name.".".$ext,
+					);			
+					$this->upload->initialize($config);
+					if($this->upload->do_upload('userfile')){
+						$data = $this->upload->data();				
+						$self_assement = $data['file_name'];	
+					}else{ 
+						$error = array('error' => $this->upload->display_errors());	
+						$this->upload->display_errors();
+					}*/
+				}
+				$this->Separate_students_model->upload_self_assesment($self_assement);
+				$this->session->set_flashdata('success','Assesment uploaded successfully!');
+				redirect('upload_assessment_seperate_student');
+			}
+			if($this->input->post('teacher') == "Upload Form"){
+				$teacher_assement = "";
+				if($_FILES['userfile']['name'] !=""){
+					$teacher_assement = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/teacher_assement/");
+					/*
+					$tmp = explode('.', $_FILES['userfile']['name']);
+					$ext = end($tmp);
+					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
+					$config = array(
+						'upload_path' 	=> "uploads/assessment_form_seperate_student/teacher_assement",
+						'allowed_types' => "*",
+						'file_name'	=> $name.".".$ext,
+					);			
+					$this->upload->initialize($config);
+					if($this->upload->do_upload('userfile')){
+						$data = $this->upload->data();				
+						$teacher_assement = $data['file_name'];	
+					}else{ 
+						$error = array('error' => $this->upload->display_errors());	
+						$this->upload->display_errors();
+					}*/
+				}
+				$this->Separate_students_model->upload_teacher_assesment($teacher_assement);
+				$this->session->set_flashdata('success','Assesment uploaded successfully!');
+				redirect('upload_assessment_seperate_student');
+			}
+			if($this->input->post('assignement') == "Upload Form"){
+				$assignment = "";
+				if($_FILES['userfile']['name'] !=""){
+					$assignment = $this->Digitalocean_model->upload_photo($filename="userfile",$path="uploads/assessment_form_seperate_student/assignment/");
+					/*
+					$tmp = explode('.', $_FILES['userfile']['name']);
+					$ext = end($tmp);
+					$name = $this->session->userdata('student_id')."-".$this->input->post('year_sem');
+					$config = array(
+						'upload_path' 	=> "uploads/assessment_form_seperate_student/assignment",
+						'allowed_types' => "*",
+						'file_name'	=> $name.".".$ext,
+					);			
+					$this->upload->initialize($config);
+					if($this->upload->do_upload('userfile')){
+						$data = $this->upload->data();				
+						$assignment = $data['file_name'];	
+					}else{ 
+						$error = array('error' => $this->upload->display_errors());	
+						print_r($this->upload->display_errors());
+					}*/
+				}
+				$this->Separate_students_model->upload_assignment($assignment);
+				$this->session->set_flashdata('success','Assignment uploaded successfully!');
+				redirect('upload_assessment_seperate_student');
+			}
+			$data['student'] = $this->Students_model->get_this_result();
+			$data['self_assement'] = $this->Separate_students_model->get_my_self_assesment();
+			$data['teacher_assement'] = $this->Separate_students_model->get_my_teacher_assesment();
+			$data['assignment'] = $this->Separate_students_model->get_assignment();
+			$this->load->view('separate_student/upload_assessment_seperate_student',$data);
+		}
+	    public function e_book_list(){
+			$data['book'] = $this->Separate_students_model->get_all_ebook();
+			$this->load->view('separate_student/e_book_list',$data);
+		}
+		public function course_work_result_separate_student(){	 
+			$data['marksheet_result'] = $this->Separate_students_model->get_single_marksheet_result_separate_student();	
+			$this->load->view('separate_student/SimpleFunctions');
+			$this->load->view('separate_student/print_course_work_marksheet_separate_student',$data);
+		} 
+	}

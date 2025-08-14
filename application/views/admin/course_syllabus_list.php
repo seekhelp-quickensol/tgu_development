@@ -1,215 +1,215 @@
-<?php include('header.php');?>
-<style>
-
- .panel-group .panel {
-        border-radius: 0;
-        box-shadow: none;
-        border-color: #EEEEEE;
-    }
-
-    .panel-default > .panel-heading {
-        padding: 0;
-        border-radius: 0;
-        color: #212121;
-        background-color: #FAFAFA;
-        border-color: #EEEEEE;
-    }
-
-    .panel-title {
-        font-size: 14px;
-    }
-
-    .panel-title > a {
-        display: block;
-        padding: 15px;
-        text-decoration: none;
-    }
-
-    .more-less {
-        float: right;
-        color: #212121;
-    }
-
-    .panel-default > .panel-heading + .panel-collapse > .panel-body {
-        border-top-color: #EEEEEE;
-    }
-
- 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  /*background-color: #dddddd;*/
-} 
- 
-.align_center{
-	text-align: center;
-}
-.image_height{
-	height: 30px;
-	width: 30px;
-}
-</style>
-		 <div class="container-fluid page-body-wrapper">
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-			  <div class="card-header custom-header">
-			  <h4 class="card-title">Syllabus List</h4>
-			  </div>
-                <div class="card-body">
-					<hr>
-	
-				<form method="get">
-					<div class="row">
-						<div class="col-md-3">
-							<label>Select Faculty</label>
-							<!-- <input type="text" autocomplete="off" name="syllabus" id="syllabus" class="form-control" placeholder="Search Syllabus List"> -->
-							<select name="faculty" id="faculty" class="form-control js-example-basic-single select2_single">
-								<option value="">Select Faculty</option>
-								<?php if(!empty($faculty)){foreach($faculty as $result_result){ ?>
-								<option value="<?=$result_result->id;?>" <?php if(isset($_GET['faculty']) && $_GET['faculty'] == $result_result->id){?> selected="selected"<?php }?>><?=$result_result->faculty_name;?> [<?=$result_result->faculty_code;?>]</option>
-								<?php }} ?>
-							</select>
-						</div> 
-						<div class="col-md-3">
-							<label>Enter Course Name</label>
-							<input type="text" placeholder="Enter Course to Search" name="course_name" id="course_name" class="form-control" value="<?php if(isset($_GET['course_name'])){ echo $_GET['course_name']; } ?>">
-						</div> 
-						<div class="col-md-2" style="margin-top:27px;">
-							<button type="submit" class="btn btn-primary x1_button row-btns">Search</button>
-							<a href="<?=base_url();?>emp_syllabus_list" class="btn btn-danger row-btns">Reset</a>
-						</div>
-					</div>
-				</form>
-			<hr>
-			<div class="uni_mainWrapper syllabus-section" style="min-height:500px;">
-
-				<div class="container">
-
-					<div class="">
-
-						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
-							<div class="row">
-
-								<div class="col-md-12"> 
-
-								<?php 
-									if(!empty($result)){ 
-										for($i=0;$i<count($result);$i++){
-								?>
-									<div class="panel panel-default"> 
-							            <div class="panel-heading" role="tab" id="heading_<?=$result[$i]['faculty_id'];?>"> 
-							                <h4 class="panel-title"> 
-							                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_<?=$result[$i]['faculty_id'];?>" aria-expanded="true" aria-controls="collapse_<?=$result[$i]['faculty_id'];?>"> 
-							                        <i class="more-less glyphicon glyphicon-plus"></i> 
-							                       <?=$result[$i]['faculty_name'].' ['.$result[$i]['faculty_code'].']';?>
-							                    </a> 
-							                </h4> 
-							            </div> 
-       									 <div id="collapse_<?=$result[$i]['faculty_id'];?>" class="panel-collapse collapse" role="tabpanel" style="width:100%;" aria-labelledby="heading_<?=$result[$i]['faculty_id'];?>"> 
-							                <div class="panel-body">   
-							                	<table> 
-													<thead>
-														<tr> 
-															<th style="width:10%;" class="align_center">SR.NO</th> 
-															<th style="width:50%;" class="align_center">NAME</th> 
-															<th style="width:20%;" class="align_center">YEAR/SEM</th> 
-															<th style="width:20%;" class="align_center">DOWNLOAD</th> 
-														</tr> 
-													</thead>
-													<tbody>
-														<?php 
-															$j = 1; 
-															if(!empty($result[$i]['result'])){
-																foreach($result[$i]['result'] as $data){
-														?>
-														<tr> 
-															<td class="align_center"><?=$j++;?></td> 
-															<td><?=$data->course_name;?></td> 
-															<td class="align_center"><?=$data->year_sem;?></td> 
-															<td class="align_center"><a href="<?=$this->Digitalocean_model->get_photo('course_syllabus/'.$data->file)?>" target="_blank"><img src="<?=$this->Digitalocean_model->get_photo('images/pdf.png')?>" class="image_height"></a></td> 
-														</tr> 
-														<?php }} ?>
-													</tbody> 
-												</table>
-							                </div>
-							            </div>
-							        </div>
-								     <?php }}else{ ?>
-									<div class="panel panel-default"> 
-							                <h4 class="panel-title"> 
-												Course Syllabus not available.
-							                </h4> 
-							        </div> 
-									<?php } ?>
-									</div>
-								</div>
-
-								</div> 
-
-    						</div>
-
-						</div>
-
-					</div>
-				</div>
-				<?php include('footer.php');?>
-<!-- <script>
-$(document).ready(function() {
-    <?php 
-
-	print_r($result);
-    if(!empty($result)) { 
-        for($i = 0; $i < count($result); $i++) {
-    ?>
-        $('#collapse_<?=$result[$i]['faculty_id'];?> table').DataTable({
-            "lengthChange": true,
-            "select": true,
-            "processing": true,
-            "serverSide": true,
-            "responsive": true,
-            "cache": false,
-            "order": [[0, "desc"]],
-            "buttons": [
-                {
-                    
-                    exportOptions: {
-                        // columns: [0,1,],
-                        modifier: {
-                            search: 'applied',
-                            order: 'applied'
-                        },
-                    },
-                    customizeData: function(data) {
-                        for(var i = 0; i < data.body.length; i++) {
-                            for(var j = 0; j < data.body[i].length; j++) {
-                                data.body[i][j] = '\u200C' + data.body[i][j];
-                            }
-                        }
-                    },
-                    action: newExportAction,
-                }
-            ],
-           
-            "complete": function() {
-                $('[data-toggle="tooltip"]').tooltip();            
-            },
-        });
-    <?php 
-        } // End of for loop
-    } ?>
-});
-</script> -->
+<?php include('header.php');?>
+<style>
+
+ .panel-group .panel {
+        border-radius: 0;
+        box-shadow: none;
+        border-color: #EEEEEE;
+    }
+
+    .panel-default > .panel-heading {
+        padding: 0;
+        border-radius: 0;
+        color: #212121;
+        background-color: #FAFAFA;
+        border-color: #EEEEEE;
+    }
+
+    .panel-title {
+        font-size: 14px;
+    }
+
+    .panel-title > a {
+        display: block;
+        padding: 15px;
+        text-decoration: none;
+    }
+
+    .more-less {
+        float: right;
+        color: #212121;
+    }
+
+    .panel-default > .panel-heading + .panel-collapse > .panel-body {
+        border-top-color: #EEEEEE;
+    }
+
+ 
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  /*background-color: #dddddd;*/
+} 
+ 
+.align_center{
+	text-align: center;
+}
+.image_height{
+	height: 30px;
+	width: 30px;
+}
+</style>
+		 <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+			  <div class="card-header custom-header">
+			  <h4 class="card-title">Syllabus List</h4>
+			  </div>
+                <div class="card-body">
+					<hr>
+	
+				<form method="get">
+					<div class="row">
+						<div class="col-md-3">
+							<label>Select Faculty</label>
+							<!-- <input type="text" autocomplete="off" name="syllabus" id="syllabus" class="form-control" placeholder="Search Syllabus List"> -->
+							<select name="faculty" id="faculty" class="form-control js-example-basic-single select2_single">
+								<option value="">Select Faculty</option>
+								<?php if(!empty($faculty)){foreach($faculty as $result_result){ ?>
+								<option value="<?=$result_result->id;?>" <?php if(isset($_GET['faculty']) && $_GET['faculty'] == $result_result->id){?> selected="selected"<?php }?>><?=$result_result->faculty_name;?> [<?=$result_result->faculty_code;?>]</option>
+								<?php }} ?>
+							</select>
+						</div> 
+						<div class="col-md-3">
+							<label>Enter Course Name</label>
+							<input type="text" placeholder="Enter Course to Search" name="course_name" id="course_name" class="form-control" value="<?php if(isset($_GET['course_name'])){ echo $_GET['course_name']; } ?>">
+						</div> 
+						<div class="col-md-2" style="margin-top:27px;">
+							<button type="submit" class="btn btn-primary x1_button row-btns">Search</button>
+							<a href="<?=base_url();?>emp_syllabus_list" class="btn btn-danger row-btns">Reset</a>
+						</div>
+					</div>
+				</form>
+			<hr>
+			<div class="uni_mainWrapper syllabus-section" style="min-height:500px;">
+
+				<div class="container">
+
+					<div class="">
+
+						<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+							<div class="row">
+
+								<div class="col-md-12"> 
+
+								<?php 
+									if(!empty($result)){ 
+										for($i=0;$i<count($result);$i++){
+								?>
+									<div class="panel panel-default"> 
+							            <div class="panel-heading" role="tab" id="heading_<?=$result[$i]['faculty_id'];?>"> 
+							                <h4 class="panel-title"> 
+							                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_<?=$result[$i]['faculty_id'];?>" aria-expanded="true" aria-controls="collapse_<?=$result[$i]['faculty_id'];?>"> 
+							                        <i class="more-less glyphicon glyphicon-plus"></i> 
+							                       <?=$result[$i]['faculty_name'].' ['.$result[$i]['faculty_code'].']';?>
+							                    </a> 
+							                </h4> 
+							            </div> 
+       									 <div id="collapse_<?=$result[$i]['faculty_id'];?>" class="panel-collapse collapse" role="tabpanel" style="width:100%;" aria-labelledby="heading_<?=$result[$i]['faculty_id'];?>"> 
+							                <div class="panel-body">   
+							                	<table> 
+													<thead>
+														<tr> 
+															<th style="width:10%;" class="align_center">SR.NO</th> 
+															<th style="width:50%;" class="align_center">NAME</th> 
+															<th style="width:20%;" class="align_center">YEAR/SEM</th> 
+															<th style="width:20%;" class="align_center">DOWNLOAD</th> 
+														</tr> 
+													</thead>
+													<tbody>
+														<?php 
+															$j = 1; 
+															if(!empty($result[$i]['result'])){
+																foreach($result[$i]['result'] as $data){
+														?>
+														<tr> 
+															<td class="align_center"><?=$j++;?></td> 
+															<td><?=$data->course_name;?></td> 
+															<td class="align_center"><?=$data->year_sem;?></td> 
+															<td class="align_center"><a href="<?=$this->Digitalocean_model->get_photo('course_syllabus/'.$data->file)?>" target="_blank"><img src="<?=$this->Digitalocean_model->get_photo('images/pdf.png')?>" class="image_height"></a></td> 
+														</tr> 
+														<?php }} ?>
+													</tbody> 
+												</table>
+							                </div>
+							            </div>
+							        </div>
+								     <?php }}else{ ?>
+									<div class="panel panel-default"> 
+							                <h4 class="panel-title"> 
+												Course Syllabus not available.
+							                </h4> 
+							        </div> 
+									<?php } ?>
+									</div>
+								</div>
+
+								</div> 
+
+    						</div>
+
+						</div>
+
+					</div>
+				</div>
+				<?php include('footer.php');?>
+<!-- <script>
+$(document).ready(function() {
+    <?php 
+
+	print_r($result);
+    if(!empty($result)) { 
+        for($i = 0; $i < count($result); $i++) {
+    ?>
+        $('#collapse_<?=$result[$i]['faculty_id'];?> table').DataTable({
+            "lengthChange": true,
+            "select": true,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "cache": false,
+            "order": [[0, "desc"]],
+            "buttons": [
+                {
+                    
+                    exportOptions: {
+                        // columns: [0,1,],
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied'
+                        },
+                    },
+                    customizeData: function(data) {
+                        for(var i = 0; i < data.body.length; i++) {
+                            for(var j = 0; j < data.body[i].length; j++) {
+                                data.body[i][j] = '\u200C' + data.body[i][j];
+                            }
+                        }
+                    },
+                    action: newExportAction,
+                }
+            ],
+           
+            "complete": function() {
+                $('[data-toggle="tooltip"]').tooltip();            
+            },
+        });
+    <?php 
+        } // End of for loop
+    } ?>
+});
+</script> -->

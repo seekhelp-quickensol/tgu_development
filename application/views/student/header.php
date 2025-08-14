@@ -1,266 +1,266 @@
-<?php 
-	$student_profile = $this->Students_model->get_student_profile();
-	
-	$university_details = $this->Setting_model->get_university_details();
-	
-	if($student_profile->identity_softcopy == "" || $student_profile->id_number == ""){
-		if($this->uri->segment(1) != "update_document"){
-			//redirect('update_document');
-		}
-	}
-?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Welcome to <?php if(!empty($university_details)){ echo $university_details->university_name;}?></title>
-		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/mdi/css/materialdesignicons.min.css">
-		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/base/vendor.bundle.base.css">
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/style.css">
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/base/vendor.bundle.base.css">
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2/select2.min.css">
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
-		<link href="<?=base_url();?>back_panel/css/jquery.dataTables.min.css" rel="stylesheet">
-		<link href="<?=base_url();?>back_panel/css/dataTables.bootstrap.min.css" rel="stylesheet">
-		<link href="<?=base_url();?>back_panel/css/responsive.dataTables.min.css" rel="stylesheet">
-		<link href="<?=base_url();?>back_panel/css/buttons.dataTables.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/responsive.bootstrap4.min.css">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-		<link rel="shortcut icon" href="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" />
-		<style>
-			.error{
-				color:red;
-			}
-			.overlay {
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			position: fixed;
-			background: #00000078;
-			z-index: 99999;
-		}
-
-		.overlay__inner {
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			position: absolute;
-		}
-
-		.overlay__content {
-			left: 50%;
-			position: absolute;
-			top: 50%;
-			transform: translate(-50%, -50%);
-		} 
-		.spinner {
-			width: 75px;
-			height: 75px;
-			display: inline-block;
-			border-width: 2px;
-			border-color: rgba(255, 255, 255, 0.05);
-			border-top-color: #fff;
-			animation: spin 1s infinite linear;
-			border-radius: 100%;
-			border-style: solid;
-		}
-
-		@keyframes spin {
-		  100% {
-			transform: rotate(360deg);
-		  }
-		}
-		.loader_content{
-			left: 50%;
-			position: absolute;
-			top: 60%;
-			transform: translate(-50%, -50%);
-		}
-		.loader_content h5{
-			color: #fff;
-			font-weight: 600;
-		}
-		</style>
-	</head>
-	<body>
-		<?php if($student_profile->verified_status == "0"){?>
-		<div class="overlay">
-			<div class="overlay__inner">
-				<div class="overlay__content"><span class="spinner"></span></div>
-				<div class="loader_content">
-					<h5>Dear <?=$student_profile->student_name?>,Your admission is under review, Please wait.......</h5>
-				</div>
-			</div>
-		</div>
-		<?php }?>
-		<div class="container-scroller">
-			<div class="pro-banner" id="pro-banner">
-					<div class="card pro-banner-bg border-0 rounded-0 orange">
-						<div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
-							<p class="mb-0 text-white font-weight-medium mb-2 mb-lg-0 mb-xl-0" style="width:90%">
-							<marquee>Welcome to THE GLOBAL UNIVERSITY</marquee>
-							</p>
-							<div class="d-flex">
-								<button id="bannerClose" class="btn border-0 p-0">
-									<i class="mdi mdi-close text-white"></i>
-								</button>
-							</div>
-					</div>
-				</div>
-			</div>
-			<div class="horizontal-menu">
-				<nav class="navbar top-navbar col-lg-12 col-12 p-0">
-					<div class="container-fluid">
-						<div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
-						
-							<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-								<a class="navbar-brand brand-logo" href="<?=base_url();?>student-dashboard"><img src="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" alt="logo"/></a>
-								<a class="navbar-brand brand-logo-mini" href="<?=base_url();?>student-dashboard"><img src="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" alt="logo"/></a>
-							</div>
-							<ul class="center-dashboard-ul-cust">
-								<h2 class="admin_dashboard_header">BIR TIKENDRAJIT UNIVERSITY</h2>
-								<p class="admin_dashboard_p"> Complete Learning Management Solution Process </p>
-							</ul>
-							<ul class="navbar-nav navbar-nav-right">
-							
-								<!--<li class="nav-item dropdown  d-lg-flex d-none">
-									<button type="button" class="btn btn-inverse-primary btn-sm">Shortcut </button>
-								</li>
-								<li class="nav-item dropdown d-lg-flex d-none">
-									<a class="dropdown-toggle show-dropdown-arrow btn btn-inverse-primary btn-sm" id="nreportDropdown" href="#" data-toggle="dropdown">
-										Links
-									</a>
-									<div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="nreportDropdown">
-										<p class="mb-0 font-weight-medium float-left dropdown-header">Direct Links</p>
-										<a href="<?=base_url();?>employee_list" class="dropdown-item">
-											<i class="mdi mdi-file-pdf text-primary"></i>Employees
-										</a>
-										<a href="<?=base_url();?>manage_session" class="dropdown-item">
-											<i class="mdi mdi-file-excel text-primary"></i>Session 
-										</a>
-									</div>
-								</li>
-								<li class="nav-item dropdown d-lg-flex d-none">
-									<button type="button" class="btn btn-inverse-primary btn-sm">Shortcut</button>
-								</li>-->
-								<li class="nav-item nav-profile dropdown">
-									<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-										<span class="nav-profile-name"><?php if(!empty($student_profile)){ echo $student_profile->student_name;}?></span>
-										<span class="online-status"></span>
-										<img src="<?=base_url();?>images/profile_pic/<?php if(!empty($student_profile) && $student_profile->photo !=""){ echo $student_profile->photo; }else{?>default.jpg<?php }?>" alt="profile"/>
-									</a>
-									<div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-										<a class="dropdown-item" target="_blank" href="<?=base_url();?>asmission-form-print">
-											<i class="mdi mdi-settings text-primary"></i>Admission Form
-										</a>
-										<a class="dropdown-item" href="<?=base_url();?>student-password">
-											<i class="mdi mdi-settings text-primary"></i>Password
-										</a>
-										<a class="dropdown-item" href="<?=base_url();?>student_logout">
-											<i class="mdi mdi-logout text-primary"></i>Logout
-										</a>
-									</div>
-								</li>
-							</ul>
-							<button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
-								<span class="mdi mdi-menu"></span>
-							</button>
-						</div>
-					</div>
-				</nav>
-				<nav class="bottom-navbar">
-					<div class="container">
-						<ul class="nav page-navigation">
-							<li class="nav-item">
-								<a class="nav-link iconBox" href="<?=base_url();?>student-dashboard">
-								<i class="fas fa-tachometer-alt"></i>
-									<span class="menu-title">Dashboard</span>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link iconBox" href="<?=base_url();?>e_library">
-								<i class="fas fa-book-open"></i>
-									<span class="menu-title">E-Library</span>
-								</a>
-							</li>
-							
-							<li class="nav-item">
-								<a href="#" class="nav-link iconBox">
-									<i class="fas fa-university" ></i>
-									<span class="menu-title">Admission/Examinations</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="submenu">
-									<ul>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>asmission-form-print">Admission Form</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student-qualification-details">Qualification Details</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>id-card-print">ID Card</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>examination-form" target="_blank">Examination Form</a></li>
-										<li><a target="_blank" href="<?=base_url();?>assesment-form">Self Assessment & Parent Assessment Form </a></li>
-										<li><a target="_blank" href="<?=base_url();?>teacher-assessment-form">Teacher Assessment Form</a></li>
-									</ul>
-								</div>
-							</li>
-							
-							<li class="nav-item">
-								<a href="#" class="nav-link iconBox">
-									<i class="fas fa-upload" ></i>
-									<span class="menu-title">Results/Uploads</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="submenu">
-									<ul>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>my_results">Results</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>upload_assessment">Upload Assessment forms</a></li>
-									</ul>
-								</div>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link iconBox">
-									<i class="fas fa-graduation-cap" ></i>
-									<span class="menu-title">Degree/Certificates</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="submenu">
-									<ul>
-										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Marksheet</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url('student-provisional-degree');?>">Provisional Degree</a></li>
-										<!--<li class="nav-item"><a class="nav-link" href="<?=base_url("student-degree");?>">Degree</a></li>-->
-										<li class="nav-item"><a class="nav-link" href="#">Degree</a></li>
-										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Character Certificate</a></li>
-										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Appear Course Bonafide</a></li>
-										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Complete Course Bonafide</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url("transfer-certificate");?>">Transfer Certificate</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url("transcript_application");?>">Transcript</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url("migration-certificate");?>">Migration</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url("student_consolidate_student_marksheet");?>">Consolidated Marksheet</a></li>
-									</ul>
-								</div>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link iconBox">
-									<i class="fas fa-cog" ></i>
-									<span class="menu-title">My Setting</span>
-									<i class="menu-arrow"></i>
-								</a>
-								<div class="submenu">
-									<ul>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student-password">Password</a></li>
-										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student_logout">Logout</a></li>
-									</ul>
-								</div>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link iconBox" href="<?=base_url();?>student_feedback">
-								<i class="fas fa-tachometer-alt"></i>
-									<span class="menu-title">Feedback</span>
-								</a>
-							</li> 
-						</ul>
-					</div>
-				</nav>
-			</div>
+<?php 
+	$student_profile = $this->Students_model->get_student_profile();
+	
+	$university_details = $this->Setting_model->get_university_details();
+	
+	if($student_profile->identity_softcopy == "" || $student_profile->id_number == ""){
+		if($this->uri->segment(1) != "update_document"){
+			//redirect('update_document');
+		}
+	}
+?>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Welcome to <?php if(!empty($university_details)){ echo $university_details->university_name;}?></title>
+		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/mdi/css/materialdesignicons.min.css">
+		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/base/vendor.bundle.base.css">
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/style.css">
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/base/vendor.bundle.base.css">
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2/select2.min.css">
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+		<link href="<?=base_url();?>back_panel/css/jquery.dataTables.min.css" rel="stylesheet">
+		<link href="<?=base_url();?>back_panel/css/dataTables.bootstrap.min.css" rel="stylesheet">
+		<link href="<?=base_url();?>back_panel/css/responsive.dataTables.min.css" rel="stylesheet">
+		<link href="<?=base_url();?>back_panel/css/buttons.dataTables.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/responsive.bootstrap4.min.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+		<link rel="shortcut icon" href="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" />
+		<style>
+			.error{
+				color:red;
+			}
+			.overlay {
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			background: #00000078;
+			z-index: 99999;
+		}
+
+		.overlay__inner {
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+		}
+
+		.overlay__content {
+			left: 50%;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		} 
+		.spinner {
+			width: 75px;
+			height: 75px;
+			display: inline-block;
+			border-width: 2px;
+			border-color: rgba(255, 255, 255, 0.05);
+			border-top-color: #fff;
+			animation: spin 1s infinite linear;
+			border-radius: 100%;
+			border-style: solid;
+		}
+
+		@keyframes spin {
+		  100% {
+			transform: rotate(360deg);
+		  }
+		}
+		.loader_content{
+			left: 50%;
+			position: absolute;
+			top: 60%;
+			transform: translate(-50%, -50%);
+		}
+		.loader_content h5{
+			color: #fff;
+			font-weight: 600;
+		}
+		</style>
+	</head>
+	<body>
+		<?php if($student_profile->verified_status == "0"){?>
+		<div class="overlay">
+			<div class="overlay__inner">
+				<div class="overlay__content"><span class="spinner"></span></div>
+				<div class="loader_content">
+					<h5>Dear <?=$student_profile->student_name?>,Your admission is under review, Please wait.......</h5>
+				</div>
+			</div>
+		</div>
+		<?php }?>
+		<div class="container-scroller">
+			<div class="pro-banner" id="pro-banner">
+					<div class="card pro-banner-bg border-0 rounded-0 orange">
+						<div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
+							<p class="mb-0 text-white font-weight-medium mb-2 mb-lg-0 mb-xl-0" style="width:90%">
+							<marquee>Welcome to THE GLOBAL UNIVERSITY</marquee>
+							</p>
+							<div class="d-flex">
+								<button id="bannerClose" class="btn border-0 p-0">
+									<i class="mdi mdi-close text-white"></i>
+								</button>
+							</div>
+					</div>
+				</div>
+			</div>
+			<div class="horizontal-menu">
+				<nav class="navbar top-navbar col-lg-12 col-12 p-0">
+					<div class="container-fluid">
+						<div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
+						
+							<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+								<a class="navbar-brand brand-logo" href="<?=base_url();?>student-dashboard"><img src="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" alt="logo"/></a>
+								<a class="navbar-brand brand-logo-mini" href="<?=base_url();?>student-dashboard"><img src="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>" alt="logo"/></a>
+							</div>
+							<ul class="center-dashboard-ul-cust">
+								<h2 class="admin_dashboard_header">BIR TIKENDRAJIT UNIVERSITY</h2>
+								<p class="admin_dashboard_p"> Complete Learning Management Solution Process </p>
+							</ul>
+							<ul class="navbar-nav navbar-nav-right">
+							
+								<!--<li class="nav-item dropdown  d-lg-flex d-none">
+									<button type="button" class="btn btn-inverse-primary btn-sm">Shortcut </button>
+								</li>
+								<li class="nav-item dropdown d-lg-flex d-none">
+									<a class="dropdown-toggle show-dropdown-arrow btn btn-inverse-primary btn-sm" id="nreportDropdown" href="#" data-toggle="dropdown">
+										Links
+									</a>
+									<div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="nreportDropdown">
+										<p class="mb-0 font-weight-medium float-left dropdown-header">Direct Links</p>
+										<a href="<?=base_url();?>employee_list" class="dropdown-item">
+											<i class="mdi mdi-file-pdf text-primary"></i>Employees
+										</a>
+										<a href="<?=base_url();?>manage_session" class="dropdown-item">
+											<i class="mdi mdi-file-excel text-primary"></i>Session 
+										</a>
+									</div>
+								</li>
+								<li class="nav-item dropdown d-lg-flex d-none">
+									<button type="button" class="btn btn-inverse-primary btn-sm">Shortcut</button>
+								</li>-->
+								<li class="nav-item nav-profile dropdown">
+									<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+										<span class="nav-profile-name"><?php if(!empty($student_profile)){ echo $student_profile->student_name;}?></span>
+										<span class="online-status"></span>
+										<img src="<?=base_url();?>images/profile_pic/<?php if(!empty($student_profile) && $student_profile->photo !=""){ echo $student_profile->photo; }else{?>default.jpg<?php }?>" alt="profile"/>
+									</a>
+									<div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+										<a class="dropdown-item" target="_blank" href="<?=base_url();?>asmission-form-print">
+											<i class="mdi mdi-settings text-primary"></i>Admission Form
+										</a>
+										<a class="dropdown-item" href="<?=base_url();?>student-password">
+											<i class="mdi mdi-settings text-primary"></i>Password
+										</a>
+										<a class="dropdown-item" href="<?=base_url();?>student_logout">
+											<i class="mdi mdi-logout text-primary"></i>Logout
+										</a>
+									</div>
+								</li>
+							</ul>
+							<button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
+								<span class="mdi mdi-menu"></span>
+							</button>
+						</div>
+					</div>
+				</nav>
+				<nav class="bottom-navbar">
+					<div class="container">
+						<ul class="nav page-navigation">
+							<li class="nav-item">
+								<a class="nav-link iconBox" href="<?=base_url();?>student-dashboard">
+								<i class="fas fa-tachometer-alt"></i>
+									<span class="menu-title">Dashboard</span>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link iconBox" href="<?=base_url();?>e_library">
+								<i class="fas fa-book-open"></i>
+									<span class="menu-title">E-Library</span>
+								</a>
+							</li>
+							
+							<li class="nav-item">
+								<a href="#" class="nav-link iconBox">
+									<i class="fas fa-university" ></i>
+									<span class="menu-title">Admission/Examinations</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="submenu">
+									<ul>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>asmission-form-print">Admission Form</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student-qualification-details">Qualification Details</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>id-card-print">ID Card</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>examination-form" target="_blank">Examination Form</a></li>
+										<li><a target="_blank" href="<?=base_url();?>assesment-form">Self Assessment & Parent Assessment Form </a></li>
+										<li><a target="_blank" href="<?=base_url();?>teacher-assessment-form">Teacher Assessment Form</a></li>
+									</ul>
+								</div>
+							</li>
+							
+							<li class="nav-item">
+								<a href="#" class="nav-link iconBox">
+									<i class="fas fa-upload" ></i>
+									<span class="menu-title">Results/Uploads</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="submenu">
+									<ul>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>my_results">Results</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>upload_assessment">Upload Assessment forms</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="nav-item">
+								<a href="#" class="nav-link iconBox">
+									<i class="fas fa-graduation-cap" ></i>
+									<span class="menu-title">Degree/Certificates</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="submenu">
+									<ul>
+										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Marksheet</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url('student-provisional-degree');?>">Provisional Degree</a></li>
+										<!--<li class="nav-item"><a class="nav-link" href="<?=base_url("student-degree");?>">Degree</a></li>-->
+										<li class="nav-item"><a class="nav-link" href="#">Degree</a></li>
+										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Character Certificate</a></li>
+										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Appear Course Bonafide</a></li>
+										<li class="nav-item"><a class="nav-link" href="javascript:void(0)">Complete Course Bonafide</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url("transfer-certificate");?>">Transfer Certificate</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url("transcript_application");?>">Transcript</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url("migration-certificate");?>">Migration</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url("student_consolidate_student_marksheet");?>">Consolidated Marksheet</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="nav-item">
+								<a href="#" class="nav-link iconBox">
+									<i class="fas fa-cog" ></i>
+									<span class="menu-title">My Setting</span>
+									<i class="menu-arrow"></i>
+								</a>
+								<div class="submenu">
+									<ul>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student-password">Password</a></li>
+										<li class="nav-item"><a class="nav-link" href="<?=base_url();?>student_logout">Logout</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link iconBox" href="<?=base_url();?>student_feedback">
+								<i class="fas fa-tachometer-alt"></i>
+									<span class="menu-title">Feedback</span>
+								</a>
+							</li> 
+						</ul>
+					</div>
+				</nav>
+			</div>

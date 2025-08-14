@@ -1,269 +1,269 @@
-<?php $university_details = $this->Setting_model->get_university_details();?>
-
-
-
-<!DOCTYPE html>
-
-
-
-<html lang="en">
-
-
-
-	<head>
-
-
-
-		<meta charset="utf-8">
-
-
-
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-
-		<title>Welcome to <?php if(!empty($university_details)){ echo $university_details->university_name;}?></title>
-
-
-
-		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/mdi/css/materialdesignicons.min.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/base/vendor.bundle.base.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/style.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/base/vendor.bundle.base.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2/select2.min.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
-
-
-
-		<link href="<?=base_url();?>back_panel/css/jquery.dataTables.min.css" rel="stylesheet">
-
-
-
-		<link href="<?=base_url();?>back_panel/css/dataTables.bootstrap.min.css" rel="stylesheet">
-
-
-
-		<link href="<?=base_url();?>back_panel/css/responsive.dataTables.min.css" rel="stylesheet">
-
-
-
-		<link href="<?=base_url();?>dataTables.min.css" rel="stylesheet">
-
-
-
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-
-
-		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/responsive.bootstrap4.min.css">
-
-
-
-		<link rel="shortcut icon" href="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>"/>
-
-
-
-		<style>
-
-
-
-			.error{
-
-
-
-				color:red;
-
-
-
-			}
-
-
-
-		</style>
-
-
-
-	</head>
-
-
-
-	<body>
-
-
-
-		<div class="container-scroller">
-
-
-
-			<div class="pro-banner" id="pro-banner">
-
-
-
-					<div class="card pro-banner-bg border-0 rounded-0">
-
-
-
-						<div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
-
-
-
-							<p class="mb-0 text-white font-weight-medium mb-2 mb-lg-0 mb-xl-0">
-
-
-
-							<marquee>Welcome to THE GLOBAL UNIVERSITY</marquee>
-
-
-
-							</p>
-
-
-
-							<div class="d-flex">
-
-
-
-								<button id="bannerClose" class="btn border-0 p-0">
-
-
-
-									<i class="mdi mdi-close text-white"></i>
-
-
-
-								</button>
-
-
-
-							</div>
-
-
-
-					</div>
-
-
-
-				</div>
-
-
-
-			</div>
-
-
-
-			<div class="horizontal-menu">
-
-
-
-				
-
-
-
-				<nav class="bottom-navbar">
-
-
-
-					<div class="container custom_container">
-
-
-
-						<ul class="nav page-navigation">
-
-
-
-<?php if($this->uri->segment(1) !="show_exam"){?>
-
-
-
-										
-
-
-
-					<li class="nav-item">
-
-
-
-								<a class="nav-link" href="<?=base_url();?>exam_dashboard">
-
-
-
-									<i class="mdi mdi-file-document-box menu-icon mdi-spin"></i>
-
-
-
-									<span class="menu-title">Dashboard</span>
-
-
-
-								</a>
-
-
-
-							</li>
-
-
-
-							<li class="nav-item">
-
-
-
-								<a class="nav-link" href="<?=base_url();?>exam_logout">
-
-
-
-									<i class="mdi mdi-file-document-box menu-icon mdi-spin"></i>
-
-
-
-									<span class="menu-title">Logout</span>
-
-
-
-								</a>
-
-
-
-							</li>
-
-
-
-							
-
-
-
-					<?php }?>	 
-
-
-
-						</ul>
-
-
-
-					
-
-
-
-					</div>
-
-
-
-				</nav>
-
-
-
+<?php $university_details = $this->Setting_model->get_university_details();?>
+
+
+
+<!DOCTYPE html>
+
+
+
+<html lang="en">
+
+
+
+	<head>
+
+
+
+		<meta charset="utf-8">
+
+
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+
+		<title>Welcome to <?php if(!empty($university_details)){ echo $university_details->university_name;}?></title>
+
+
+
+		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/mdi/css/materialdesignicons.min.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url()?>back_panel/vendors/base/vendor.bundle.base.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/style.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/base/vendor.bundle.base.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2/select2.min.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+
+
+
+		<link href="<?=base_url();?>back_panel/css/jquery.dataTables.min.css" rel="stylesheet">
+
+
+
+		<link href="<?=base_url();?>back_panel/css/dataTables.bootstrap.min.css" rel="stylesheet">
+
+
+
+		<link href="<?=base_url();?>back_panel/css/responsive.dataTables.min.css" rel="stylesheet">
+
+
+
+		<link href="<?=base_url();?>dataTables.min.css" rel="stylesheet">
+
+
+
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+
+		<link rel="stylesheet" href="<?=base_url();?>back_panel/css/responsive.bootstrap4.min.css">
+
+
+
+		<link rel="shortcut icon" href="<?=$this->Digitalocean_model->get_photo('images/logo/'.$university_details->logo)?>"/>
+
+
+
+		<style>
+
+
+
+			.error{
+
+
+
+				color:red;
+
+
+
+			}
+
+
+
+		</style>
+
+
+
+	</head>
+
+
+
+	<body>
+
+
+
+		<div class="container-scroller">
+
+
+
+			<div class="pro-banner" id="pro-banner">
+
+
+
+					<div class="card pro-banner-bg border-0 rounded-0">
+
+
+
+						<div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap">
+
+
+
+							<p class="mb-0 text-white font-weight-medium mb-2 mb-lg-0 mb-xl-0">
+
+
+
+							<marquee>Welcome to THE GLOBAL UNIVERSITY</marquee>
+
+
+
+							</p>
+
+
+
+							<div class="d-flex">
+
+
+
+								<button id="bannerClose" class="btn border-0 p-0">
+
+
+
+									<i class="mdi mdi-close text-white"></i>
+
+
+
+								</button>
+
+
+
+							</div>
+
+
+
+					</div>
+
+
+
+				</div>
+
+
+
+			</div>
+
+
+
+			<div class="horizontal-menu">
+
+
+
+				
+
+
+
+				<nav class="bottom-navbar">
+
+
+
+					<div class="container custom_container">
+
+
+
+						<ul class="nav page-navigation">
+
+
+
+<?php if($this->uri->segment(1) !="show_exam"){?>
+
+
+
+										
+
+
+
+					<li class="nav-item">
+
+
+
+								<a class="nav-link" href="<?=base_url();?>exam_dashboard">
+
+
+
+									<i class="mdi mdi-file-document-box menu-icon mdi-spin"></i>
+
+
+
+									<span class="menu-title">Dashboard</span>
+
+
+
+								</a>
+
+
+
+							</li>
+
+
+
+							<li class="nav-item">
+
+
+
+								<a class="nav-link" href="<?=base_url();?>exam_logout">
+
+
+
+									<i class="mdi mdi-file-document-box menu-icon mdi-spin"></i>
+
+
+
+									<span class="menu-title">Logout</span>
+
+
+
+								</a>
+
+
+
+							</li>
+
+
+
+							
+
+
+
+					<?php }?>	 
+
+
+
+						</ul>
+
+
+
+					
+
+
+
+					</div>
+
+
+
+				</nav>
+
+
+
 			</div>

@@ -1,73 +1,73 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
-
-class Cluster_center_login extends CI_Controller {  
-	public function __construct(){ 
-		parent::__construct(); 
-		$this->is_logged(); 
-	} 
-	public function is_logged(){ 
-		if($this->session->userdata('cluster_center_id') != ""){ 
-			redirect('cluster-center-dashboard'); 
-		} 
-	} 
-	public function login(){ 
-		$this->form_validation->set_rules('email','email','required'); 
-		$this->form_validation->set_rules('password','password','required');
-
-		if($this->form_validation->run() === FALSE){
-
-			$this->load->view('cluster_center/login');
-
-		}else{
-
-			$result = $this->Cluster_center_model->login();
-
-			if($result){
-
-				$this->session->set_flashdata('success','Login successfully!');
-
-				redirect('cluster-center-dashboard');
-
-			}else{
-
-				$this->session->set_flashdata('message','Login failed!');
-
-				redirect('cluster-center-access');
-
-			}
-
-		}
-
-	}
-
-	public function center_forgot(){
-
-		$this->form_validation->set_rules('email','email','required');
-
-		if($this->form_validation->run() === FALSE){
-
-			$this->load->view('cluster_center/forgot_password');
-
-		}else{
-
-			$result = $this->Cluster_center_model->forgot_password();
-
-			if($result){
-
-				$this->session->set_flashdata('success','Please check your inbox!');
-
-				redirect('cluster-center-access');
-
-			}else{
-
-				$this->session->set_flashdata('message','Invalid details!');
-
-				redirect('cluster-center-forgot');
-
-			}
-
-		}
-
-	}
-
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+
+class Cluster_center_login extends CI_Controller {  
+	public function __construct(){ 
+		parent::__construct(); 
+		$this->is_logged(); 
+	} 
+	public function is_logged(){ 
+		if($this->session->userdata('cluster_center_id') != ""){ 
+			redirect('cluster-center-dashboard'); 
+		} 
+	} 
+	public function login(){ 
+		$this->form_validation->set_rules('email','email','required'); 
+		$this->form_validation->set_rules('password','password','required');
+
+		if($this->form_validation->run() === FALSE){
+
+			$this->load->view('cluster_center/login');
+
+		}else{
+
+			$result = $this->Cluster_center_model->login();
+
+			if($result){
+
+				$this->session->set_flashdata('success','Login successfully!');
+
+				redirect('cluster-center-dashboard');
+
+			}else{
+
+				$this->session->set_flashdata('message','Login failed!');
+
+				redirect('cluster-center-access');
+
+			}
+
+		}
+
+	}
+
+	public function center_forgot(){
+
+		$this->form_validation->set_rules('email','email','required');
+
+		if($this->form_validation->run() === FALSE){
+
+			$this->load->view('cluster_center/forgot_password');
+
+		}else{
+
+			$result = $this->Cluster_center_model->forgot_password();
+
+			if($result){
+
+				$this->session->set_flashdata('success','Please check your inbox!');
+
+				redirect('cluster-center-access');
+
+			}else{
+
+				$this->session->set_flashdata('message','Invalid details!');
+
+				redirect('cluster-center-forgot');
+
+			}
+
+		}
+
+	}
+
 }

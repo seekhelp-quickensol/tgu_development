@@ -1,142 +1,142 @@
-<?php include('header.php');?>
-    <div class="container-fluid page-body-wrapper">
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Migration Certificate</h4>
-                  <p class="card-description">
-                    
-                  </p>
-            
-					<?php if(empty($migration)): ?>
-						 <?php if($student_profile->old_migration!=""){  ?>
-						 	<?php if($student_profile->migration_terms =="1"){?>
-						<a href="<?=base_url("pay_migration_certificate_fees");?>" class="btn btn-success">Pay Migration Certificate fees</a>
-						<?php }else{?>
-							<a href="<?=base_url("accept_migration_undertaking");?>" class="btn btn-success">I Accpet Terms & Conditions</a>
-						<?php }?>
-					<?php }else{ ?>
-						<div class="col-lg-6" style="display:block;">
-						<form method="post" action="<?=base_url();?>upload_old_migration_certificate" enctype="multipart/form-data">
-							<label>Upload Old Migration</label><br>
-							<input  type="file" name="userfile"><br><br>
-							<input  type="hidden" name="student_id" value="<?=$student_profile->id;?>">
-							<button class="btn btn-success" name="save" value="Upload_Form">Upload</button>
-						</form>
-						</div>
-					<?php } ?>
-						<?php else: ?>
-
-							<?php if($migration->approve_status == '0'): ?>
-								<button  class="btn btn-primary">Waiting for approval .....</button>
-							<?php else: ?>
-
-
-
-							<div class="container" id="container">
-			 	
-      <div class="main-panel">
-        <div class="content-wrapper" style="background: #fff;position: relative;">
-			<div class="row" id="letter_section">
-				<div class="col-md-10">
-					<div style="background-image:url(<?=$this->Digitalocean_model->get_photo('images/marksheet-bg-with-logo.jpeg')?>);background-position: center;background-size: cover;padding: 370px 25px;border: 2px solid #e8612b;">
-
-						<p style="float: right;margin-top: -356px;font:bold; font-weight: 700">Serial No. :  <?=$migration->id;?></p>
-
-
-						<!--<div class="row">
-							<div class="col-lg-12 col-md-12">
-								<div class="">
-									<img src="<?=base_url();?>images/logo.png">
-									<h3></h3>
-									<p>PROVISIONAL REGISTRATION LETTER</p>
-								</div>
-							</div>
-						</div>-->
-						<p style="margin-top: -100px;text-align: center"><b>University Campus: </b>Model Village Naharlagun, Itanagar, Arunachal Pradesh - 791110</p>
-						<br>
-						<br>
-
-						<div class="row" >
-							<div class="col-lg-12 col-md-12">
-								<p style="width: 285px;margin: 0px auto;color: #000;font-weight: 700;font-size: 17px; text-align: center">MIGRATION CERTIFICATE </p>
-							</div>
-						</div>
-						<br>
-						<div class="row" style="padding-right: 20px;padding-left: 20px">
-							
-							<div class="col-lg-12 col-md-12">
-								<p style="font-size: 15px;color: #000;font-weight: 700;margin-top: 10px;margin-bottom: 10px;">Enrollment No.: <?=$migration->enrollment_number;?></p>
-							</div>
-							<br>
-							<div class="col-lg-12 col-md-12">
-								<p style="margin-top: 10px;color: #000;font-size: 15px;font-weight: 600;margin-bottom: 0px;line-height: 30px; word-spacing: 10px">This is to certify that this University has no objection to permit <b><?=$migration->student_name;?></b> son/daughter of <b><?=$migration->father_name;?></b> who has studied <b><?=$migration->course_name;?> (<?=$migration->sort_name;?>)</b> course with enrollment no. <b><?=$migration->enrollment_number;?></b> during academic/ calender year <b><?=date("Y",strtotime($migration->session_start_date))?></b> in this University, for pursuing his/ her futher studies in any other University/Institution.</p>
-
-								
-								<br>
-								<br>
-								<br>
-
-								<p style="font-size: 16px;color: #000;margin-bottom: 2px;">Imphal, Arunachal Pradesh  <span style="margin-left: 112px;"></span></p>
-								<br>
-								<p style="font-size: 16px;color: #000;margin-bottom: 2px;">Date:  <span style="margin-left: 10px;"><?=date("d-m-Y",strtotime($migration->issue_date));?></span></p>
-								
-
-							</div>
-							<div class="col-lg-12 col-md-12">
-								<div style="width: 205px;float: right;text-align: center;margin-top: 35px;">
-									<?php if(date("Y-m-d",strtotime($migration->issue_date)) <= "2022-02-19"){ ?>
-									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/Deputy_Registrar.png')?>">
-									<?php }else{
-									if($migration->course_id ==23){
-									?> 
-									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/resurch_reg.PNG')?>">
-									<?php }else{?>
-									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/norm_reg.PNG')?>">
-									<?php }}?>
-									
-									<p style="color: #000;font-size: 18px;font-weight: 900;margin-bottom: 0px;">Registrar</p>
-								</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-			</div>
-			<div style="position: absolute;top: 25px;right: 85px;">
-				<button type="button" class="btn btn-primary" id="print_btn">Print &nbsp <i class="fas fa-print"></i></button>
-			</div>
-		</div>
-	</div>
-	</div>
-
-
-
-							<?php endif; ?>
-						<?php endif; ?>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      
-<?php include('footer.php');?>
-
-<script type="text/javascript">
-	
-	$("#print_btn").click(()=>{
-		$("#print_btn").hide();
-		let contain = document.getElementById("container").innerHTML;
-		let newWindow = window.open('','',900,600);
-		newWindow.document.write(contain);
-		newWindow.focus();
-		newWindow.print();
-		newWindow.close();
-		$("#print_btn").show();
-
-	});
-</script>
+<?php include('header.php');?>
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Migration Certificate</h4>
+                  <p class="card-description">
+                    
+                  </p>
+            
+					<?php if(empty($migration)): ?>
+						 <?php if($student_profile->old_migration!=""){  ?>
+						 	<?php if($student_profile->migration_terms =="1"){?>
+						<a href="<?=base_url("pay_migration_certificate_fees");?>" class="btn btn-success">Pay Migration Certificate fees</a>
+						<?php }else{?>
+							<a href="<?=base_url("accept_migration_undertaking");?>" class="btn btn-success">I Accpet Terms & Conditions</a>
+						<?php }?>
+					<?php }else{ ?>
+						<div class="col-lg-6" style="display:block;">
+						<form method="post" action="<?=base_url();?>upload_old_migration_certificate" enctype="multipart/form-data">
+							<label>Upload Old Migration</label><br>
+							<input  type="file" name="userfile"><br><br>
+							<input  type="hidden" name="student_id" value="<?=$student_profile->id;?>">
+							<button class="btn btn-success" name="save" value="Upload_Form">Upload</button>
+						</form>
+						</div>
+					<?php } ?>
+						<?php else: ?>
+
+							<?php if($migration->approve_status == '0'): ?>
+								<button  class="btn btn-primary">Waiting for approval .....</button>
+							<?php else: ?>
+
+
+
+							<div class="container" id="container">
+			 	
+      <div class="main-panel">
+        <div class="content-wrapper" style="background: #fff;position: relative;">
+			<div class="row" id="letter_section">
+				<div class="col-md-10">
+					<div style="background-image:url(<?=$this->Digitalocean_model->get_photo('images/marksheet-bg-with-logo.jpeg')?>);background-position: center;background-size: cover;padding: 370px 25px;border: 2px solid #e8612b;">
+
+						<p style="float: right;margin-top: -356px;font:bold; font-weight: 700">Serial No. :  <?=$migration->id;?></p>
+
+
+						<!--<div class="row">
+							<div class="col-lg-12 col-md-12">
+								<div class="">
+									<img src="<?=base_url();?>images/logo.png">
+									<h3></h3>
+									<p>PROVISIONAL REGISTRATION LETTER</p>
+								</div>
+							</div>
+						</div>-->
+						<p style="margin-top: -100px;text-align: center"><b>University Campus: </b>Model Village Naharlagun, Itanagar, Arunachal Pradesh - 791110</p>
+						<br>
+						<br>
+
+						<div class="row" >
+							<div class="col-lg-12 col-md-12">
+								<p style="width: 285px;margin: 0px auto;color: #000;font-weight: 700;font-size: 17px; text-align: center">MIGRATION CERTIFICATE </p>
+							</div>
+						</div>
+						<br>
+						<div class="row" style="padding-right: 20px;padding-left: 20px">
+							
+							<div class="col-lg-12 col-md-12">
+								<p style="font-size: 15px;color: #000;font-weight: 700;margin-top: 10px;margin-bottom: 10px;">Enrollment No.: <?=$migration->enrollment_number;?></p>
+							</div>
+							<br>
+							<div class="col-lg-12 col-md-12">
+								<p style="margin-top: 10px;color: #000;font-size: 15px;font-weight: 600;margin-bottom: 0px;line-height: 30px; word-spacing: 10px">This is to certify that this University has no objection to permit <b><?=$migration->student_name;?></b> son/daughter of <b><?=$migration->father_name;?></b> who has studied <b><?=$migration->course_name;?> (<?=$migration->sort_name;?>)</b> course with enrollment no. <b><?=$migration->enrollment_number;?></b> during academic/ calender year <b><?=date("Y",strtotime($migration->session_start_date))?></b> in this University, for pursuing his/ her futher studies in any other University/Institution.</p>
+
+								
+								<br>
+								<br>
+								<br>
+
+								<p style="font-size: 16px;color: #000;margin-bottom: 2px;">Imphal, Arunachal Pradesh  <span style="margin-left: 112px;"></span></p>
+								<br>
+								<p style="font-size: 16px;color: #000;margin-bottom: 2px;">Date:  <span style="margin-left: 10px;"><?=date("d-m-Y",strtotime($migration->issue_date));?></span></p>
+								
+
+							</div>
+							<div class="col-lg-12 col-md-12">
+								<div style="width: 205px;float: right;text-align: center;margin-top: 35px;">
+									<?php if(date("Y-m-d",strtotime($migration->issue_date)) <= "2022-02-19"){ ?>
+									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/Deputy_Registrar.png')?>">
+									<?php }else{
+									if($migration->course_id ==23){
+									?> 
+									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/resurch_reg.PNG')?>">
+									<?php }else{?>
+									<img style="width: 110px;" src="<?=$this->Digitalocean_model->get_photo('images/norm_reg.PNG')?>">
+									<?php }}?>
+									
+									<p style="color: #000;font-size: 18px;font-weight: 900;margin-bottom: 0px;">Registrar</p>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="position: absolute;top: 25px;right: 85px;">
+				<button type="button" class="btn btn-primary" id="print_btn">Print &nbsp <i class="fas fa-print"></i></button>
+			</div>
+		</div>
+	</div>
+	</div>
+
+
+
+							<?php endif; ?>
+						<?php endif; ?>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+<?php include('footer.php');?>
+
+<script type="text/javascript">
+	
+	$("#print_btn").click(()=>{
+		$("#print_btn").hide();
+		let contain = document.getElementById("container").innerHTML;
+		let newWindow = window.open('','',900,600);
+		newWindow.document.write(contain);
+		newWindow.focus();
+		newWindow.print();
+		newWindow.close();
+		$("#print_btn").show();
+
+	});
+</script>

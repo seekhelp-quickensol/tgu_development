@@ -1,1804 +1,1804 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
-class Students_model extends CI_Model{ 
-	public function forgot_password(){
-		$this->db->where('email',$this->input->post('email'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where_in('admission_status',array(1,4));
-		$result = $this->db->get('tbl_student');
-		$result = $result->row();
-		$password = rand();
-		if(!empty($result)){
-			$data = array(
-				'password' => $password
-			);			
-			$this->db->where('id',$result->id);
-			$this->db->update('tbl_student',$data);
-	    	$message = "Dear ".$result->student_name.",<br> below are the login details to continue.<br>";
-		
-			$message .= "<br>URL: ".base_url()."student-login";
-			$message .= "<br>Username: ".$result->username;
-			$message .= "<br>Password: ".$password;
-			$message .="<br>Regards,<br>IT Team";
-			
-			
-			 $to = array(
-        		"email" => $result->email,
-        		"name" => $result->student_name,
-        	);
-        	$subject = 'New Password |'.no_reply_name;    
-            $this->Admin_model->send_send_blue($to,$subject,$message);
-            
-			
-			
-            
-            
-
-			/*$this->load->library('email');
-			$config['protocol'] = 'sendmail';
-			$config['mailpath'] = '/usr/sbin/sendmail';
-			$config['mailtype'] = 'html';
-			$config['charset'] = 'iso-8859-1';
-			$config['wordwrap'] = TRUE; 
-			$this->email->initialize($config);
-
-			$this->email->from('no-reply@birtikendrajituniversity.com');
-			$this->email->to($result->email);
-			$this->email->subject('New Password |THE GLOBAL UNIVERSITY'); 
-			$this->email->set_mailtype('html');
-		
-			$this->email->message($message); 
-			if($this->email->send()){  
-			}else{ 
-			}*/	
-			return true;
-		}else{
-			return false;
-		}
-	}
-	public function login(){
-		if(substr($this->input->post('username'), 0,1) != 'S'){
-			$this->db->where('is_deleted','0');
-			$this->db->where('status','1');
-			$this->db->where_in('admission_status',array(1,4));
-			$this->db->where('username',$this->input->post('username'));
-			$this->db->where('password',$this->input->post('password'));
-			$this->db->where('hold_login','0');
-			$result = $this->db->get('tbl_student');
-			$result = $result->row();
-			if(!empty($result)){
-				$data = array(
-					'student_id' => $result->id
-				);
-				$this->session->set_userdata($data);
-				return true;
-			}else{
-				return false;
-			}
-		}else{ 
-		return false;
-		/*
-			$this->db->where('is_deleted','0');
-			$this->db->where('status','1');
-			$this->db->where('hold_login','0');
-			$this->db->where('username',$this->input->post('username'));
-			$this->db->where('password',$this->input->post('password'));
-			$result = $this->db->get('tbl_separate_student');
-			$result = $result->row(); 
-			if(!empty($result)){
-				$data = array(
-					'separate_student_id' => $result->id
-				);
-				$this->session->set_userdata($data);
-				redirect("s_student_dashboard");
-			}else{
-				return false;
-			}*/
-		}
-	}
-	public function get_old_password(){
-		$this->db->where('id',$this->session->userdata('student_id'));
-		$this->db->where('password',$this->input->post('old_password'));
-		$result = $this->db->get('tbl_student');
-		echo $result->num_rows();
-	}
-	public function set_password(){
-		$data = array(
-			'password' => $this->input->post('new_password')
- 		);
-		$this->db->where('id',$this->session->userdata('student_id'));
-		$this->db->update('tbl_student',$data);
-		return true;
-	}
-	public function get_student_profile(){
-		$this->db->where('id',$this->session->userdata('student_id'));
-		$result = $this->db->get('tbl_student');
-		return $result->row();
-	}
-	public function get_admission_form(){
-		$this->db->select('tbl_student.*,tbl_id_management.id_name,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_session.session_name,tbl_faculty.faculty_name,tbl_course.print_name,tbl_stream.stream_name,tbl_course_type.course_type as course_type_name,tbl_center.center_name, tbl_course_stream_relation.year_duration as duration');
-		$this->db->where('tbl_student.is_deleted','0');
-		$this->db->where('tbl_student.admission_status !=','0');
-		$this->db->where('tbl_student.id',$this->session->userdata('student_id'));
-		$this->db->join('tbl_course_type','tbl_course_type.id = tbl_student.course_type');
-		$this->db->join('tbl_course','tbl_course.id = tbl_student.course_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
-		$this->db->join('tbl_faculty','tbl_faculty.id = tbl_student.faculty_id');
-		$this->db->join('tbl_session','tbl_session.id = tbl_student.session_id');
-		$this->db->join('tbl_id_management','tbl_id_management.id = tbl_student.id_type');
-		$this->db->join('tbl_center','tbl_center.id = tbl_student.center_id');
-		$this->db->join('countries','countries.id = tbl_student.country');
-		$this->db->join('tbl_course_stream_relation','tbl_student.course_id = tbl_course_stream_relation.course');
-		$this->db->join('states','states.id = tbl_student.state');
-		$this->db->join('cities','cities.id = tbl_student.city');
-		$result = $this->db->get('tbl_student');
-		return $result->row();
-	}
-	public function get_my_qualification(){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$result = $this->db->get('tbl_student_qualification');
-		return $result->row();
-	}
-	public function update_qualification($secondary_marksheet,$sr_secondary_marksheet,$graduation_marksheet,$post_graduation_marksheet,$other_qualification_marksheet,$signature){
-		if($secondary_marksheet == ""){
-			$secondary_marksheet = $this->input->post('old_secondary_marksheet');
-		}
-		if($sr_secondary_marksheet == ""){
-			$sr_secondary_marksheet = $this->input->post('old_sr_secondary_marksheet');
-		}
-		if($graduation_marksheet == ""){
-			$graduation_marksheet = $this->input->post('old_graduation_marksheet');
-		}
-		if($post_graduation_marksheet == ""){
-			$post_graduation_marksheet = $this->input->post('old_post_graduation_marksheet');
-		}
-		if($other_qualification_marksheet == ""){
-			$other_qualification_marksheet = $this->input->post('old_other_qualification_marksheet');
-		}
-		$data = array(
-			'student_id' 				=> $this->session->userdata('student_id'),
-			'secondary_year' 			=> $this->input->post('secondary_year'),
-			'secondary_university' 		=> $this->input->post('secondary_university'),
-			'secondary_marks' 			=> $this->input->post('secondary_marks'),
-			'secondary_marksheet' 		=> $secondary_marksheet,
-			'sr_secondary_year'		 	=> $this->input->post('sr_secondary_year'),
-			'sr_secondary_university' 	=> $this->input->post('sr_secondary_university'),
-			'sr_secondary_marks' 		=> $this->input->post('sr_secondary_marks'),
-			'sr_secondary_marksheet' 	=> $sr_secondary_marksheet,
-			'graduation_year' 			=> $this->input->post('graduation_year'),
-			'graduation_university' 	=> $this->input->post('graduation_university'),
-			'graduation_marks' 			=> $this->input->post('graduation_marks'),
-			'graduation_marksheet' 		=> $graduation_marksheet,
-			'post_graduation_year' 		=> $this->input->post('post_graduation_year'),
-			'post_graduation_university' => $this->input->post('post_graduation_university'),
-			'post_graduation_marks' 	=> $this->input->post('post_graduation_marks'),
-			'post_graduation_marksheet' => $post_graduation_marksheet,
-			'other_qualification_year' 	=> $this->input->post('other_qualification_year'),
-			'other_qualification_university' => $this->input->post('other_qualification_university'),
-			'other_qualification_marks' 	=> $this->input->post('other_qualification_marks'),
-			'other_qualification_marksheet' => $other_qualification_marksheet,
-		);
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$result = $this->db->get('tbl_student_qualification');
-		$result = $result->row();
-		if(empty($result)){
-			$date = array('created_on' => date("Y-m-d H:i:s"));
-			$new_arr = array_merge($data,$date);
-			$this->db->insert('tbl_student_qualification',$new_arr);
-		}else{
-			$this->db->where('student_id',$this->session->userdata('student_id'));
-			$this->db->update('tbl_student_qualification',$data);
-		}
-		return true;
-	}
-	public function set_feedback(){
-		$data = array(
-			'student_id' 	=> $this->session->userdata('student_id'),
-			'feedback' 		=> $this->input->post('feedback'),
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_student_feedback',$data);
-		return true;
-	}
-	public function get_all_feedback(){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$result = $this->db->get('tbl_student_feedback');
-		return $result->result();
-	}
-	public function get_my_all_result(){
-		$this->db->where('is_deleted','0');	
-		$this->db->where('status','1');	
-		$this->db->where('student_id',$this->session->userdata('student_id'));	
-		$this->db->order_by('year_sem','ASC');
-		$result = $this->db->get('tbl_exam_results');
-		return $result->result();
-	}
-	public function get_this_result(){
-		$this->db->select('tbl_exam_results.*,tbl_course.course_name,tbl_stream.stream_name,tbl_student.student_name,tbl_student.course_mode,tbl_student.father_name,tbl_exam_results.examination_month,tbl_exam_results.examination_year');
-		$this->db->where('tbl_exam_results.id',$this->uri->segment(2));
-		$this->db->where('tbl_exam_results.student_id',$this->session->userdata('student_id'));
-		$this->db->where('tbl_exam_results.is_deleted','0');
-		$this->db->where('tbl_exam_results.status','1');
-		$this->db->join('tbl_student','tbl_student.id = tbl_exam_results.student_id');
-		$this->db->join('tbl_course','tbl_course.id = tbl_exam_results.course_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_exam_results.stream_id');
-		$result = $this->db->get('tbl_exam_results');
-		return $result->row();
-	}
-	public function upload_guardian($file){
-		$data = array(
-			'student_id'	=> $this->session->userdata('student_id'),
-			'year_sem' 		=> $this->input->post('year_sem'),
-			'file' 			=> $file,
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_guardian_assesment',$data);
-		return true;
-	}
-	public function get_guardian(){
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_guardian_assesment');
-		return $result->result();
-	}
-	public function upload_industrial($file){
-		$data = array(
-			'student_id'	=> $this->session->userdata('student_id'),
-			'year_sem' 		=> $this->input->post('year_sem'),
-			'file' 			=> $file,
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_industry_assesment',$data);
-		return true;
-	}
-	public function get_industrial(){
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_industry_assesment');
-		return $result->result();
-	}
-	public function upload_self_assesment($file){
-		$data = array(
-			'student_id'	=> $this->session->userdata('student_id'),
-			'year_sem' 		=> $this->input->post('year_sem'),
-			'file' 			=> $file,
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_self_assesments',$data);
-		return true;
-	}
-	public function get_my_self_assesment(){
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_self_assesments');
-		return $result->result();
-	}
-	public function upload_teacher_assesment($file){
-		$data = array(
-			'student_id'	=> $this->session->userdata('student_id'),
-			'year_sem' 		=> $this->input->post('year_sem'),
-			'file' 			=> $file,
-			'created_on'	=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_teacher_assesments',$data);
-		return true;
-	}
-
-	public function get_my_teacher_assesment(){
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_teacher_assesments');
-		return $result->result();
-	}
-
-	public function video_list(){
-
-		$student_id = $this->session->userdata('student_id');
-		$stu_data = $this->db->where("id",$student_id)->get("tbl_student")->row();
-		$data = $this->db->where("status","1")
-							->where("is_deleted","0")
-							->where("course",$stu_data->course_id)
-							->where("stream",$stu_data->stream_id)
-							->where("year_sem",$stu_data->year_sem)
-							->get("tbl_course_video")->result();
-		
-		return $data;
-
-	}
-	
-	public function get_stu_data($id){
-		$this->db->select("tbl_student.*,tbl_stream.stream_name");
-		$this->db->where("tbl_student.id",$id);
-		$this->db->join("tbl_stream","tbl_stream.id=tbl_student.stream_id");
-		$result = $this->db->get("tbl_student");
-		return $result->row();
-	}
-	
-	// 10/6/2021
-
-	public function get_migration_certificate(){
-		$this->db->select("tbl_student_migration.*,tbl_student.student_name,tbl_student.course_id,tbl_student.father_name,tbl_student.enrollment_number,tbl_course.course_name,tbl_course.sort_name,tbl_session.session_start_date");
-		$this->db->where("tbl_student_migration.is_deleted","0"); 
-		$this->db->where('tbl_student_migration.payment_status',"1");
-		$this->db->where("tbl_student_migration.student_id",$this->session->userdata("student_id"));
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_migration.student_id");
-		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
-
-		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
-		
-		$result = $this->db->get("tbl_student_migration")->row();
-		return $result;
-	}
-
-	public function set_pay_migration_certificate_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("student_id"),
-			"amount"		=> '500',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_student_migration",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_student_migration.id,tbl_student_migration.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
-		$this->db->where("tbl_student_migration.id",$id);
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_migration.student_id");
-
-		$result = $this->db->get("tbl_student_migration")->row();
-		return $result;
-	}
-
-	public function update_migration_certificate_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_student_migration',$data);
-			}
-		}
-	}
-
-
-	public function get_transfer_certificate(){
-		$this->db->select("tbl_student_transfer.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_student.gender,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_student_transfer.is_deleted","0");
-		$this->db->where('tbl_student_transfer.payment_status',"1");
-		$this->db->where("tbl_student_transfer.student_id",$this->session->userdata("student_id"));
-		
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_transfer.student_id");
-		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
-
-		$result = $this->db->get("tbl_student_transfer")->row();
-		return $result;
-	}
-
-
-	public function set_pay_transfer_certificate_fees(){
-		$data  = array(
-			"student_id"	=>$this->session->userdata("student_id"),
-			"amount"		=> '500',
-			//"amount"		=> '1',
-			"created_on"	=>date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_student_transfer",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_student_transfer.id,tbl_student_transfer.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
-		
-		$this->db->where("tbl_student_transfer.id",$id);
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_transfer.student_id");
- 		$result = $this->db->get("tbl_student_transfer")->row();
-
-		return $result;
-
-	}	
-
-
-	public function update_transfer_certificate_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_student_transfer',$data);
-			}
-		}	
-	}
-
-	public function get_recommendation_letter(){
-		$this->db->select("tbl_student_recommendation_letter.*,tbl_student.student_name,tbl_student.course_id,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_student_recommendation_letter.is_deleted","0");
-		$this->db->where("tbl_student_recommendation_letter.payment_status","1");
-		$this->db->where("tbl_student_recommendation_letter.student_id",$this->session->userdata("student_id"));
-		
-
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_recommendation_letter.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
-
-		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
-
-
-		$result = $this->db->get("tbl_student_recommendation_letter")->row();
-		return $result;
-	}
-
-	public function set_pay_recommendation_letter_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("student_id"),
-			"amount"		=> '1000',
-			//"amount"		=> '1',
-			"created_on"	=> date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_student_recommendation_letter",$data);
-		echo $id = $this->db->insert_id();exit;
-
-		$this->db->select("tbl_student_recommendation_letter.id,tbl_student_recommendation_letter.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
-		$this->db->where("tbl_student_recommendation_letter.id",$id);
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_recommendation_letter.student_id");
- 		$result = $this->db->get("tbl_student_recommendation_letter")->row();
-
-		return $result;
-	}
-
-	public function update_recommendation_letter_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_student_recommendation_letter',$data);
-			}
-		}	
-	}
-
-	public function get_degree(){
-		$this->db->select("tbl_student_degree.*,tbl_student.student_name,tbl_student.course_id,tbl_student.father_name,tbl_student.enrollment_number,tbl_student.photo,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_student_degree.is_deleted","0");
-		$this->db->where("tbl_student_degree.payment_status","1");
-		$this->db->where("tbl_student_degree.student_id",$this->session->userdata("student_id"));  
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_degree.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id"); 
-		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");  
-		$result = $this->db->get("tbl_student_degree")->row();
-		return $result;
-	} 
-
-	public function set_pay_degree_fees(){
-		$data  = array(
-			"student_id"	=>$this->session->userdata("student_id"),
-			"amount"		=>'1500',
-			//"amount"		=>'1',
-			"created_on"	=>date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_student_degree",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_student_degree.id,tbl_student_degree.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
-
-		$this->db->where("tbl_student_degree.id",$id);
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_degree.student_id");
- 		$result = $this->db->get("tbl_student_degree")->row();
-
-		return $result;
-	}
-
-	public function update_degree_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_student_degree',$data);
-			}
-		}	
-	}
-
-	public function get_student_division_for_degree(){
-		$this->db->select("examination_year,internal_max_marks,internal_marks_obtained,external_max_marks,external_marks_obtained,created_on");
-		$this->db->where("is_deleted","0");
-		$this->db->where("status","1");
-		$this->db->where("result","0");
-		$this->db->where("student_id",$this->session->userdata("student_id"));
-		$this->db->order_by("id","DESC");
-		$result = $this->db->get("tbl_exam_results")->result();
-		$total_marks = 0;
-		$gained_marks = 0;
-		foreach($result as $res){
-			$total_marks = $total_marks + $res->internal_max_marks + $res->external_max_marks;
-			$gained_marks = $gained_marks + $res->internal_marks_obtained + $res->external_marks_obtained;
-		}
-	
-		$percentage = $total_marks == 0?0:($gained_marks/$total_marks)*100;
-
-		if($percentage >= 60){
-			$data["division"] = "First Division";
-		}else if($percentage < 60 & $percentage>= 45){
-			$data["division"] = "Second Division";
-		}else{
-			$data["division"] = "Third Division";
-		}
-		$data["date"] = $result[0]->examination_year;
-		return $data;
-	}
-
-	//10/11/2021
-
-	public function get_student_provisional_degree(){
-		$this->db->select("tbl_student_provisional_degree.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
-		$this->db->where("tbl_student_provisional_degree.is_deleted","0");
-		$this->db->where("tbl_student_provisional_degree.payment_status","1");
-
-		$this->db->where("tbl_student_provisional_degree.student_id",$this->session->userdata("student_id"));
-		
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_provisional_degree.student_id");
-		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
-
-		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
-		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
-
-
-		$result = $this->db->get("tbl_student_provisional_degree")->row();
-		return $result;
-	}
-
-	public function set_pay_provisional_degree_fees(){
-		$data  = array(
-			"student_id"	=> $this->session->userdata("student_id"),
-			"amount"		=> '1100',
-			//"amount"		=> '1',
-			"created_on"=>date("Y-m-d H:i:s"),
-		);
-		$this->db->insert("tbl_student_provisional_degree",$data);
-		$id = $this->db->insert_id();
-
-		$this->db->select("tbl_student_provisional_degree.id,tbl_student_provisional_degree.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
-		
-		$this->db->where("tbl_student_provisional_degree.id",$id);
-		$this->db->join("tbl_student","tbl_student.id = tbl_student_provisional_degree.student_id");
- 		$result = $this->db->get("tbl_student_provisional_degree")->row();
- 		return $result;
-	}
-
-	public function update_provisional_degree_payment(){
-		if(isset($_REQUEST['status'])){
-			if($_REQUEST['status'] == 'COMPLETED'){ 
-				$data = array(
-					'transaction_id' 	=> $_REQUEST['txnId'],
-					'payment_status' 	=> '1',
-				);
-				$this->db->where('id',$this->input->GET('id'));
-				$this->db->update('tbl_student_provisional_degree',$data);
-			}
-		}	
-	} 
-	public function get_all_student_marksheet(){
-		$profile = $this->get_student_profile();
-		if($profile->course_id == "23"){
-			$this->db->where('student_id',$this->session->userdata('student_id'));
-			//$this->db->where('issue_status','1');
-			$this->db->where('status','1');
-			$this->db->where('is_deleted','0');
-			$this->db->order_by('id','DESC');
-			$result = $this->db->get('tbl_course_work_result');
-			return $result->result();
-		}else{ //echo $this->session->userdata("student_id");exit;
-		    $this->db->select('tbl_marksheet.*');
-			$this->db->where("tbl_marksheet.is_deleted","0");
-			$this->db->where("tbl_marksheet.status","1");
-			//$this->db->where('tbl_marksheet.issue_status','1');
-			$this->db->where('tbl_exam_results.is_deleted','0');
-			$this->db->where('tbl_exam_results.status','1');
-			$this->db->where("tbl_marksheet.student_id",$this->session->userdata("student_id"));
-			$this->db->join('tbl_exam_results','tbl_exam_results.id = tbl_marksheet.result_id');
-			$result = $this->db->get("tbl_marksheet")->result();
-			return $result;
-		}
-	}
-	public function get_single_coursework_marksheet(){ 
-		$this->db->select('tbl_course_work_result.* ,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_stream.stream_name');
-		$this->db->where('tbl_course_work_result.is_deleted','0');
-		$this->db->where('tbl_course_work_result.status','1');
-		$this->db->where('tbl_course_work_result.id',$this->uri->segment(2));
-		$this->db->where('tbl_course_work_result.student_id',$this->session->userdata('student_id'));
-		$this->db->where('tbl_course_work_result.issue_status','1');
-		$this->db->join('tbl_student','tbl_student.id = tbl_course_work_result.student_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
-		$query = $this->db->get('tbl_course_work_result');
-		$row = $query->row();
-		return $row;
-	} 
-	public function upload_old_migration_certificate($file){
-		if(isset($_REQUEST['save'])){
-			if($_REQUEST['save'] == 'Upload_Form'){ 
-				$data = array(
-					'old_migration' 	=> $file,
-				);
-				$this->db->where('id',$this->session->userdata('student_id'));
-				$this->db->update('tbl_student',$data);
-			}
-		}
-
-	}
-    public function set_transcript_form(){ 
-        $data = array(
-                'enrollment_number' => $this->input->post('enrollment_number'),
-                'registration_id'   => $this->session->userdata("student_id"),
-                'course_duration'   => $this->input->post('duration_of_course'),
-                'year_of_passing'   => $this->input->post('year_of_passing'),
-                'payment_date'      => date("Y-m-d"),
-                'created_on'        => date("Y-m-d H:i:s")
-            );
-            $this->db->insert('tbl_transcript',$data);
-            $last_id = $this->db->insert_id();
-            $sem = $this->input->post('sem');
-            $subject = $this->input->post('subject');
-            $type = $this->input->post('type');
-            $max_mark = $this->input->post('max_mark');
-            $obtained = $this->input->post('obtained');
-            $detail_arr = array();
-            for($i=0;$i<count($sem);$i++){
-                $detail_arr[] = array(
-                        'transcript_id' => $last_id,
-                        'sem'           => $sem[$i],
-                        'subject'       => $subject[$i],
-                        'type'          => $type[$i],
-                        'max_mark'      => $max_mark[$i],
-                        'obtained'      => $obtained[$i],
-                        'created_on'    => date("Y-m-d H:i:s")
-                    );    
-            }
-            if(!empty($detail_arr)){
-                $this->db->insert_batch('tbl_transcript_details',$detail_arr);
-            }
-            return true;
-    }	
-    public function get_transcript(){
-        $this->db->where('registration_id',$this->session->userdata("student_id"));
-        $this->db->where('is_deleted','0');
-        $this->db->where('status','1');
-        $result = $this->db->get('tbl_transcript');
-        return $result->row();
-    } 
-    public function get_print_transcript(){
-        $this->db->select('tbl_transcript.*,tbl_transcript_details.sem,tbl_student.student_name,tbl_student.course_id,tbl_student.enrollment_number,tbl_course.print_name,tbl_stream.stream_name');
-        $this->db->where('tbl_transcript.registration_id',$this->session->userdata('student_id'));
-        $this->db->where('tbl_transcript.is_deleted','0');
-        $this->db->where('tbl_transcript.status','1');
-        $this->db->where('tbl_transcript.approve_status','1');
-        $this->db->join('tbl_transcript_details','tbl_transcript_details.transcript_id = tbl_transcript.id');
-        $this->db->join('tbl_student','tbl_student.id = tbl_transcript.registration_id');
-        $this->db->join('tbl_course','tbl_course.id = tbl_student.course_id');
-        $this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
-        $this->db->group_by('tbl_transcript_details.sem');
-		$this->db->order_by('tbl_transcript_details.sem','DESC');
-        $result = $this->db->get('tbl_transcript');
-        return $result->row();
-    }
-    public function get_this_transcript_subject($sem,$id){ 
-		$this->db->where('sem',$sem);
-		$this->db->where('transcript_id',$id);
-		$this->db->order_by('type','DESC');
-		$result = $this->db->get('tbl_transcript_details');
-		return $result->result(); 
-		// echo "<pre>";print_r($result);exit;
-	}  
-	public function get_this_transcript_total($id){ 
-		$this->db->select('sum(obtained) as total_obt,sum(max_mark) as total_mk');
-		$this->db->where('transcript_id',$id);
-		$result = $this->db->get('tbl_transcript_details');
-		return $result->row();
-		// echo "<pre>";print_r($result);exit;
-	}
-	public function insert_thesis_submission($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("softcopy");
-		}		
-		$data = array(
-	 		          'student_id'   	  => $this->session->userdata('student_id'),
-	 		          'stream_id'         => $student->stream_id,
-	 		          'center_id'         => $student->center_id,
-	 		          'thesis_title'      => $this->input->post('thesis_title'),
-	 		          'softcopy'		  => $file1,
-	 		          'paper_journal1'    => $this->input->post('paper_journal1'),
-	 		          'guide_id'          => $this->input->post('name'),
-			          
-		        );
-
-		if($this->input->post('hidden_id') == ""){
-			$date=array(
-				'created_on'=> date('Y-m-d H:i:s'),
-			);
-			$new_arr=array_merge($data,$date);
-			$this->db->insert('tbl_thesis',$new_arr);
-			return 1;
-		}else{
-			$this->db->where('id',$this->input->post('hidden_id'));
-			$this->db->update('tbl_thesis',$data);
-			return 0;
-		}
-	}
-	 public function get_single_thesis_submission(){
-	 	$this->db->select('tbl_thesis.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_guide_application.name as guide_name');
-		$this->db->where('tbl_thesis.student_id',$this->session->userdata('student_id'));
-		$this->db->where('tbl_thesis.is_deleted','0');
-		$this->db->join('tbl_student','tbl_student.id = tbl_thesis.student_id');
-		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_thesis.guide_id');
-		$result = $this->db->get('tbl_thesis');
-	   	return $result->row();
-	  }
-	  public function get_active_guide_list(){
-	  	$this->db->where('is_deleted','0');
-	  	$this->db->where('status','1');
-	  	$this->db->where('appliation_status','1');
-	  	$result = $this->db->get('tbl_guide_application');
-	  	return $result->result();
-	  }
-	  public function insert_synopsis_thesis_submission($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("soft_copy");
-		}		
-		$data = array(
- 	          'student_id'   	  => $this->session->userdata('student_id'),
- 	          'student_name'	  => $student->student_name,
- 	          'father_name'	      => $student->father_name,
- 	          'stream_id'         => $student->stream_id,
- 	          'center_id'         => $student->center_id,
- 	          'thesis_title'      => $this->input->post('thesis_title'),
- 	          'soft_copy'		  => $file1,
- 	          'guide_id'          => $this->input->post('name'), 
-        );
-		if($this->input->post('hidden_id') == ""){
-			$date=array(
-				'created_on'=> date('Y-m-d H:i:s'),
-			);
-			$new_arr=array_merge($data,$date);
-			$this->db->insert('tbl_synopsis',$new_arr);
-			return 1;
-		}else{
-			$this->db->where('id',$this->input->post('hidden_id'));
-			$this->db->update('tbl_synopsis',$data);
-			return 0;
-		}
-	}
-	  public function get_single_synopsis_thesis(){
-	 	$this->db->select('tbl_synopsis.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_guide_application.name as guide_name');
-		$this->db->where('tbl_synopsis.student_id',$this->session->userdata('student_id'));
-		$this->db->where('tbl_synopsis.is_deleted','0');
-		$this->db->join('tbl_student','tbl_student.id = tbl_synopsis.student_id');
-		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_synopsis.guide_id');
-		$result = $this->db->get('tbl_synopsis');
-	   	return $result->row();
-	  }
-	  public function get_active_guide_synopsis_list(){
-	  	$this->db->where('is_deleted','0');
-	  	$this->db->where('status','1');
-	  	$this->db->where('appliation_status','1');
-	  	$result = $this->db->get('tbl_guide_application');
-	  	return $result->result();
-	  }
-	  public function update_student_document($identity_file){
-		$data = array(
-		  'id_type'	  			=> $this->input->post('id_type'),
-		  'id_number'	      	=> $this->input->post('identity_numer'),
-		  'identity_softcopy'  	=> $identity_file,
-		);
-		$this->db->where('id',$this->session->userdata('student_id'));
-		$this->db->update('tbl_student',$data);
-		return true;
-	  }
-	  
-	  
-	public function get_single_marksheet_result(){
-		$this->db->select('tbl_course_work_result.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_stream.stream_name');
-        $this->db->where('tbl_course_work_result.is_deleted','0');
-        $this->db->where('tbl_course_work_result.status','1');
-        $this->db->where('tbl_course_work_result.issue_status','1');
-        $this->db->where('tbl_course_work_result.student_id',$this->session->userdata('student_id'));
-		$this->db->join('tbl_student','tbl_student.id = tbl_course_work_result.student_id');
-		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
-		$query = $this->db->get('tbl_course_work_result');
-     	$row = $query->row();
-        return $row;
-	}
-	
-	public function get_course_work_marksheet_details($id){
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1');
-		$this->db->where('result_id',$id);
-		$result = $this->db->get('tbl_course_work_result_details');
-     	$result = $result->result();
-        return $result;		  
-	}
-	public function get_single_marksheet_result_count(){
-		$this->db->where('is_deleted','0');
-        $this->db->where('status','1');
-        $this->db->where('issue_status','1');
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$query = $this->db->get('tbl_course_work_result');
-		return $query->num_rows();
-	}
-	public function insert_abstract($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("upload_report");
-		}		
-		$data = array(
-	 		          'student_id'   	  => $this->session->userdata('student_id'),
-	 		          'upload_report'	  => $file1,
-	 		          'remark'            => $this->input->post('remark'),
-					  'created_on'        => date('Y-m-d H:i:s'),
-		        );
-			
-			$this->db->insert('tbl_abstract',$data);
-			return 1;
-	}
-	public function get_single_abstract(){
-		$this->db->select('tbl_abstract.*,tbl_student.student_name');
-	    $this->db->where('tbl_abstract.student_id',$this->session->userdata('student_id'));
-	    $this->db->where('tbl_abstract.is_deleted','0');
-	    $this->db->join('tbl_student','tbl_student.id = tbl_abstract.student_id');
-	    $result = $this->db->get('tbl_abstract');
-		return $result->row();
-	 }
-	 public function insert_progress_report($file1){
-		$student = $this->get_student_profile();
-		if($file1 == ""){
-			$file1 = $this->input->post("progress_report");
-		}		
-		$data = array(
-	 		          'student_id'   	  => $this->session->userdata('student_id'),
-	 		          'progress_report'	  => $file1,
-	 		          'remark'            => $this->input->post('remark'),
-					  'created_on'        => date('Y-m-d H:i:s'),
-		        );
-
-			$this->db->insert('tbl_progress_report',$data);
-			return 1;
-		
-	}
-	public function get_single_progress_report(){
-		$this->db->select('tbl_progress_report.*,tbl_student.student_name');
-	    $this->db->where('tbl_progress_report.student_id',$this->session->userdata('student_id'));
-	    $this->db->where('tbl_progress_report.is_deleted','0');
-	    $this->db->join('tbl_student','tbl_student.id = tbl_progress_report.student_id');
-	    $result = $this->db->get('tbl_progress_report');
-		return $result->row();
-	 }
-	public function upload_assignment($file){
-		$data = array(
-			'student_id'			=> $this->session->userdata('student_id'),
-			'year_sem' 				=> $this->input->post('year_sem'),
-			'assignment_title'		=> $this->input->post('assignment_title'),
-			'file' 					=> $file,
-			'created_on'			=> date("Y-m-d H:i:s")
-		);
-		$this->db->insert('tbl_assignment',$data);
-		return true;
-	 }
-	public function get_assignment(){
-		$this->db->where('student_id',$this->session->userdata('student_id'));
-		$this->db->where('is_deleted','0');
-		$this->db->where('status','1'); 
-		$this->db->order_by('id','DESC'); 
-		$result = $this->db->get('tbl_assignment');
-		return $result->result();
-	}
-	public function get_my_consolidated_marksheet(){
-		$this->db->select('tbl_consolidated_marksheet.*'); 
-		$this->db->where('tbl_consolidated_marksheet.is_deleted','0');
-		$this->db->where('tbl_consolidated_marksheet.status','1'); 
-		$this->db->where('tbl_consolidated_marksheet.issue_status','1'); 
-		$this->db->where('tbl_student.id',$this->session->userdata('student_id')); 
-		$this->db->join('tbl_student','tbl_student.enrollment_number = tbl_consolidated_marksheet.enrollment');
-		$result = $this->db->get('tbl_consolidated_marksheet');
-		return $result->row();
-	 }
-	public function get_all_ebook(){
-	    $profile = $this->get_student_profile();
-        $this->db->where('is_deleted','0');
-        $this->db->where('course',$profile->course_id);
-        $this->db->where('stream',$profile->stream_id);
-        $this->db->where('year_sem',$profile->year_sem);
-        $result = $this->db->get('tbl_ebook_library');
-        return $result->result();
-    }
-    public function send_provisional_terms(){
-        $profile = $this->get_student_profile();
-        $from_email = no_reply_mail; 
-		 
-			$message ='
-			<!DOCTYPE html>
-                <html>
-                    <head>
-                        <title></title>
-                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                        <style type="text/css">
-                            @media screen {
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 400;
-                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 700;
-                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family:  "Lato";
-                                    font-style: italic;
-                                    font-weight: 400;
-                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: v
-                                    font-style: italic;
-                                    font-weight: 700;
-                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
-                                }
-                            }
-                    
-                            /* CLIENT-SPECIFIC STYLES */
-                            body,
-                            table,
-                            td,
-                            a {
-                                -webkit-text-size-adjust: 100%;
-                                -ms-text-size-adjust: 100%;
-                            }
-                    
-                            table,
-                            td {
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                            }
-                    
-                            img {
-                                -ms-interpolation-mode: bicubic;
-                            }
-                    
-                            /* RESET STYLES */
-                            img {
-                                border: 0;
-                                height: auto;
-                                line-height: 100%;
-                                outline: none;
-                                text-decoration: none;
-                            }
-                    
-                            table {
-                                border-collapse: collapse !important;
-                            }
-                    
-                            body {
-                                height: 100% !important;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                                width: 100% !important;
-                            }
-                    
-                            /* iOS BLUE LINKS */
-                            a[x-apple-data-detectors] {
-                                color: inherit !important;
-                                text-decoration: none !important;
-                                font-size: inherit !important;
-                                font-family: inherit !important;
-                                font-weight: inherit !important;
-                                line-height: inherit !important;
-                            }
-                    
-                            /* MOBILE STYLES */
-                            @media screen and (max-width:600px) {
-                                h1 {
-                                    font-size: 32px !important;
-                                    line-height: 32px !important;
-                                }
-                            }
-                    
-                            /* ANDROID CENTER FIX */
-                            div[style*="margin: 16px 0;"] {
-                                margin: 0 !important;
-                            }
-                        </style>
-                    </head> 
-                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
-                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
-    </div>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <!-- LOGO -->
-        <tr>
-            <td bgcolor="#FFA73B" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Provisional Degree!</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">We are excited to have you get started to applying for provisional degree. First, you need to accept our term and conditions. Just press the button below.</p>
-                            <br>
-                            <p style="margin: 0;">
-                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
-                              </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'</a></p>
-                             
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>IT Team</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
-                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-         
-    </table>
-</body>
-
-</html>
-			';
-			
-			$to = array(
-    		"email" => $profile->email,
-    		"name" => $profile->student_name,
-    	);
-    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
-        $this->Admin_model->send_send_blue($to,$subject,$message);
-            /*
-			$this->load->library('email'); 
-			$this->email->set_mailtype('html');
-			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
-			$this->email->to($profile->email);
-			$this->email->subject('Accept Terms & Conditions | BTU'); 
-			$this->email->message($messege); 
-			if($this->email->send()) { 
-			} */        
-			return true;
-    }
-    public function send_accept_transfer_undertaking(){
-        $profile = $this->get_student_profile();
-        $from_email = no_reply_mail; 
-		 
-			$message ='
-			<!DOCTYPE html>
-                <html>
-                    <head>
-                        <title></title>
-                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                        <style type="text/css">
-                            @media screen {
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 400;
-                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 700;
-                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family:  "Lato";
-                                    font-style: italic;
-                                    font-weight: 400;
-                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: v
-                                    font-style: italic;
-                                    font-weight: 700;
-                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
-                                }
-                            }
-                    
-                            /* CLIENT-SPECIFIC STYLES */
-                            body,
-                            table,
-                            td,
-                            a {
-                                -webkit-text-size-adjust: 100%;
-                                -ms-text-size-adjust: 100%;
-                            }
-                    
-                            table,
-                            td {
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                            }
-                    
-                            img {
-                                -ms-interpolation-mode: bicubic;
-                            }
-                    
-                            /* RESET STYLES */
-                            img {
-                                border: 0;
-                                height: auto;
-                                line-height: 100%;
-                                outline: none;
-                                text-decoration: none;
-                            }
-                    
-                            table {
-                                border-collapse: collapse !important;
-                            }
-                    
-                            body {
-                                height: 100% !important;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                                width: 100% !important;
-                            }
-                    
-                            /* iOS BLUE LINKS */
-                            a[x-apple-data-detectors] {
-                                color: inherit !important;
-                                text-decoration: none !important;
-                                font-size: inherit !important;
-                                font-family: inherit !important;
-                                font-weight: inherit !important;
-                                line-height: inherit !important;
-                            }
-                    
-                            /* MOBILE STYLES */
-                            @media screen and (max-width:600px) {
-                                h1 {
-                                    font-size: 32px !important;
-                                    line-height: 32px !important;
-                                }
-                            }
-                    
-                            /* ANDROID CENTER FIX */
-                            div[style*="margin: 16px 0;"] {
-                                margin: 0 !important;
-                            }
-                        </style>
-                    </head> 
-                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
-                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
-    </div>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <!-- LOGO -->
-        <tr>
-            <td bgcolor="#FFA73B" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Transfer Certificate !</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">We are excited to have you get started to applying for transfer certificate. First, you need to accept our term and conditions. Just press the button below.</p>
-                            <br>
-                            <p style="margin: 0;">
-                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
-                              </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'</a></p>
-                             
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>IT Team</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
-                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-         
-    </table>
-</body>
-
-</html>
-			';
-			
-		$to = array(
-    		"email" => $profile->email,
-    		"name" => $profile->student_name,
-    	);
-    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
-        $this->Admin_model->send_send_blue($to,$subject,$message);
-            /*
-			$this->load->library('email'); 
-			$this->email->set_mailtype('html');
-			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
-			$this->email->to($profile->email);
-			$this->email->subject('Accept Terms & Conditions | BTU'); 
-			$this->email->message($message); 
-			if($this->email->send()) { 
-			} */        
-			return true;
-    }
-    public function send_accept_transcript_undertaking(){
-        $profile = $this->get_student_profile();
-        $from_email = no_reply_mail; 
-		 
-			$message ='
-			<!DOCTYPE html>
-                <html>
-                    <head>
-                        <title></title>
-                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                        <style type="text/css">
-                            @media screen {
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 400;
-                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 700;
-                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family:  "Lato";
-                                    font-style: italic;
-                                    font-weight: 400;
-                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: v
-                                    font-style: italic;
-                                    font-weight: 700;
-                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
-                                }
-                            }
-                    
-                            /* CLIENT-SPECIFIC STYLES */
-                            body,
-                            table,
-                            td,
-                            a {
-                                -webkit-text-size-adjust: 100%;
-                                -ms-text-size-adjust: 100%;
-                            }
-                    
-                            table,
-                            td {
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                            }
-                    
-                            img {
-                                -ms-interpolation-mode: bicubic;
-                            }
-                    
-                            /* RESET STYLES */
-                            img {
-                                border: 0;
-                                height: auto;
-                                line-height: 100%;
-                                outline: none;
-                                text-decoration: none;
-                            }
-                    
-                            table {
-                                border-collapse: collapse !important;
-                            }
-                    
-                            body {
-                                height: 100% !important;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                                width: 100% !important;
-                            }
-                    
-                            /* iOS BLUE LINKS */
-                            a[x-apple-data-detectors] {
-                                color: inherit !important;
-                                text-decoration: none !important;
-                                font-size: inherit !important;
-                                font-family: inherit !important;
-                                font-weight: inherit !important;
-                                line-height: inherit !important;
-                            }
-                    
-                            /* MOBILE STYLES */
-                            @media screen and (max-width:600px) {
-                                h1 {
-                                    font-size: 32px !important;
-                                    line-height: 32px !important;
-                                }
-                            }
-                    
-                            /* ANDROID CENTER FIX */
-                            div[style*="margin: 16px 0;"] {
-                                margin: 0 !important;
-                            }
-                        </style>
-                    </head> 
-                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
-                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
-    </div>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <!-- LOGO -->
-        <tr>
-            <td bgcolor="#FFA73B" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Transcript Certificate!</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">We are excited to have you get started to applying for transcript certificate. First, you need to accept our term and conditions. Just press the button below.</p>
-                            <br>
-                            <p style="margin: 0;">
-                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
-                              </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'</a></p>
-                             
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>IT Team</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
-                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-         
-    </table>
-</body>
-
-</html>
-			'; 
-		 $to = array(
-    		"email" => $profile->email,
-    		"name" => $profile->student_name,
-    	);
-    	$subject = 'Accept Terms & Conditions | '. no_reply_name;    
-        $this->Admin_model->send_send_blue($to,$subject,$message);
-        
-		    
-			/*$this->load->library('email'); 
-			$this->email->set_mailtype('html');
-			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
-			$this->email->to($profile->email);
-			$this->email->subject('Accept Terms & Conditions | BTU'); 
-			$this->email->message($message); 
-			if($this->email->send()) { 
-			} */        
-			return true;
-    }
-	public function send_accept_migration_undertaking(){
-	    $profile = $this->get_student_profile();
-        $from_email = no_reply_mail; 
-		 
-			$message ='
-			<!DOCTYPE html>
-                <html>
-                    <head>
-                        <title></title>
-                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                        <style type="text/css">
-                            @media screen {
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 400;
-                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: "Lato";
-                                    font-style: normal;
-                                    font-weight: 700;
-                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family:  "Lato";
-                                    font-style: italic;
-                                    font-weight: 400;
-                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
-                                }
-                    
-                                @font-face {
-                                    font-family: v
-                                    font-style: italic;
-                                    font-weight: 700;
-                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
-                                }
-                            }
-                    
-                            /* CLIENT-SPECIFIC STYLES */
-                            body,
-                            table,
-                            td,
-                            a {
-                                -webkit-text-size-adjust: 100%;
-                                -ms-text-size-adjust: 100%;
-                            }
-                    
-                            table,
-                            td {
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                            }
-                    
-                            img {
-                                -ms-interpolation-mode: bicubic;
-                            }
-                    
-                            /* RESET STYLES */
-                            img {
-                                border: 0;
-                                height: auto;
-                                line-height: 100%;
-                                outline: none;
-                                text-decoration: none;
-                            }
-                    
-                            table {
-                                border-collapse: collapse !important;
-                            }
-                    
-                            body {
-                                height: 100% !important;
-                                margin: 0 !important;
-                                padding: 0 !important;
-                                width: 100% !important;
-                            }
-                    
-                            /* iOS BLUE LINKS */
-                            a[x-apple-data-detectors] {
-                                color: inherit !important;
-                                text-decoration: none !important;
-                                font-size: inherit !important;
-                                font-family: inherit !important;
-                                font-weight: inherit !important;
-                                line-height: inherit !important;
-                            }
-                    
-                            /* MOBILE STYLES */
-                            @media screen and (max-width:600px) {
-                                h1 {
-                                    font-size: 32px !important;
-                                    line-height: 32px !important;
-                                }
-                            }
-                    
-                            /* ANDROID CENTER FIX */
-                            div[style*="margin: 16px 0;"] {
-                                margin: 0 !important;
-                            }
-                        </style>
-                    </head> 
-                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
-                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
-    </div>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <!-- LOGO -->
-        <tr>
-            <td bgcolor="#FFA73B" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Migration Certificate!</h1> <img src=" https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">We are excited to have you get started to applying for migration certificate. First, you need to accept our term and conditions. Just press the button below.</p>
-                            <br>
-                            <p style="margin: 0;">
-                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
-                              </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'</a></p>
-                             
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Cheers,<br>IT Team</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
-                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-         
-    </table>
-</body>
-
-</html>
-			';
-			
-    	 $to = array(
-    		"email" => $profile->email,
-    		"name" => $profile->student_name,
-    	);
-    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
-        $this->Admin_model->send_send_blue($to,$subject,$message);
-		 
-			/*
-			$this->load->library('email'); 
-			$this->email->set_mailtype('html');
-			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
-			$this->email->to($profile->email);
-			$this->email->subject('Accept Terms & Conditions | BTU'); 
-			$this->email->message($message); 
-			if($this->email->send()) { 
-			} */        
-			return true;
-	}
-} 
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+class Students_model extends CI_Model{ 
+	public function forgot_password(){
+		$this->db->where('email',$this->input->post('email'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where_in('admission_status',array(1,4));
+		$result = $this->db->get('tbl_student');
+		$result = $result->row();
+		$password = rand();
+		if(!empty($result)){
+			$data = array(
+				'password' => $password
+			);			
+			$this->db->where('id',$result->id);
+			$this->db->update('tbl_student',$data);
+	    	$message = "Dear ".$result->student_name.",<br> below are the login details to continue.<br>";
+		
+			$message .= "<br>URL: ".base_url()."student-login";
+			$message .= "<br>Username: ".$result->username;
+			$message .= "<br>Password: ".$password;
+			$message .="<br>Regards,<br>IT Team";
+			
+			
+			 $to = array(
+        		"email" => $result->email,
+        		"name" => $result->student_name,
+        	);
+        	$subject = 'New Password |'.no_reply_name;    
+            $this->Admin_model->send_send_blue($to,$subject,$message);
+            
+			
+			
+            
+            
+
+			/*$this->load->library('email');
+			$config['protocol'] = 'sendmail';
+			$config['mailpath'] = '/usr/sbin/sendmail';
+			$config['mailtype'] = 'html';
+			$config['charset'] = 'iso-8859-1';
+			$config['wordwrap'] = TRUE; 
+			$this->email->initialize($config);
+
+			$this->email->from('no-reply@birtikendrajituniversity.com');
+			$this->email->to($result->email);
+			$this->email->subject('New Password |THE GLOBAL UNIVERSITY'); 
+			$this->email->set_mailtype('html');
+		
+			$this->email->message($message); 
+			if($this->email->send()){  
+			}else{ 
+			}*/	
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public function login(){
+		if(substr($this->input->post('username'), 0,1) != 'S'){
+			$this->db->where('is_deleted','0');
+			$this->db->where('status','1');
+			$this->db->where_in('admission_status',array(1,4));
+			$this->db->where('username',$this->input->post('username'));
+			$this->db->where('password',$this->input->post('password'));
+			$this->db->where('hold_login','0');
+			$result = $this->db->get('tbl_student');
+			$result = $result->row();
+			if(!empty($result)){
+				$data = array(
+					'student_id' => $result->id
+				);
+				$this->session->set_userdata($data);
+				return true;
+			}else{
+				return false;
+			}
+		}else{ 
+		return false;
+		/*
+			$this->db->where('is_deleted','0');
+			$this->db->where('status','1');
+			$this->db->where('hold_login','0');
+			$this->db->where('username',$this->input->post('username'));
+			$this->db->where('password',$this->input->post('password'));
+			$result = $this->db->get('tbl_separate_student');
+			$result = $result->row(); 
+			if(!empty($result)){
+				$data = array(
+					'separate_student_id' => $result->id
+				);
+				$this->session->set_userdata($data);
+				redirect("s_student_dashboard");
+			}else{
+				return false;
+			}*/
+		}
+	}
+	public function get_old_password(){
+		$this->db->where('id',$this->session->userdata('student_id'));
+		$this->db->where('password',$this->input->post('old_password'));
+		$result = $this->db->get('tbl_student');
+		echo $result->num_rows();
+	}
+	public function set_password(){
+		$data = array(
+			'password' => $this->input->post('new_password')
+ 		);
+		$this->db->where('id',$this->session->userdata('student_id'));
+		$this->db->update('tbl_student',$data);
+		return true;
+	}
+	public function get_student_profile(){
+		$this->db->where('id',$this->session->userdata('student_id'));
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_admission_form(){
+		$this->db->select('tbl_student.*,tbl_id_management.id_name,countries.name as country_name,states.name as state_name,cities.name as city_name,tbl_session.session_name,tbl_faculty.faculty_name,tbl_course.print_name,tbl_stream.stream_name,tbl_course_type.course_type as course_type_name,tbl_center.center_name, tbl_course_stream_relation.year_duration as duration');
+		$this->db->where('tbl_student.is_deleted','0');
+		$this->db->where('tbl_student.admission_status !=','0');
+		$this->db->where('tbl_student.id',$this->session->userdata('student_id'));
+		$this->db->join('tbl_course_type','tbl_course_type.id = tbl_student.course_type');
+		$this->db->join('tbl_course','tbl_course.id = tbl_student.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
+		$this->db->join('tbl_faculty','tbl_faculty.id = tbl_student.faculty_id');
+		$this->db->join('tbl_session','tbl_session.id = tbl_student.session_id');
+		$this->db->join('tbl_id_management','tbl_id_management.id = tbl_student.id_type');
+		$this->db->join('tbl_center','tbl_center.id = tbl_student.center_id');
+		$this->db->join('countries','countries.id = tbl_student.country');
+		$this->db->join('tbl_course_stream_relation','tbl_student.course_id = tbl_course_stream_relation.course');
+		$this->db->join('states','states.id = tbl_student.state');
+		$this->db->join('cities','cities.id = tbl_student.city');
+		$result = $this->db->get('tbl_student');
+		return $result->row();
+	}
+	public function get_my_qualification(){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$result = $this->db->get('tbl_student_qualification');
+		return $result->row();
+	}
+	public function update_qualification($secondary_marksheet,$sr_secondary_marksheet,$graduation_marksheet,$post_graduation_marksheet,$other_qualification_marksheet,$signature){
+		if($secondary_marksheet == ""){
+			$secondary_marksheet = $this->input->post('old_secondary_marksheet');
+		}
+		if($sr_secondary_marksheet == ""){
+			$sr_secondary_marksheet = $this->input->post('old_sr_secondary_marksheet');
+		}
+		if($graduation_marksheet == ""){
+			$graduation_marksheet = $this->input->post('old_graduation_marksheet');
+		}
+		if($post_graduation_marksheet == ""){
+			$post_graduation_marksheet = $this->input->post('old_post_graduation_marksheet');
+		}
+		if($other_qualification_marksheet == ""){
+			$other_qualification_marksheet = $this->input->post('old_other_qualification_marksheet');
+		}
+		$data = array(
+			'student_id' 				=> $this->session->userdata('student_id'),
+			'secondary_year' 			=> $this->input->post('secondary_year'),
+			'secondary_university' 		=> $this->input->post('secondary_university'),
+			'secondary_marks' 			=> $this->input->post('secondary_marks'),
+			'secondary_marksheet' 		=> $secondary_marksheet,
+			'sr_secondary_year'		 	=> $this->input->post('sr_secondary_year'),
+			'sr_secondary_university' 	=> $this->input->post('sr_secondary_university'),
+			'sr_secondary_marks' 		=> $this->input->post('sr_secondary_marks'),
+			'sr_secondary_marksheet' 	=> $sr_secondary_marksheet,
+			'graduation_year' 			=> $this->input->post('graduation_year'),
+			'graduation_university' 	=> $this->input->post('graduation_university'),
+			'graduation_marks' 			=> $this->input->post('graduation_marks'),
+			'graduation_marksheet' 		=> $graduation_marksheet,
+			'post_graduation_year' 		=> $this->input->post('post_graduation_year'),
+			'post_graduation_university' => $this->input->post('post_graduation_university'),
+			'post_graduation_marks' 	=> $this->input->post('post_graduation_marks'),
+			'post_graduation_marksheet' => $post_graduation_marksheet,
+			'other_qualification_year' 	=> $this->input->post('other_qualification_year'),
+			'other_qualification_university' => $this->input->post('other_qualification_university'),
+			'other_qualification_marks' 	=> $this->input->post('other_qualification_marks'),
+			'other_qualification_marksheet' => $other_qualification_marksheet,
+		);
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$result = $this->db->get('tbl_student_qualification');
+		$result = $result->row();
+		if(empty($result)){
+			$date = array('created_on' => date("Y-m-d H:i:s"));
+			$new_arr = array_merge($data,$date);
+			$this->db->insert('tbl_student_qualification',$new_arr);
+		}else{
+			$this->db->where('student_id',$this->session->userdata('student_id'));
+			$this->db->update('tbl_student_qualification',$data);
+		}
+		return true;
+	}
+	public function set_feedback(){
+		$data = array(
+			'student_id' 	=> $this->session->userdata('student_id'),
+			'feedback' 		=> $this->input->post('feedback'),
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_student_feedback',$data);
+		return true;
+	}
+	public function get_all_feedback(){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$result = $this->db->get('tbl_student_feedback');
+		return $result->result();
+	}
+	public function get_my_all_result(){
+		$this->db->where('is_deleted','0');	
+		$this->db->where('status','1');	
+		$this->db->where('student_id',$this->session->userdata('student_id'));	
+		$this->db->order_by('year_sem','ASC');
+		$result = $this->db->get('tbl_exam_results');
+		return $result->result();
+	}
+	public function get_this_result(){
+		$this->db->select('tbl_exam_results.*,tbl_course.course_name,tbl_stream.stream_name,tbl_student.student_name,tbl_student.course_mode,tbl_student.father_name,tbl_exam_results.examination_month,tbl_exam_results.examination_year');
+		$this->db->where('tbl_exam_results.id',$this->uri->segment(2));
+		$this->db->where('tbl_exam_results.student_id',$this->session->userdata('student_id'));
+		$this->db->where('tbl_exam_results.is_deleted','0');
+		$this->db->where('tbl_exam_results.status','1');
+		$this->db->join('tbl_student','tbl_student.id = tbl_exam_results.student_id');
+		$this->db->join('tbl_course','tbl_course.id = tbl_exam_results.course_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_exam_results.stream_id');
+		$result = $this->db->get('tbl_exam_results');
+		return $result->row();
+	}
+	public function upload_guardian($file){
+		$data = array(
+			'student_id'	=> $this->session->userdata('student_id'),
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'file' 			=> $file,
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_guardian_assesment',$data);
+		return true;
+	}
+	public function get_guardian(){
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_guardian_assesment');
+		return $result->result();
+	}
+	public function upload_industrial($file){
+		$data = array(
+			'student_id'	=> $this->session->userdata('student_id'),
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'file' 			=> $file,
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_industry_assesment',$data);
+		return true;
+	}
+	public function get_industrial(){
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_industry_assesment');
+		return $result->result();
+	}
+	public function upload_self_assesment($file){
+		$data = array(
+			'student_id'	=> $this->session->userdata('student_id'),
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'file' 			=> $file,
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_self_assesments',$data);
+		return true;
+	}
+	public function get_my_self_assesment(){
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_self_assesments');
+		return $result->result();
+	}
+	public function upload_teacher_assesment($file){
+		$data = array(
+			'student_id'	=> $this->session->userdata('student_id'),
+			'year_sem' 		=> $this->input->post('year_sem'),
+			'file' 			=> $file,
+			'created_on'	=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_teacher_assesments',$data);
+		return true;
+	}
+
+	public function get_my_teacher_assesment(){
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_teacher_assesments');
+		return $result->result();
+	}
+
+	public function video_list(){
+
+		$student_id = $this->session->userdata('student_id');
+		$stu_data = $this->db->where("id",$student_id)->get("tbl_student")->row();
+		$data = $this->db->where("status","1")
+							->where("is_deleted","0")
+							->where("course",$stu_data->course_id)
+							->where("stream",$stu_data->stream_id)
+							->where("year_sem",$stu_data->year_sem)
+							->get("tbl_course_video")->result();
+		
+		return $data;
+
+	}
+	
+	public function get_stu_data($id){
+		$this->db->select("tbl_student.*,tbl_stream.stream_name");
+		$this->db->where("tbl_student.id",$id);
+		$this->db->join("tbl_stream","tbl_stream.id=tbl_student.stream_id");
+		$result = $this->db->get("tbl_student");
+		return $result->row();
+	}
+	
+	// 10/6/2021
+
+	public function get_migration_certificate(){
+		$this->db->select("tbl_student_migration.*,tbl_student.student_name,tbl_student.course_id,tbl_student.father_name,tbl_student.enrollment_number,tbl_course.course_name,tbl_course.sort_name,tbl_session.session_start_date");
+		$this->db->where("tbl_student_migration.is_deleted","0"); 
+		$this->db->where('tbl_student_migration.payment_status',"1");
+		$this->db->where("tbl_student_migration.student_id",$this->session->userdata("student_id"));
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_migration.student_id");
+		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
+
+		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
+		
+		$result = $this->db->get("tbl_student_migration")->row();
+		return $result;
+	}
+
+	public function set_pay_migration_certificate_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("student_id"),
+			"amount"		=> '500',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_migration",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_student_migration.id,tbl_student_migration.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
+		$this->db->where("tbl_student_migration.id",$id);
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_migration.student_id");
+
+		$result = $this->db->get("tbl_student_migration")->row();
+		return $result;
+	}
+
+	public function update_migration_certificate_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_student_migration',$data);
+			}
+		}
+	}
+
+
+	public function get_transfer_certificate(){
+		$this->db->select("tbl_student_transfer.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_student.gender,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student_transfer.is_deleted","0");
+		$this->db->where('tbl_student_transfer.payment_status',"1");
+		$this->db->where("tbl_student_transfer.student_id",$this->session->userdata("student_id"));
+		
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_transfer.student_id");
+		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
+
+		$result = $this->db->get("tbl_student_transfer")->row();
+		return $result;
+	}
+
+
+	public function set_pay_transfer_certificate_fees(){
+		$data  = array(
+			"student_id"	=>$this->session->userdata("student_id"),
+			"amount"		=> '500',
+			//"amount"		=> '1',
+			"created_on"	=>date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_transfer",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_student_transfer.id,tbl_student_transfer.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
+		
+		$this->db->where("tbl_student_transfer.id",$id);
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_transfer.student_id");
+ 		$result = $this->db->get("tbl_student_transfer")->row();
+
+		return $result;
+
+	}	
+
+
+	public function update_transfer_certificate_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_student_transfer',$data);
+			}
+		}	
+	}
+
+	public function get_recommendation_letter(){
+		$this->db->select("tbl_student_recommendation_letter.*,tbl_student.student_name,tbl_student.course_id,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student_recommendation_letter.is_deleted","0");
+		$this->db->where("tbl_student_recommendation_letter.payment_status","1");
+		$this->db->where("tbl_student_recommendation_letter.student_id",$this->session->userdata("student_id"));
+		
+
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_recommendation_letter.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
+
+		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
+
+
+		$result = $this->db->get("tbl_student_recommendation_letter")->row();
+		return $result;
+	}
+
+	public function set_pay_recommendation_letter_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("student_id"),
+			"amount"		=> '1000',
+			//"amount"		=> '1',
+			"created_on"	=> date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_recommendation_letter",$data);
+		echo $id = $this->db->insert_id();exit;
+
+		$this->db->select("tbl_student_recommendation_letter.id,tbl_student_recommendation_letter.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
+		$this->db->where("tbl_student_recommendation_letter.id",$id);
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_recommendation_letter.student_id");
+ 		$result = $this->db->get("tbl_student_recommendation_letter")->row();
+
+		return $result;
+	}
+
+	public function update_recommendation_letter_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_student_recommendation_letter',$data);
+			}
+		}	
+	}
+
+	public function get_degree(){
+		$this->db->select("tbl_student_degree.*,tbl_student.student_name,tbl_student.course_id,tbl_student.father_name,tbl_student.enrollment_number,tbl_student.photo,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student_degree.is_deleted","0");
+		$this->db->where("tbl_student_degree.payment_status","1");
+		$this->db->where("tbl_student_degree.student_id",$this->session->userdata("student_id"));  
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_degree.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id"); 
+		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");  
+		$result = $this->db->get("tbl_student_degree")->row();
+		return $result;
+	} 
+
+	public function set_pay_degree_fees(){
+		$data  = array(
+			"student_id"	=>$this->session->userdata("student_id"),
+			"amount"		=>'1500',
+			//"amount"		=>'1',
+			"created_on"	=>date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_degree",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_student_degree.id,tbl_student_degree.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
+
+		$this->db->where("tbl_student_degree.id",$id);
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_degree.student_id");
+ 		$result = $this->db->get("tbl_student_degree")->row();
+
+		return $result;
+	}
+
+	public function update_degree_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_student_degree',$data);
+			}
+		}	
+	}
+
+	public function get_student_division_for_degree(){
+		$this->db->select("examination_year,internal_max_marks,internal_marks_obtained,external_max_marks,external_marks_obtained,created_on");
+		$this->db->where("is_deleted","0");
+		$this->db->where("status","1");
+		$this->db->where("result","0");
+		$this->db->where("student_id",$this->session->userdata("student_id"));
+		$this->db->order_by("id","DESC");
+		$result = $this->db->get("tbl_exam_results")->result();
+		$total_marks = 0;
+		$gained_marks = 0;
+		foreach($result as $res){
+			$total_marks = $total_marks + $res->internal_max_marks + $res->external_max_marks;
+			$gained_marks = $gained_marks + $res->internal_marks_obtained + $res->external_marks_obtained;
+		}
+	
+		$percentage = $total_marks == 0?0:($gained_marks/$total_marks)*100;
+
+		if($percentage >= 60){
+			$data["division"] = "First Division";
+		}else if($percentage < 60 & $percentage>= 45){
+			$data["division"] = "Second Division";
+		}else{
+			$data["division"] = "Third Division";
+		}
+		$data["date"] = $result[0]->examination_year;
+		return $data;
+	}
+
+	//10/11/2021
+
+	public function get_student_provisional_degree(){
+		$this->db->select("tbl_student_provisional_degree.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_session.session_start_date,tbl_course.course_name,tbl_stream.stream_name");
+		$this->db->where("tbl_student_provisional_degree.is_deleted","0");
+		$this->db->where("tbl_student_provisional_degree.payment_status","1");
+
+		$this->db->where("tbl_student_provisional_degree.student_id",$this->session->userdata("student_id"));
+		
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_provisional_degree.student_id");
+		$this->db->join("tbl_session","tbl_session.id = tbl_student.session_id");
+
+		$this->db->join("tbl_course","tbl_course.id = tbl_student.course_id");
+		$this->db->join("tbl_stream","tbl_stream.id = tbl_student.stream_id");
+
+
+		$result = $this->db->get("tbl_student_provisional_degree")->row();
+		return $result;
+	}
+
+	public function set_pay_provisional_degree_fees(){
+		$data  = array(
+			"student_id"	=> $this->session->userdata("student_id"),
+			"amount"		=> '1100',
+			//"amount"		=> '1',
+			"created_on"=>date("Y-m-d H:i:s"),
+		);
+		$this->db->insert("tbl_student_provisional_degree",$data);
+		$id = $this->db->insert_id();
+
+		$this->db->select("tbl_student_provisional_degree.id,tbl_student_provisional_degree.amount,tbl_student.student_name,tbl_student.email,tbl_student.mobile,tbl_student.address,tbl_student.pincode");
+		
+		$this->db->where("tbl_student_provisional_degree.id",$id);
+		$this->db->join("tbl_student","tbl_student.id = tbl_student_provisional_degree.student_id");
+ 		$result = $this->db->get("tbl_student_provisional_degree")->row();
+ 		return $result;
+	}
+
+	public function update_provisional_degree_payment(){
+		if(isset($_REQUEST['status'])){
+			if($_REQUEST['status'] == 'COMPLETED'){ 
+				$data = array(
+					'transaction_id' 	=> $_REQUEST['txnId'],
+					'payment_status' 	=> '1',
+				);
+				$this->db->where('id',$this->input->GET('id'));
+				$this->db->update('tbl_student_provisional_degree',$data);
+			}
+		}	
+	} 
+	public function get_all_student_marksheet(){
+		$profile = $this->get_student_profile();
+		if($profile->course_id == "23"){
+			$this->db->where('student_id',$this->session->userdata('student_id'));
+			//$this->db->where('issue_status','1');
+			$this->db->where('status','1');
+			$this->db->where('is_deleted','0');
+			$this->db->order_by('id','DESC');
+			$result = $this->db->get('tbl_course_work_result');
+			return $result->result();
+		}else{ //echo $this->session->userdata("student_id");exit;
+		    $this->db->select('tbl_marksheet.*');
+			$this->db->where("tbl_marksheet.is_deleted","0");
+			$this->db->where("tbl_marksheet.status","1");
+			//$this->db->where('tbl_marksheet.issue_status','1');
+			$this->db->where('tbl_exam_results.is_deleted','0');
+			$this->db->where('tbl_exam_results.status','1');
+			$this->db->where("tbl_marksheet.student_id",$this->session->userdata("student_id"));
+			$this->db->join('tbl_exam_results','tbl_exam_results.id = tbl_marksheet.result_id');
+			$result = $this->db->get("tbl_marksheet")->result();
+			return $result;
+		}
+	}
+	public function get_single_coursework_marksheet(){ 
+		$this->db->select('tbl_course_work_result.* ,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_stream.stream_name');
+		$this->db->where('tbl_course_work_result.is_deleted','0');
+		$this->db->where('tbl_course_work_result.status','1');
+		$this->db->where('tbl_course_work_result.id',$this->uri->segment(2));
+		$this->db->where('tbl_course_work_result.student_id',$this->session->userdata('student_id'));
+		$this->db->where('tbl_course_work_result.issue_status','1');
+		$this->db->join('tbl_student','tbl_student.id = tbl_course_work_result.student_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
+		$query = $this->db->get('tbl_course_work_result');
+		$row = $query->row();
+		return $row;
+	} 
+	public function upload_old_migration_certificate($file){
+		if(isset($_REQUEST['save'])){
+			if($_REQUEST['save'] == 'Upload_Form'){ 
+				$data = array(
+					'old_migration' 	=> $file,
+				);
+				$this->db->where('id',$this->session->userdata('student_id'));
+				$this->db->update('tbl_student',$data);
+			}
+		}
+
+	}
+    public function set_transcript_form(){ 
+        $data = array(
+                'enrollment_number' => $this->input->post('enrollment_number'),
+                'registration_id'   => $this->session->userdata("student_id"),
+                'course_duration'   => $this->input->post('duration_of_course'),
+                'year_of_passing'   => $this->input->post('year_of_passing'),
+                'payment_date'      => date("Y-m-d"),
+                'created_on'        => date("Y-m-d H:i:s")
+            );
+            $this->db->insert('tbl_transcript',$data);
+            $last_id = $this->db->insert_id();
+            $sem = $this->input->post('sem');
+            $subject = $this->input->post('subject');
+            $type = $this->input->post('type');
+            $max_mark = $this->input->post('max_mark');
+            $obtained = $this->input->post('obtained');
+            $detail_arr = array();
+            for($i=0;$i<count($sem);$i++){
+                $detail_arr[] = array(
+                        'transcript_id' => $last_id,
+                        'sem'           => $sem[$i],
+                        'subject'       => $subject[$i],
+                        'type'          => $type[$i],
+                        'max_mark'      => $max_mark[$i],
+                        'obtained'      => $obtained[$i],
+                        'created_on'    => date("Y-m-d H:i:s")
+                    );    
+            }
+            if(!empty($detail_arr)){
+                $this->db->insert_batch('tbl_transcript_details',$detail_arr);
+            }
+            return true;
+    }	
+    public function get_transcript(){
+        $this->db->where('registration_id',$this->session->userdata("student_id"));
+        $this->db->where('is_deleted','0');
+        $this->db->where('status','1');
+        $result = $this->db->get('tbl_transcript');
+        return $result->row();
+    } 
+    public function get_print_transcript(){
+        $this->db->select('tbl_transcript.*,tbl_transcript_details.sem,tbl_student.student_name,tbl_student.course_id,tbl_student.enrollment_number,tbl_course.print_name,tbl_stream.stream_name');
+        $this->db->where('tbl_transcript.registration_id',$this->session->userdata('student_id'));
+        $this->db->where('tbl_transcript.is_deleted','0');
+        $this->db->where('tbl_transcript.status','1');
+        $this->db->where('tbl_transcript.approve_status','1');
+        $this->db->join('tbl_transcript_details','tbl_transcript_details.transcript_id = tbl_transcript.id');
+        $this->db->join('tbl_student','tbl_student.id = tbl_transcript.registration_id');
+        $this->db->join('tbl_course','tbl_course.id = tbl_student.course_id');
+        $this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
+        $this->db->group_by('tbl_transcript_details.sem');
+		$this->db->order_by('tbl_transcript_details.sem','DESC');
+        $result = $this->db->get('tbl_transcript');
+        return $result->row();
+    }
+    public function get_this_transcript_subject($sem,$id){ 
+		$this->db->where('sem',$sem);
+		$this->db->where('transcript_id',$id);
+		$this->db->order_by('type','DESC');
+		$result = $this->db->get('tbl_transcript_details');
+		return $result->result(); 
+		// echo "<pre>";print_r($result);exit;
+	}  
+	public function get_this_transcript_total($id){ 
+		$this->db->select('sum(obtained) as total_obt,sum(max_mark) as total_mk');
+		$this->db->where('transcript_id',$id);
+		$result = $this->db->get('tbl_transcript_details');
+		return $result->row();
+		// echo "<pre>";print_r($result);exit;
+	}
+	public function insert_thesis_submission($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("softcopy");
+		}		
+		$data = array(
+	 		          'student_id'   	  => $this->session->userdata('student_id'),
+	 		          'stream_id'         => $student->stream_id,
+	 		          'center_id'         => $student->center_id,
+	 		          'thesis_title'      => $this->input->post('thesis_title'),
+	 		          'softcopy'		  => $file1,
+	 		          'paper_journal1'    => $this->input->post('paper_journal1'),
+	 		          'guide_id'          => $this->input->post('name'),
+			          
+		        );
+
+		if($this->input->post('hidden_id') == ""){
+			$date=array(
+				'created_on'=> date('Y-m-d H:i:s'),
+			);
+			$new_arr=array_merge($data,$date);
+			$this->db->insert('tbl_thesis',$new_arr);
+			return 1;
+		}else{
+			$this->db->where('id',$this->input->post('hidden_id'));
+			$this->db->update('tbl_thesis',$data);
+			return 0;
+		}
+	}
+	 public function get_single_thesis_submission(){
+	 	$this->db->select('tbl_thesis.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_guide_application.name as guide_name');
+		$this->db->where('tbl_thesis.student_id',$this->session->userdata('student_id'));
+		$this->db->where('tbl_thesis.is_deleted','0');
+		$this->db->join('tbl_student','tbl_student.id = tbl_thesis.student_id');
+		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_thesis.guide_id');
+		$result = $this->db->get('tbl_thesis');
+	   	return $result->row();
+	  }
+	  public function get_active_guide_list(){
+	  	$this->db->where('is_deleted','0');
+	  	$this->db->where('status','1');
+	  	$this->db->where('appliation_status','1');
+	  	$result = $this->db->get('tbl_guide_application');
+	  	return $result->result();
+	  }
+	  public function insert_synopsis_thesis_submission($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("soft_copy");
+		}		
+		$data = array(
+ 	          'student_id'   	  => $this->session->userdata('student_id'),
+ 	          'student_name'	  => $student->student_name,
+ 	          'father_name'	      => $student->father_name,
+ 	          'stream_id'         => $student->stream_id,
+ 	          'center_id'         => $student->center_id,
+ 	          'thesis_title'      => $this->input->post('thesis_title'),
+ 	          'soft_copy'		  => $file1,
+ 	          'guide_id'          => $this->input->post('name'), 
+        );
+		if($this->input->post('hidden_id') == ""){
+			$date=array(
+				'created_on'=> date('Y-m-d H:i:s'),
+			);
+			$new_arr=array_merge($data,$date);
+			$this->db->insert('tbl_synopsis',$new_arr);
+			return 1;
+		}else{
+			$this->db->where('id',$this->input->post('hidden_id'));
+			$this->db->update('tbl_synopsis',$data);
+			return 0;
+		}
+	}
+	  public function get_single_synopsis_thesis(){
+	 	$this->db->select('tbl_synopsis.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_guide_application.name as guide_name');
+		$this->db->where('tbl_synopsis.student_id',$this->session->userdata('student_id'));
+		$this->db->where('tbl_synopsis.is_deleted','0');
+		$this->db->join('tbl_student','tbl_student.id = tbl_synopsis.student_id');
+		$this->db->join('tbl_guide_application','tbl_guide_application.id = tbl_synopsis.guide_id');
+		$result = $this->db->get('tbl_synopsis');
+	   	return $result->row();
+	  }
+	  public function get_active_guide_synopsis_list(){
+	  	$this->db->where('is_deleted','0');
+	  	$this->db->where('status','1');
+	  	$this->db->where('appliation_status','1');
+	  	$result = $this->db->get('tbl_guide_application');
+	  	return $result->result();
+	  }
+	  public function update_student_document($identity_file){
+		$data = array(
+		  'id_type'	  			=> $this->input->post('id_type'),
+		  'id_number'	      	=> $this->input->post('identity_numer'),
+		  'identity_softcopy'  	=> $identity_file,
+		);
+		$this->db->where('id',$this->session->userdata('student_id'));
+		$this->db->update('tbl_student',$data);
+		return true;
+	  }
+	  
+	  
+	public function get_single_marksheet_result(){
+		$this->db->select('tbl_course_work_result.*,tbl_student.student_name,tbl_student.father_name,tbl_student.enrollment_number,tbl_stream.stream_name');
+        $this->db->where('tbl_course_work_result.is_deleted','0');
+        $this->db->where('tbl_course_work_result.status','1');
+        $this->db->where('tbl_course_work_result.issue_status','1');
+        $this->db->where('tbl_course_work_result.student_id',$this->session->userdata('student_id'));
+		$this->db->join('tbl_student','tbl_student.id = tbl_course_work_result.student_id');
+		$this->db->join('tbl_stream','tbl_stream.id = tbl_student.stream_id');
+		$query = $this->db->get('tbl_course_work_result');
+     	$row = $query->row();
+        return $row;
+	}
+	
+	public function get_course_work_marksheet_details($id){
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1');
+		$this->db->where('result_id',$id);
+		$result = $this->db->get('tbl_course_work_result_details');
+     	$result = $result->result();
+        return $result;		  
+	}
+	public function get_single_marksheet_result_count(){
+		$this->db->where('is_deleted','0');
+        $this->db->where('status','1');
+        $this->db->where('issue_status','1');
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$query = $this->db->get('tbl_course_work_result');
+		return $query->num_rows();
+	}
+	public function insert_abstract($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("upload_report");
+		}		
+		$data = array(
+	 		          'student_id'   	  => $this->session->userdata('student_id'),
+	 		          'upload_report'	  => $file1,
+	 		          'remark'            => $this->input->post('remark'),
+					  'created_on'        => date('Y-m-d H:i:s'),
+		        );
+			
+			$this->db->insert('tbl_abstract',$data);
+			return 1;
+	}
+	public function get_single_abstract(){
+		$this->db->select('tbl_abstract.*,tbl_student.student_name');
+	    $this->db->where('tbl_abstract.student_id',$this->session->userdata('student_id'));
+	    $this->db->where('tbl_abstract.is_deleted','0');
+	    $this->db->join('tbl_student','tbl_student.id = tbl_abstract.student_id');
+	    $result = $this->db->get('tbl_abstract');
+		return $result->row();
+	 }
+	 public function insert_progress_report($file1){
+		$student = $this->get_student_profile();
+		if($file1 == ""){
+			$file1 = $this->input->post("progress_report");
+		}		
+		$data = array(
+	 		          'student_id'   	  => $this->session->userdata('student_id'),
+	 		          'progress_report'	  => $file1,
+	 		          'remark'            => $this->input->post('remark'),
+					  'created_on'        => date('Y-m-d H:i:s'),
+		        );
+
+			$this->db->insert('tbl_progress_report',$data);
+			return 1;
+		
+	}
+	public function get_single_progress_report(){
+		$this->db->select('tbl_progress_report.*,tbl_student.student_name');
+	    $this->db->where('tbl_progress_report.student_id',$this->session->userdata('student_id'));
+	    $this->db->where('tbl_progress_report.is_deleted','0');
+	    $this->db->join('tbl_student','tbl_student.id = tbl_progress_report.student_id');
+	    $result = $this->db->get('tbl_progress_report');
+		return $result->row();
+	 }
+	public function upload_assignment($file){
+		$data = array(
+			'student_id'			=> $this->session->userdata('student_id'),
+			'year_sem' 				=> $this->input->post('year_sem'),
+			'assignment_title'		=> $this->input->post('assignment_title'),
+			'file' 					=> $file,
+			'created_on'			=> date("Y-m-d H:i:s")
+		);
+		$this->db->insert('tbl_assignment',$data);
+		return true;
+	 }
+	public function get_assignment(){
+		$this->db->where('student_id',$this->session->userdata('student_id'));
+		$this->db->where('is_deleted','0');
+		$this->db->where('status','1'); 
+		$this->db->order_by('id','DESC'); 
+		$result = $this->db->get('tbl_assignment');
+		return $result->result();
+	}
+	public function get_my_consolidated_marksheet(){
+		$this->db->select('tbl_consolidated_marksheet.*'); 
+		$this->db->where('tbl_consolidated_marksheet.is_deleted','0');
+		$this->db->where('tbl_consolidated_marksheet.status','1'); 
+		$this->db->where('tbl_consolidated_marksheet.issue_status','1'); 
+		$this->db->where('tbl_student.id',$this->session->userdata('student_id')); 
+		$this->db->join('tbl_student','tbl_student.enrollment_number = tbl_consolidated_marksheet.enrollment');
+		$result = $this->db->get('tbl_consolidated_marksheet');
+		return $result->row();
+	 }
+	public function get_all_ebook(){
+	    $profile = $this->get_student_profile();
+        $this->db->where('is_deleted','0');
+        $this->db->where('course',$profile->course_id);
+        $this->db->where('stream',$profile->stream_id);
+        $this->db->where('year_sem',$profile->year_sem);
+        $result = $this->db->get('tbl_ebook_library');
+        return $result->result();
+    }
+    public function send_provisional_terms(){
+        $profile = $this->get_student_profile();
+        $from_email = no_reply_mail; 
+		 
+			$message ='
+			<!DOCTYPE html>
+                <html>
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <style type="text/css">
+                            @media screen {
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 700;
+                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family:  "Lato";
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: v
+                                    font-style: italic;
+                                    font-weight: 700;
+                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+                                }
+                            }
+                    
+                            /* CLIENT-SPECIFIC STYLES */
+                            body,
+                            table,
+                            td,
+                            a {
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
+                            }
+                    
+                            table,
+                            td {
+                                mso-table-lspace: 0pt;
+                                mso-table-rspace: 0pt;
+                            }
+                    
+                            img {
+                                -ms-interpolation-mode: bicubic;
+                            }
+                    
+                            /* RESET STYLES */
+                            img {
+                                border: 0;
+                                height: auto;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                            }
+                    
+                            table {
+                                border-collapse: collapse !important;
+                            }
+                    
+                            body {
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                            }
+                    
+                            /* iOS BLUE LINKS */
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: none !important;
+                                font-size: inherit !important;
+                                font-family: inherit !important;
+                                font-weight: inherit !important;
+                                line-height: inherit !important;
+                            }
+                    
+                            /* MOBILE STYLES */
+                            @media screen and (max-width:600px) {
+                                h1 {
+                                    font-size: 32px !important;
+                                    line-height: 32px !important;
+                                }
+                            }
+                    
+                            /* ANDROID CENTER FIX */
+                            div[style*="margin: 16px 0;"] {
+                                margin: 0 !important;
+                            }
+                        </style>
+                    </head> 
+                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!-- LOGO -->
+        <tr>
+            <td bgcolor="#FFA73B" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Provisional Degree!</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">We are excited to have you get started to applying for provisional degree. First, you need to accept our term and conditions. Just press the button below.</p>
+                            <br>
+                            <p style="margin: 0;">
+                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
+                              </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                        <table border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;"><a href="'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_provisional_terms/'.base64_encode($profile->id).'</a></p>
+                             
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">Cheers,<br>IT Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
+                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+         
+    </table>
+</body>
+
+</html>
+			';
+			
+			$to = array(
+    		"email" => $profile->email,
+    		"name" => $profile->student_name,
+    	);
+    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
+        $this->Admin_model->send_send_blue($to,$subject,$message);
+            /*
+			$this->load->library('email'); 
+			$this->email->set_mailtype('html');
+			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
+			$this->email->to($profile->email);
+			$this->email->subject('Accept Terms & Conditions | BTU'); 
+			$this->email->message($messege); 
+			if($this->email->send()) { 
+			} */        
+			return true;
+    }
+    public function send_accept_transfer_undertaking(){
+        $profile = $this->get_student_profile();
+        $from_email = no_reply_mail; 
+		 
+			$message ='
+			<!DOCTYPE html>
+                <html>
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <style type="text/css">
+                            @media screen {
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 700;
+                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family:  "Lato";
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: v
+                                    font-style: italic;
+                                    font-weight: 700;
+                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+                                }
+                            }
+                    
+                            /* CLIENT-SPECIFIC STYLES */
+                            body,
+                            table,
+                            td,
+                            a {
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
+                            }
+                    
+                            table,
+                            td {
+                                mso-table-lspace: 0pt;
+                                mso-table-rspace: 0pt;
+                            }
+                    
+                            img {
+                                -ms-interpolation-mode: bicubic;
+                            }
+                    
+                            /* RESET STYLES */
+                            img {
+                                border: 0;
+                                height: auto;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                            }
+                    
+                            table {
+                                border-collapse: collapse !important;
+                            }
+                    
+                            body {
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                            }
+                    
+                            /* iOS BLUE LINKS */
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: none !important;
+                                font-size: inherit !important;
+                                font-family: inherit !important;
+                                font-weight: inherit !important;
+                                line-height: inherit !important;
+                            }
+                    
+                            /* MOBILE STYLES */
+                            @media screen and (max-width:600px) {
+                                h1 {
+                                    font-size: 32px !important;
+                                    line-height: 32px !important;
+                                }
+                            }
+                    
+                            /* ANDROID CENTER FIX */
+                            div[style*="margin: 16px 0;"] {
+                                margin: 0 !important;
+                            }
+                        </style>
+                    </head> 
+                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!-- LOGO -->
+        <tr>
+            <td bgcolor="#FFA73B" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Transfer Certificate !</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">We are excited to have you get started to applying for transfer certificate. First, you need to accept our term and conditions. Just press the button below.</p>
+                            <br>
+                            <p style="margin: 0;">
+                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
+                              </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                        <table border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;"><a href="'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_transfer_terms/'.base64_encode($profile->id).'</a></p>
+                             
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">Cheers,<br>IT Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
+                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+         
+    </table>
+</body>
+
+</html>
+			';
+			
+		$to = array(
+    		"email" => $profile->email,
+    		"name" => $profile->student_name,
+    	);
+    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
+        $this->Admin_model->send_send_blue($to,$subject,$message);
+            /*
+			$this->load->library('email'); 
+			$this->email->set_mailtype('html');
+			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
+			$this->email->to($profile->email);
+			$this->email->subject('Accept Terms & Conditions | BTU'); 
+			$this->email->message($message); 
+			if($this->email->send()) { 
+			} */        
+			return true;
+    }
+    public function send_accept_transcript_undertaking(){
+        $profile = $this->get_student_profile();
+        $from_email = no_reply_mail; 
+		 
+			$message ='
+			<!DOCTYPE html>
+                <html>
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <style type="text/css">
+                            @media screen {
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 700;
+                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family:  "Lato";
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: v
+                                    font-style: italic;
+                                    font-weight: 700;
+                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+                                }
+                            }
+                    
+                            /* CLIENT-SPECIFIC STYLES */
+                            body,
+                            table,
+                            td,
+                            a {
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
+                            }
+                    
+                            table,
+                            td {
+                                mso-table-lspace: 0pt;
+                                mso-table-rspace: 0pt;
+                            }
+                    
+                            img {
+                                -ms-interpolation-mode: bicubic;
+                            }
+                    
+                            /* RESET STYLES */
+                            img {
+                                border: 0;
+                                height: auto;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                            }
+                    
+                            table {
+                                border-collapse: collapse !important;
+                            }
+                    
+                            body {
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                            }
+                    
+                            /* iOS BLUE LINKS */
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: none !important;
+                                font-size: inherit !important;
+                                font-family: inherit !important;
+                                font-weight: inherit !important;
+                                line-height: inherit !important;
+                            }
+                    
+                            /* MOBILE STYLES */
+                            @media screen and (max-width:600px) {
+                                h1 {
+                                    font-size: 32px !important;
+                                    line-height: 32px !important;
+                                }
+                            }
+                    
+                            /* ANDROID CENTER FIX */
+                            div[style*="margin: 16px 0;"] {
+                                margin: 0 !important;
+                            }
+                        </style>
+                    </head> 
+                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!-- LOGO -->
+        <tr>
+            <td bgcolor="#FFA73B" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Transcript Certificate!</h1> <img src="https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">We are excited to have you get started to applying for transcript certificate. First, you need to accept our term and conditions. Just press the button below.</p>
+                            <br>
+                            <p style="margin: 0;">
+                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
+                              </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                        <table border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;"><a href="'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_transcript_terms/'.base64_encode($profile->id).'</a></p>
+                             
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">Cheers,<br>IT Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
+                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+         
+    </table>
+</body>
+
+</html>
+			'; 
+		 $to = array(
+    		"email" => $profile->email,
+    		"name" => $profile->student_name,
+    	);
+    	$subject = 'Accept Terms & Conditions | '. no_reply_name;    
+        $this->Admin_model->send_send_blue($to,$subject,$message);
+        
+		    
+			/*$this->load->library('email'); 
+			$this->email->set_mailtype('html');
+			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
+			$this->email->to($profile->email);
+			$this->email->subject('Accept Terms & Conditions | BTU'); 
+			$this->email->message($message); 
+			if($this->email->send()) { 
+			} */        
+			return true;
+    }
+	public function send_accept_migration_undertaking(){
+	    $profile = $this->get_student_profile();
+        $from_email = no_reply_mail; 
+		 
+			$message ='
+			<!DOCTYPE html>
+                <html>
+                    <head>
+                        <title></title>
+                        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <style type="text/css">
+                            @media screen {
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 400;
+                                    src: local("Lato Regular"), local("Lato-Regular"), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: "Lato";
+                                    font-style: normal;
+                                    font-weight: 700;
+                                    src: local("Lato Bold"), local("Lato-Bold"), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family:  "Lato";
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    src: local("Lato Italic"), local("Lato-Italic"), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format("woff");
+                                }
+                    
+                                @font-face {
+                                    font-family: v
+                                    font-style: italic;
+                                    font-weight: 700;
+                                    src: local("Lato Bold Italic"), local("Lato-BoldItalic"), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format("woff");
+                                }
+                            }
+                    
+                            /* CLIENT-SPECIFIC STYLES */
+                            body,
+                            table,
+                            td,
+                            a {
+                                -webkit-text-size-adjust: 100%;
+                                -ms-text-size-adjust: 100%;
+                            }
+                    
+                            table,
+                            td {
+                                mso-table-lspace: 0pt;
+                                mso-table-rspace: 0pt;
+                            }
+                    
+                            img {
+                                -ms-interpolation-mode: bicubic;
+                            }
+                    
+                            /* RESET STYLES */
+                            img {
+                                border: 0;
+                                height: auto;
+                                line-height: 100%;
+                                outline: none;
+                                text-decoration: none;
+                            }
+                    
+                            table {
+                                border-collapse: collapse !important;
+                            }
+                    
+                            body {
+                                height: 100% !important;
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                            }
+                    
+                            /* iOS BLUE LINKS */
+                            a[x-apple-data-detectors] {
+                                color: inherit !important;
+                                text-decoration: none !important;
+                                font-size: inherit !important;
+                                font-family: inherit !important;
+                                font-weight: inherit !important;
+                                line-height: inherit !important;
+                            }
+                    
+                            /* MOBILE STYLES */
+                            @media screen and (max-width:600px) {
+                                h1 {
+                                    font-size: 32px !important;
+                                    line-height: 32px !important;
+                                }
+                            }
+                    
+                            /* ANDROID CENTER FIX */
+                            div[style*="margin: 16px 0;"] {
+                                margin: 0 !important;
+                            }
+                        </style>
+                    </head> 
+                    <body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
+                        <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: "Lato", Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;"> We are thrilled to have you here! Get ready to drive into your new account.
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!-- LOGO -->
+        <tr>
+            <td bgcolor="#FFA73B" align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
+                            <h1 style="font-size: 35px; font-weight: 400; margin: 2;">Undertaking for Migration Certificate!</h1> <img src=" https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">We are excited to have you get started to applying for migration certificate. First, you need to accept our term and conditions. Just press the button below.</p>
+                            <br>
+                            <p style="margin: 0;">
+                             I solemnly declare and confirm that I have submitted documents are ture, if any false document is found that is submitted by me  then university can cancel/terminate my admission at any time without any prior notice.
+                              </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
+                                        <table border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">I Accept</a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If that doesnt work, copy and paste the following link in your browser:</p>
+                        </td>
+                    </tr> <!-- COPY -->
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;"><a href="'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'" target="_blank" style="color: #FFA73B;">'.base_url().'accept_migration_terms/'.base64_encode($profile->id).'</a></p>
+                             
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">If you have any questions, just reply to this email info@aceg.info we are always happy to help out.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <p style="margin: 0;">Cheers,<br>IT Team</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                    <tr>
+                        <td bgcolor="#FFECD1" align="center" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: "Lato", Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                            <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Need more help?</h2>
+                            <p style="margin: 0;"><a href="'.base_url().'contact-us" target="_blank" style="color: #FFA73B;">We&rsquo;re here to help you out</a></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+         
+    </table>
+</body>
+
+</html>
+			';
+			
+    	 $to = array(
+    		"email" => $profile->email,
+    		"name" => $profile->student_name,
+    	);
+    	$subject = 'Accept Terms & Conditions |'.no_reply_name;    
+        $this->Admin_model->send_send_blue($to,$subject,$message);
+		 
+			/*
+			$this->load->library('email'); 
+			$this->email->set_mailtype('html');
+			$this->email->from('no-replay@birtikendrajituniversity.ac.in', 'BTU'); 
+			$this->email->to($profile->email);
+			$this->email->subject('Accept Terms & Conditions | BTU'); 
+			$this->email->message($message); 
+			if($this->email->send()) { 
+			} */        
+			return true;
+	}
+} 

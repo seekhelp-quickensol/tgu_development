@@ -1,351 +1,351 @@
-<?php include('header.php');?>
-    <div class="container-fluid page-body-wrapper">
-      <div class="main-panel">
-        <div class="content-wrapper">
-          <div class="row">
-			<div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title">Upload Qualification Details</h4>
-                  <p class="card-description">
-                    Please enter your qualification details
-                  </p>
-                 <form method="" name="qualification_form" id="qualification_form" enctype="multipart/form-data">
-					<div class="row edu">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>Secondary Year<span class="req">*</span></label>
-								<input type="text" required name="secondary_year" id="secondary_year"  class="form-control" maxlength="4" placeholder="Secondary Year" value="<?php if(!empty($qualification)){ echo $qualification->secondary_year;}?>" readonly>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>Secondary Board<span class="req">*</span></label>
-								<input type="text" name="secondary_university" id="secondary_university"  class="form-control" placeholder="Secondary Board" value="<?php if(!empty($qualification)){ echo $qualification->secondary_university;}?>" readonly>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>Secondary Marks<span class="req">*</span></label>
-								<input type="text" name="secondary_marks" id="secondary_marks"  class="form-control" placeholder="Secondary Marks" value="<?php if(!empty($qualification)){ echo $qualification->secondary_marks;}?>" readonly>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label>Secondary Marksheet  <!--<?php if(!empty($qualification) && $qualification->secondary_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->secondary_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
-								<br>
-								<?php if(!empty($qualification) && $qualification->secondary_marksheet !=""){ ?>
-									<a data-toggle="modal" data-target="#secondary_marksheet_m"  href="javascript:void(0)" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
-								<?php }?>
-							</div>
-						</div>
-					</div>
-								
-								
-
-
-								<div class="row edu">
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Sr. Secondary Year</label>
-											<input type="text" name="sr_secondary_year" id="sr_secondary_year"  class="form-control" maxlength="4" placeholder="Sr. Secondary Year" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_year;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Sr. Secondary Board</label>
-											<input type="text" name="sr_secondary_university" id="sr_secondary_university"  class="form-control" placeholder="Sr. Secondary Board" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_university;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Sr. Secondary Marks</label>
-											<input type="text" name="sr_secondary_marks" id="sr_secondary_marks"  class="form-control" placeholder="Sr. Secondary Marks" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_marks;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Sr. Secondary Marksheet  <!--<?php if(!empty($qualification) && $qualification->sr_secondary_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->sr_secondary_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
-											<!--<input type="file" name="sr_secondary_marksheet" id="sr_secondary_marksheet"  class="form-control" readonly>
-											<input type="hidden" name="old_sr_secondary_marksheet" id="old_sr_secondary_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_marksheet;}?>">-->
-											<br>
-											<?php if(!empty($qualification) && $qualification->sr_secondary_marksheet !=""){ ?>
-												<a data-toggle="modal" data-target="#secondary_marksheet_s"  href="javascript:void(0)"  class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
-											<?php }?>
-										</div>
-									</div>
-								</div>
-								
-								<div class="row edu">
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Graduation Year</label>
-											<input type="text" name="graduation_year" id="graduation_year"  class="form-control" maxlength="4" placeholder="Graduation Year" value="<?php if(!empty($qualification)){ echo $qualification->graduation_year;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Graduation University</label>
-											<input type="text" name="graduation_university" id="graduation_university"  class="form-control" placeholder="Graduation University" value="<?php if(!empty($qualification)){ echo $qualification->graduation_university;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Graduation Marks</label>
-											<input type="text" name="graduation_marks" id="graduation_marks"  class="form-control" placeholder="Graduation Marks" value="<?php if(!empty($qualification)){ echo $qualification->graduation_marks;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Graduation Marksheet  <!--<?php if(!empty($qualification) && $qualification->graduation_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->graduation_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
-											<!--<input type="file" name="graduation_marksheet" id="graduation_marksheet"  class="form-control">
-											<input type="hidden" name="old_graduation_marksheet" id="old_graduation_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->graduation_marksheet;}?>">-->
-											<br>
-											<?php if(!empty($qualification) && $qualification->graduation_marksheet !=""){ ?>
-												<a data-toggle="modal" data-target="#graduation_marksheet_s"  class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
-											<?php }?>
-										</div>
-									</div>
-								</div>
-								<div class="row edu">
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Post Graduation Year</label>
-											<input type="text" name="post_graduation_year" id="post_graduation_year" class="form-control" maxlength="4" placeholder="Post Graduation Year" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_year;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Post Graduation University</label>
-											<input type="text" name="post_graduation_university" id="post_graduation_university" class="form-control" placeholder="Post Graduation University" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_university;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Post Graduation Marks</label>
-											<input type="text" name="post_graduation_marks" id="post_graduation_marks" class="form-control" placeholder="Post Graduation Marks" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_marks;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Post Graduation Marksheet  <!--<?php if(!empty($qualification) && $qualification->post_graduation_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->post_graduation_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
-											<!--<input type="file" name="post_graduation_marksheet" id="post_graduation_marksheet"  class="form-control">
-											<input type="hidden" name="old_post_graduation_marksheet" id="old_post_graduation_marksheet"  class="form-control"  value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_marksheet;}?>">-->
-											<br>
-											<?php if(!empty($qualification) && $qualification->post_graduation_marksheet !=""){ ?>
-												<a data-toggle="modal" data-target="#post_graduation_marksheet_s" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
-											<?php }?>
-										</div>
-									</div>
-								</div>
-								<div class="row edu">
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Other Qualification Year</label>
-											<input type="text" name="other_qualification_year" id="other_qualification_year"  class="form-control" maxlength="4" placeholder="Other Qualification Year" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_year;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Other Qualification University</label>
-											<input type="text" name="other_qualification_university" id="other_qualification_university"  class="form-control" placeholder="Other Qualification University" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_university;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Other Qualification Marks</label>
-											<input type="text" name="other_qualification_marks" id="other_qualification_marks"  class="form-control" placeholder="Other Qualification Marks" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_marks;}?>" readonly>
-										</div>
-									</div>
-									<div class="col-md-3">
-										<div class="form-group">
-											<label>Other Qualification Marksheet <!--<?php if(!empty($qualification) && $qualification->other_qualification_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
-											<!--<input type="file" name="other_qualification_marksheet" id="other_qualification_marksheet" class="form-control">
-											<input type="hidden" name="old_other_qualification_marksheet" id="old_other_qualification_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_marksheet;}?>">-->
-											<input type="hidden" name="student" id="student"  class="form-control" value="11">
-											<br>
-											<?php if(!empty($qualification) && $qualification->other_qualification_marksheet !=""){ ?>
-												<a data-toggle="modal" data-target="#other_qualification_marksheet_s" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
-											<?php }?>
-										</div>
-									</div>
-									
-								</div>
-								<!--<div class="row">
-									<div class="col-md-12 edu">
-										<div class="form-group">
-											<label></label>
-											<button type="submit" class="btn btn-primary" name="generate" id="generate" value="Generate">Save</button>
-											<div class="pull-right">
-											</div>
-										</div>
-									</div>	
-								</div> -->
-							</form>
-                </div>
-              </div>
-            </div>
-			<?php /*
-            <div class="col-md-4 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                   <h4 class="card-title">Qualification List of <?=$student_profile->student_name?></h4><p class="card-description">
-					<p class="card-description">
-                    All list of Qualification 
-                  </p>
-                  <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
-				<thead>
-					<tr>
-						<th>Qualification</th>
-						<th>Year</th>
-						<th>Board/University</th>
-						<th>Marks</th>
-						<th>Marksheet</th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if(!empty($qualification->secondary_year !="")){?>
-					<tr>
-						<td>Secondary</td>
-						<td><?=$qualification->secondary_year?></td>
-						<td><?=$qualification->secondary_university?></td>
-						<td><?=$qualification->secondary_marks?></td>
-						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->secondary_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
-					</tr>
-					<?php }?>
-					<?php if(!empty($qualification->sr_secondary_year !="")){?>
-					<tr>
-						<td>Sr. Secondary</td>
-						<td><?=$qualification->sr_secondary_year?></td>
-						<td><?=$qualification->sr_secondary_university?></td>
-						<td><?=$qualification->sr_secondary_marks?></td>
-						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->sr_secondary_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
-					</tr>
-					<?php }?>
-					<?php if(!empty($qualification->graduation_year !="")){?>
-					<tr>
-						<td>Graduation</td>
-						<td><?=$qualification->graduation_year?></td>
-						<td><?=$qualification->graduation_university?></td>
-						<td><?=$qualification->graduation_marks?></td>
-						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->graduation_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
-					</tr>
-					<?php }?>
-					<?php if(!empty($qualification->post_graduation_year !="")){?>
-					<tr>
-						<td>Post Graduation</td>
-						<td><?=$qualification->post_graduation_year?></td>
-						<td><?=$qualification->post_graduation_university?></td>
-						<td><?=$qualification->post_graduation_marks?></td>
-						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->post_graduation_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
-					</tr>
-					<?php }?>
-					<?php if(!empty($qualification->other_qualification_year !="")){?>
-					<tr>
-						<td>Other</td>
-						<td><?=$qualification->other_qualification_year?></td>
-						<td><?=$qualification->other_qualification_university?></td>
-						<td><?=$qualification->other_qualification_marks?></td>
-						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
-					</tr>
-					<?php }?>
-				</tbody>
-			</table>
-                </div>
-              </div>
-            </div>*/?>
-          </div>
-        </div>
-
-<div class="modal fade" id="secondary_marksheet_m" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLongTitle">Secondary Marksheet</h5>
-		 
-	  </div>
-	  <div class="modal-body">
-	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->secondary_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
-	  </div> 
-	</div>
-  </div>
-</div>
-<div class="modal fade" id="secondary_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLongTitle">Sr. Secondary Marksheet</h5>
-		 
-	  </div>
-	  <div class="modal-body">
-	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->sr_secondary_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
-	  </div> 
-	</div>
-  </div>
-</div>
-<div class="modal fade" id="secondary_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLongTitle">Graduation Marksheet</h5>
-		 
-	  </div>
-	  <div class="modal-body">
-	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->graduation_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
-	  </div> 
-	</div>
-  </div>
-</div>
-
-<div class="modal fade" id="post_graduation_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLongTitle">Post Graduation Marksheet</h5>
-		 
-	  </div>
-	  <div class="modal-body">
-	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->post_graduation_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
-	  </div> 
-	</div>
-  </div>
-</div>
-
-<div class="modal fade" id="other_qualification_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-	<div class="modal-content">
-	  <div class="modal-header">
-		<h5 class="modal-title" id="exampleModalLongTitle">Other Marksheet</h5>
-		 
-	  </div>
-	  <div class="modal-body">
-	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->other_qualification_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
-	  </div> 
-	</div>
-  </div>
-</div>      
-<?php include('footer.php');
-$id = 0;
-if($this->uri->segment(2) !=""){
-	$id = $this->uri->segment(2);
-}
-?>
- <script>
- 
-$(document).ready(function() {
-	$('#example').DataTable({
-		buttons: [
-			{
-				extend: 'copyHtml5',
-				exportOptions: {
-				 columns: ':contains("Office")'
-				}
-			},
-			'excelHtml5',
-			'csvHtml5',
-			'pdfHtml5'
-		],
-    }); 
-});
-</script>
+<?php include('header.php');?>
+    <div class="container-fluid page-body-wrapper">
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+			<div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Upload Qualification Details</h4>
+                  <p class="card-description">
+                    Please enter your qualification details
+                  </p>
+                 <form method="" name="qualification_form" id="qualification_form" enctype="multipart/form-data">
+					<div class="row edu">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Secondary Year<span class="req">*</span></label>
+								<input type="text" required name="secondary_year" id="secondary_year"  class="form-control" maxlength="4" placeholder="Secondary Year" value="<?php if(!empty($qualification)){ echo $qualification->secondary_year;}?>" readonly>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Secondary Board<span class="req">*</span></label>
+								<input type="text" name="secondary_university" id="secondary_university"  class="form-control" placeholder="Secondary Board" value="<?php if(!empty($qualification)){ echo $qualification->secondary_university;}?>" readonly>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Secondary Marks<span class="req">*</span></label>
+								<input type="text" name="secondary_marks" id="secondary_marks"  class="form-control" placeholder="Secondary Marks" value="<?php if(!empty($qualification)){ echo $qualification->secondary_marks;}?>" readonly>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label>Secondary Marksheet  <!--<?php if(!empty($qualification) && $qualification->secondary_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->secondary_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
+								<br>
+								<?php if(!empty($qualification) && $qualification->secondary_marksheet !=""){ ?>
+									<a data-toggle="modal" data-target="#secondary_marksheet_m"  href="javascript:void(0)" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
+								<?php }?>
+							</div>
+						</div>
+					</div>
+								
+								
+
+
+								<div class="row edu">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Sr. Secondary Year</label>
+											<input type="text" name="sr_secondary_year" id="sr_secondary_year"  class="form-control" maxlength="4" placeholder="Sr. Secondary Year" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_year;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Sr. Secondary Board</label>
+											<input type="text" name="sr_secondary_university" id="sr_secondary_university"  class="form-control" placeholder="Sr. Secondary Board" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_university;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Sr. Secondary Marks</label>
+											<input type="text" name="sr_secondary_marks" id="sr_secondary_marks"  class="form-control" placeholder="Sr. Secondary Marks" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_marks;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Sr. Secondary Marksheet  <!--<?php if(!empty($qualification) && $qualification->sr_secondary_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->sr_secondary_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
+											<!--<input type="file" name="sr_secondary_marksheet" id="sr_secondary_marksheet"  class="form-control" readonly>
+											<input type="hidden" name="old_sr_secondary_marksheet" id="old_sr_secondary_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->sr_secondary_marksheet;}?>">-->
+											<br>
+											<?php if(!empty($qualification) && $qualification->sr_secondary_marksheet !=""){ ?>
+												<a data-toggle="modal" data-target="#secondary_marksheet_s"  href="javascript:void(0)"  class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
+											<?php }?>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row edu">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Graduation Year</label>
+											<input type="text" name="graduation_year" id="graduation_year"  class="form-control" maxlength="4" placeholder="Graduation Year" value="<?php if(!empty($qualification)){ echo $qualification->graduation_year;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Graduation University</label>
+											<input type="text" name="graduation_university" id="graduation_university"  class="form-control" placeholder="Graduation University" value="<?php if(!empty($qualification)){ echo $qualification->graduation_university;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Graduation Marks</label>
+											<input type="text" name="graduation_marks" id="graduation_marks"  class="form-control" placeholder="Graduation Marks" value="<?php if(!empty($qualification)){ echo $qualification->graduation_marks;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Graduation Marksheet  <!--<?php if(!empty($qualification) && $qualification->graduation_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->graduation_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
+											<!--<input type="file" name="graduation_marksheet" id="graduation_marksheet"  class="form-control">
+											<input type="hidden" name="old_graduation_marksheet" id="old_graduation_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->graduation_marksheet;}?>">-->
+											<br>
+											<?php if(!empty($qualification) && $qualification->graduation_marksheet !=""){ ?>
+												<a data-toggle="modal" data-target="#graduation_marksheet_s"  class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
+											<?php }?>
+										</div>
+									</div>
+								</div>
+								<div class="row edu">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Post Graduation Year</label>
+											<input type="text" name="post_graduation_year" id="post_graduation_year" class="form-control" maxlength="4" placeholder="Post Graduation Year" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_year;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Post Graduation University</label>
+											<input type="text" name="post_graduation_university" id="post_graduation_university" class="form-control" placeholder="Post Graduation University" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_university;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Post Graduation Marks</label>
+											<input type="text" name="post_graduation_marks" id="post_graduation_marks" class="form-control" placeholder="Post Graduation Marks" value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_marks;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Post Graduation Marksheet  <!--<?php if(!empty($qualification) && $qualification->post_graduation_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->post_graduation_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
+											<!--<input type="file" name="post_graduation_marksheet" id="post_graduation_marksheet"  class="form-control">
+											<input type="hidden" name="old_post_graduation_marksheet" id="old_post_graduation_marksheet"  class="form-control"  value="<?php if(!empty($qualification)){ echo $qualification->post_graduation_marksheet;}?>">-->
+											<br>
+											<?php if(!empty($qualification) && $qualification->post_graduation_marksheet !=""){ ?>
+												<a data-toggle="modal" data-target="#post_graduation_marksheet_s" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
+											<?php }?>
+										</div>
+									</div>
+								</div>
+								<div class="row edu">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Other Qualification Year</label>
+											<input type="text" name="other_qualification_year" id="other_qualification_year"  class="form-control" maxlength="4" placeholder="Other Qualification Year" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_year;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Other Qualification University</label>
+											<input type="text" name="other_qualification_university" id="other_qualification_university"  class="form-control" placeholder="Other Qualification University" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_university;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Other Qualification Marks</label>
+											<input type="text" name="other_qualification_marks" id="other_qualification_marks"  class="form-control" placeholder="Other Qualification Marks" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_marks;}?>" readonly>
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Other Qualification Marksheet <!--<?php if(!empty($qualification) && $qualification->other_qualification_marksheet !=""){ ?><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>"><i class="fas fa-eye"></i></a><?php }?>--></label>
+											<!--<input type="file" name="other_qualification_marksheet" id="other_qualification_marksheet" class="form-control">
+											<input type="hidden" name="old_other_qualification_marksheet" id="old_other_qualification_marksheet"  class="form-control" value="<?php if(!empty($qualification)){ echo $qualification->other_qualification_marksheet;}?>">-->
+											<input type="hidden" name="student" id="student"  class="form-control" value="11">
+											<br>
+											<?php if(!empty($qualification) && $qualification->other_qualification_marksheet !=""){ ?>
+												<a data-toggle="modal" data-target="#other_qualification_marksheet_s" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>" class="btn btn-primary"><i class="mdi mdi mdi-eye"></i></a>
+											<?php }?>
+										</div>
+									</div>
+									
+								</div>
+								<!--<div class="row">
+									<div class="col-md-12 edu">
+										<div class="form-group">
+											<label></label>
+											<button type="submit" class="btn btn-primary" name="generate" id="generate" value="Generate">Save</button>
+											<div class="pull-right">
+											</div>
+										</div>
+									</div>	
+								</div> -->
+							</form>
+                </div>
+              </div>
+            </div>
+			<?php /*
+            <div class="col-md-4 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                   <h4 class="card-title">Qualification List of <?=$student_profile->student_name?></h4><p class="card-description">
+					<p class="card-description">
+                    All list of Qualification 
+                  </p>
+                  <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+				<thead>
+					<tr>
+						<th>Qualification</th>
+						<th>Year</th>
+						<th>Board/University</th>
+						<th>Marks</th>
+						<th>Marksheet</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if(!empty($qualification->secondary_year !="")){?>
+					<tr>
+						<td>Secondary</td>
+						<td><?=$qualification->secondary_year?></td>
+						<td><?=$qualification->secondary_university?></td>
+						<td><?=$qualification->secondary_marks?></td>
+						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->secondary_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
+					</tr>
+					<?php }?>
+					<?php if(!empty($qualification->sr_secondary_year !="")){?>
+					<tr>
+						<td>Sr. Secondary</td>
+						<td><?=$qualification->sr_secondary_year?></td>
+						<td><?=$qualification->sr_secondary_university?></td>
+						<td><?=$qualification->sr_secondary_marks?></td>
+						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->sr_secondary_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
+					</tr>
+					<?php }?>
+					<?php if(!empty($qualification->graduation_year !="")){?>
+					<tr>
+						<td>Graduation</td>
+						<td><?=$qualification->graduation_year?></td>
+						<td><?=$qualification->graduation_university?></td>
+						<td><?=$qualification->graduation_marks?></td>
+						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->graduation_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
+					</tr>
+					<?php }?>
+					<?php if(!empty($qualification->post_graduation_year !="")){?>
+					<tr>
+						<td>Post Graduation</td>
+						<td><?=$qualification->post_graduation_year?></td>
+						<td><?=$qualification->post_graduation_university?></td>
+						<td><?=$qualification->post_graduation_marks?></td>
+						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->post_graduation_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
+					</tr>
+					<?php }?>
+					<?php if(!empty($qualification->other_qualification_year !="")){?>
+					<tr>
+						<td>Other</td>
+						<td><?=$qualification->other_qualification_year?></td>
+						<td><?=$qualification->other_qualification_university?></td>
+						<td><?=$qualification->other_qualification_marks?></td>
+						<td><a target="_blank" href="<?=base_url();?>images/qualification/<?=$qualification->other_qualification_marksheet?>"><i class="mdi mdi mdi-eye"</i></a></td>
+					</tr>
+					<?php }?>
+				</tbody>
+			</table>
+                </div>
+              </div>
+            </div>*/?>
+          </div>
+        </div>
+
+<div class="modal fade" id="secondary_marksheet_m" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLongTitle">Secondary Marksheet</h5>
+		 
+	  </div>
+	  <div class="modal-body">
+	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->secondary_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
+	  </div> 
+	</div>
+  </div>
+</div>
+<div class="modal fade" id="secondary_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLongTitle">Sr. Secondary Marksheet</h5>
+		 
+	  </div>
+	  <div class="modal-body">
+	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->sr_secondary_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
+	  </div> 
+	</div>
+  </div>
+</div>
+<div class="modal fade" id="secondary_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLongTitle">Graduation Marksheet</h5>
+		 
+	  </div>
+	  <div class="modal-body">
+	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->graduation_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
+	  </div> 
+	</div>
+  </div>
+</div>
+
+<div class="modal fade" id="post_graduation_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLongTitle">Post Graduation Marksheet</h5>
+		 
+	  </div>
+	  <div class="modal-body">
+	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->post_graduation_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
+	  </div> 
+	</div>
+  </div>
+</div>
+
+<div class="modal fade" id="other_qualification_marksheet_s" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h5 class="modal-title" id="exampleModalLongTitle">Other Marksheet</h5>
+		 
+	  </div>
+	  <div class="modal-body">
+	  <iframe src="<?=$this->Digitalocean_model->get_photo('images/qualification/'.$qualification->other_qualification_marksheet)?>" width="100%" height="900px" frameborder="0"></iframe> 
+	  </div> 
+	</div>
+  </div>
+</div>      
+<?php include('footer.php');
+$id = 0;
+if($this->uri->segment(2) !=""){
+	$id = $this->uri->segment(2);
+}
+?>
+ <script>
+ 
+$(document).ready(function() {
+	$('#example').DataTable({
+		buttons: [
+			{
+				extend: 'copyHtml5',
+				exportOptions: {
+				 columns: ':contains("Office")'
+				}
+			},
+			'excelHtml5',
+			'csvHtml5',
+			'pdfHtml5'
+		],
+    }); 
+});
+</script>
  

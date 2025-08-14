@@ -1,508 +1,508 @@
-<!DOCTYPE html>
-<html lang="en" style="overflow-x:hidden">
-
-<head>
-    <title> Masters In Technology (M.Tech) | Birtikendrajit University </title>
-    <link rel="canonical" href="<?=base_url()?>university-courses" />
-    <meta name="author" content="BIR TIKENDRAJIT UNIVERSITY">
-    <meta name="keywords" content="">
-    <meta name="Description" content="Admissions open now atTHE GLOBAL UNIVERSITY, we offer B Tech courses, Engineering | Course Admissions | Top university in Manipur India">
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="<?=base_url()?>favicon.ico">
-    <link rel="shortcut icon" href="<?=base_url()?>images/logo/5946920e9234e40ca915a088283a8e5c.png" />
-    <link href="<?=base_url()?>landing_assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?=base_url()?>landing_assets/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="<?=base_url()?>landing_assets/js/bootstrap.bundle.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="icon" href="<?=base_url()?>favicon.ico">
-
-    <link rel="shortcut icon" href="<?=base_url()?>images/logo/5946920e9234e40ca915a088283a8e5c.png" />
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <style>
-       body{
-        
-       }
-    </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172017165-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-172017165-1');
-    </script>
-
-    <!-- Global site tag (gtag.js) - Google Ads: 595335465 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-595335465"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'AW-595335465');
-    </script>
-
-
-
-</head>
-
-<body>
-
-
-    <nav class="navbar navbar-expand-lg navbar-light bg_p1 shadow mob_bg">
-        <div class="container">
-            <a class="navbar-brand" href="<?=base_url()?>"> <img src="<?=base_url()?>landing_assets/logo/btu_new.png" class="logo">
-            </a>
-
-            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content">
-        <div class="hamburger-toggle">
-          <div class="hamburger">
-<img src="<?=base_url()?>landing_assets/images/menu-button-of-three-horizontal-lines.png" width="16" height="16">
-          </div>
-        </div>
-      </button>
-            <div class="collapse navbar-collapse" id="navbar-content">
-                <h1 class="heading_1">BIR TIKENDRAJIT UNIVERSITY<br><span class="heading_inner_text">Complete Learning Management Solution Process</span> </h1>
-
-                <form class="d-flex ms-auto">
-                    <div class="input-group">
-
-                        <a class="hreftext" href="mailto:info@theglobaluniversity.edu.in"> <i class="fa fa-envelope" style="font-size:18px"></i> info@theglobaluniversity.edu.in</a>
-                        <!-- <input class="form-control border-0 mr-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-primary border-0" type="submit">Search</button> -->
-                    </div>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <section class="home_banner">
-        <div class="container-fluid overlay">
-            <div class="container">
-                <div class="row ">
-
-                    <div class="col-lg-8">
-                        <div class="hero_content">
-                            <h2 class="herotext">Welcome To <br>THE GLOBAL UNIVERSITY</h2>
-                            <div class="herotext_2">Admission Open For M.Tech 2022-23</div>
-                        </div>
-
-
-                    </div>
-                    <div class="col-lg-4">
-
-                        <div class="enquir_form">
-
-                            <form method="post" name="course_form" id="course_form">
-                                <div class="form-group">
-                                    <input type="text" class="form-control input_lbl" name="name" id="name" placeholder="Full Name*">
-                                </div>
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control input_lbl" name="email" id="email" placeholder="Email*">
-                                </div>
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control input_lbl" name="mobile" id="mobile" placeholder="Mobile*">
-                                </div>
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <div class="row">
-                                    <div class="form-group col-md-6"> 
-                                        <select name="state" id="state" class="form-control select-arrow-cust widget_input">
-											<option value="">State*</option>
-											<?php if(!empty($state)){ foreach($state as $state_result){?>
-											<option value="<?=$state_result->name?>"><?=$state_result->name?></option>
-											<?php }}?>
-										</select>
-                                    </div> 
-                                    <div class="form-group col-md-6"> 
-                                        <select name="city" id="city" class="form-control select-arrow-cust widget_input">
-											<option value="">City*</option>
-										</select>
-                                    </div> 
-                                </div> 
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <div class="form-group">
-                                    <input type="text" name="course" id="course" placeholder="Course Name*" class="form-control select-arrow-cust widget_input" value="Masters In Technology">
-                                    <!--<select name="course" id="course" class="form-control select-arrow-cust widget_input">
-										<option value="">Select Course*</option>
-										<option value="Certifiction Course">Certifiction Course</option>
-										<option value="Diploma Course">Diploma Course</option>
-										<option value="Bachelor of Arts">Bachelor of Arts</option>
-										<option value="Bachelor of Science">Bachelor of Science</option>
-										<option value="Bachelor of Commerce">Bachelor of Commerce</option>
-										<option value="Bachelor of Business Administration">Bachelor of Business Administration</option>
-										<option value="Bachelor of Pharmacy">Bachelor of Pharmacy</option>
-										<option value="Bachelor of Computer Application">Bachelor of Computer Application</option>
-										<option value="Bachelor of Technology">Bachelor of Technology (B.Tech)</option>
-										<option value="BSC AIRCRAFT MAINTENANCE ENGINEERING ">BSC AIRCRAFT MAINTENANCE ENGINEERING </option>
-										<option value="Bachelor of Law (LLb)">Bachelor of Law (LLb)</option>
-										<option value="Bachelor of fine arts">Bachelor of fine arts</option>
-										<option value="Master of Arts">Master of Arts</option>
-										<option value="Master of Science">Master of Science</option>
-										<option value="Master of Commerce">Master of Commerce</option>
-										<option value="Master of Business Administration">Master of Business Administration</option>
-										<option value="Post Graduate Diploma">Post Graduate Diploma</option>
-										<option value="Master in Pharmacy">Master in Pharmacy</option>
-										<option value="Bachelor of Technology">Bachelor of Technology</option>
-										<option value="Master of Technology">Master of Technology</option>
-										<option value="Master of Education">Master of Education</option>
-										<option value="Master of Law">Master of Law</option>
-										<option value="Master of Computer Application">Master of Computer Application</option>
-									</select>-->
-                                    <!--
-                                    <select name="course_type" id="course_type" class="form-control select-arrow-cust widget_input"> 
-										<option value="">Program Level*</option>
-																				<option value="Certificate">Certificate</option>
-																				<option value="Diploma">Diploma</option>
-																				<option value="Under graduate Course">Under graduate Course</option>
-																				<option value="Post Graduate Course">Post Graduate Course</option>
-																				<option value="PG Diploma">PG Diploma</option>
-																				<option value="Research">Research</option>
-																				<option value="Doctorate">Doctorate</option>
-																			</select>-->
-                                </div>
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <!--<div class="row"> 
-                                    <div class="form-group col-md-6"> 
-                                        <select name="course" id="course" class="form-control select-arrow-cust widget_input">
-											<option value="">Course *</option>
-										</select>
-                                    </div> 
-                                    <div class="form-group col-md-6"> 
-                                        <select name="stream" id="stream"  class="form-control select-arrow-cust widget_input">
-											<option value="">Stream *</option>
-										</select>
-                                    </div>
-                                </div>-->
-                                <div class="clearfix" style="margin-bottom: 5px;"></div>
-                                <div class="checkbox">
-                                    <label><input type="hidden" name="Agree" value="0">
-										<input type="checkbox" class="chkbox_size" checked="checked" name="agree" value="1" id="agree" class="widget_input">
-										<span class="agree-condition">I agree to receive information regarding my submitted application.</span>
-									</label>
-                                </div>
-
-
-                                <div class="form-group" style="text-align: center;">
-                                    <button class="submit_btn" type="submit">Submit</button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-
-                </div>
-
-
-            </div>
-        </div>
-    </section>
-    <section class="hero_tabs">
-
-        <div class="container">
-            <center>
-
-                <div class="row mx-auto">
-                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="tabs">
-                            <img src="<?=base_url()?>landing_assets/images/1.png" class="three_img">
-                            <p>Accorded Institution Of Eminence By UGC, AICTE Govt. Of India</p>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                        <div class="tabs">
-                            <img src="<?=base_url()?>landing_assets/images/2.png" class="three_img">
-                            <p>No. 1 Private University In India By Education World Ranking 2022</p>
-                        </div>
-
-
-                    </div>
-                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                        <div class="tabs">
-                            <img src="<?=base_url()?>landing_assets/images/3.png" class="three_img">
-                            <p>A Legacy Of The Field Of Higher Education</p>
-                        </div>
-
-                    </div>
-                    <hr class="tabs_hr">
-
-                </div>
-            </center>
-        </div>
-    </section>
-
-     <style>
-.home_banner {
-            min-height: 450px !important;
-            background: url("landing_assets/images/BTU/m_tech_bg1.jpg");
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
-
-
-
-.d_pharm_img{
-    float: right;
-}
-
-.d_pharm_img img{
-   
-    margin-left: 20px;
-margin-bottom: 20px;
-}
-.course_heading1{color: #3a29a4;
-}
-
-
- 
-.info_heding{
-    color: #e67b29;
-}
-
-
-
-
-.why_d table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
-
-
-
-
-
-.pharma_list li{
-    width:33%;
-    float:right;
-    list-style: none;
-}
-
-.pharma_list li:before {
-    content: '>> ';
-}
-
-.pharm_skill{
-    margin-top:100px;
-}
-
-.pharm_skill_ul,li{
-       width:50%
-       float:left;
-}
-
-
-.skilimg {
-    height: 200px;
-    width:400px
-}
-     </style>
- 
-
-
-    <div class="container info_group_main">
-            <div class="edu_tabs" style="text-align:center">
-                <a class="active showSingle" target="1">
-                    <li> <img src="<?=base_url()?>landing_assets/images/t1.png"> <span class="edu_p">Masters In Technology (M.Tech) 
-                    </span> <span class="edu_p_mob">(M.Tech)</span> </li>
-                </a>
-            </div>
-
-
-            <section>
-                <div class="main">
-                    <div class="container info_group_main">
-                        <h2 class="course_heading">Masters In Technology (M.Tech)</h2>
-                    
-                        <div class="row d_P_main">
-						     <div class="container info_group">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 d_pharm_img">
-                                            <img src="<?=base_url();?>landing_assets/images/M.Tech (Masters in Technology)-1.png">
-                                    </div>
-                                    <div class="col-lg-12 col-md-12 col-sm-12 d_pharm_info">
-                                         <p>M.Tech is a two-year professional technical degree course and postgraduate program in engineering. The full form of M.Tech is a master's in Technology. M.Tech degree is awarded to candidates in the field of engineering technology.</p>
-                                        <p>During the duration of two years, students are given exceptional knowledge of technologies. M.Tech enhances the skills of a candidate and makes him or her a specialist in a particular area or field.</p>
-                                        <p>Many times, candidates are found to be confused between the M.Tech and M.E programs. One of the major differences between the two is that M.E is basically a theory-based program, whereas M.Tech is an application-based program.</p>      
-                                  
-                                  </div>
-						     </div>
-					    </div>
-                   
-
-                        <div class="container info_group">    
-                            <div class="about_mtech">
-                                <h3 class="course_heading">M.Tech About The Course</h3>
-                                <ul>
-                                <li>The MTech course prepares the students to be skilled working professionals in diverse fields and to develop a research-oriented mindset with logical and analytical thinking capabilities. </li>
-                                <li>MTech courses train students in various skills in diverse fields and also help them to develop a research mindset and enhance capabilities of analytical and logical thinking.</li>
-                                <li>The MTech degree helps in understanding the topics more deeply than students have studied in their BTech degree.</li>
-                                <li>It also helps in enhancing individual professional qualifications and builds a strong professional as well as Social network so that candidates could get top Jobs easily.</li>
-                            </ul>
-                                                                   
-                            </div>
-                        </div>
-
-               
-                        <div class="container info_group">
-                            <div class="adv_mtech">
-                                        <h3 class="course_heading">Advantages Of M.Tech</h3>
-                                     <ul>
-                                       <li>Seeking an M.Tech degree after B.Tech gives adequate opportunity to acquire inside and out specialized information regarding the matter and have more command over it.</li>
-                                       <li>The M.Tech degree improves a singular's expert capabilities and constructs areas of strength for an expert organization where one could land top positions.</li>
-                                       <li>There are chances to change to the board jobs as one additional higher information in the area of innovation.</li>
-                                    </ul>
-                            </div>
-                        </div>
-
-                        <div class="container info_group">
-                             <div class="eligi_mtech">
-                                    <h3 class="course_heading">M.Tech Eligibility</h3>
-                                  <p>As there is a mad competition for the few seats available in the top institutes of the country, the institutes specify some conditions and requirements to eliminate those who are not fit enough to become engineers or do not have the right attitude. To ensure that only the best and the deserving students get admission into the engineering Institutions to pursue their Master of Technology, it is mandatory for each applicant to meet the eligibility criteria prescribed by the authorities. Ineligible candidates are not offered admission. Candidates must note that the eligibility criteria may vary from institute to institute.</p>
-                                  <ul>
-                                    <li>Candidates must have obtained a Bachelor's degree from the recognized University.</li>
-                                    <li>Candidates who have completed a five-year program and received the Master of Science degree are also eligible to undertake the Master of Technology program. </li>  
-                                </ul>
-
-                            </div>
-                        </div>
-                   
-                      <div class="container info_group">
-                        <div class="curri_mtech">
-                            <h3 class="course_heading">Course Curriculum for ME/MTech</h3>
-                           <p>The course curriculum for every ME/MTech specialization is different. Herein is the syllabus. The course curriculum for some of the popular ME/MTech specializations.</p>
-
-                         <table>
-                            <tr>
-                                <td>Chemical Engineering</td>
-                                <td>Process Control and Instrumentation Engineering</td>
-                            </tr>
-                            <tr>
-                                <td>Computer Science and Engineering</td>
-                                <td>Software Engineering</td>
-                            </tr>
-                            <tr>
-                                <td>Electrical Engineering</td>
-                                <td>Power Systems Engineering</td>
-                            </tr>
-
-                            <tr>
-                                <td>Mechanical Engineering</td>
-                                <td>Thermal Engineering</td>
-                            </tr>
-                            <tr>
-                                <td>Electronics and Communication Engineering</td>
-                                <td>VLSI System Design</td>
-                            </tr>
-                         </table>
-                        </div>
-                      </div>
-
-                        <div class="container info_group">
-                            <div class="job_recruiter_mtech">
-                               <h3 class="course_heading">Types Of Job profiles And Top Recruiters</h3>   
-                               <p>The job opportunities for ME/MTech graduates are huge in technical fields. Any graduate who has successfully pursued the ME/MTech degree can get a job in almost all the sectors in India. Besides being hired as engineers, ME/MTech graduates are also hired as consultants, subject matter experts, researchers, managers, etc. Herein are some of the popular job profiles for ME/MTech graduates.</p>
-                            
-                            <table>
-                                <tr>
-                                    <td>Computer Science Engineer</td>
-                                    <td>Chief Engineer</td>
-                                </tr>
-                                <tr>
-                                    <td>Assistant Engineer</td>
-                                    <td>Lecturer</td>
-                                </tr> 
-                                   <tr>
-                                    <td>Executive Engineer</td>
-                                    <td>Researcher</td>
-                                   </tr>
-                                   <tr>
-                                    <td>Software Engineer</td>
-                                    <td>Ceramic Engineer</td>
-                                   </tr>
-
-                                   <tr>
-                                    <td>Mechanical Engineer</td>
-                                    <td>Software Developer</td>
-                                   </tr>
-                                  <tr>
-                                     <td>Electronics Engineer</td>
-                                    <td>Civil Engineer</td>
-                                  </tr>                       
-                                  <tr>
-                                    <td>Mining Engineer</td>
-                                    <td>Production Engineer</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Electronics And Communication Engineer</td>
-                                    <td>Automobile Engineer</td>
-                                  </tr>   
-                            </table>
-                            <p>As an ME/M.Tech graduate, it’s important to be aware of the choices that you are or you will be making for your future. To make the right decision, you must be aware of all the choices available to you to lead a better career. Some ME/MTech graduates also launch their own start-ups.</p>
-                            
-                            </div>
-                        </div>
-
-
-                        <div class="container info_group">
-                            <div class="scope_mtech">
-                               <h3 class="course_heading">Scope Of M.Tech</h3>   
-                                 <p>M.Tech is a gateway to grab job opportunities at some of the best companies. Candidates who have obtained a Master's degree in Technology have a good hold of technical knowledge. This opens up the way to many good job opportunities. Students will be able to work in various fields depending on their specialization. Career opportunities are ample in the private sector, government sector, and teaching to name a few. If students are interested in specializing further, they can also plan for Ph.D. This provides an edge over others at a later stage. It broadens the career opportunities for students.</p>   
-                                 <p>Getting an M.Tech degree opens up an extensive variety of open positions. Designing is one of the fields whose understudies are consistently popular. Engineers are required all over. The following is the rundown of a portion of the gig positions accessible for M.Tech understudies:</p>
-                                <ul>
-                                    <li>Engineering Technologist</li>
-                                    <li>Mechanical Design Engineer</li>
-                                    <li>Teacher</li>
-                                    <li>Executive Engineer</li>
-                                    <li>Product Development Engineer</li>
-                                    <li>Test Engineer</li>
-                                    <li>Chief Engineer</li>
-                                </ul>    
-                           
-                           
-                           
-                             </div>
-                        </div>
-
-                     
-                     <div class="container info_group">
-                        <div class="mtech_qa">
-                          <h3 class="course_heading">M.Tech: FAQs</h3>
-                          <p><u><b class="que">Question - </b></u>What are the eligibility criteria for M.Tech?</p>
-                          <p><u><b class="ans">Answer - </b></u>Candidates who must have completed their B.Tech (graduation) degree</p>
-
-                          <p><u><b class="que">Question - </b></u>What is the difference between ME and M.Tech?</p>
-                          <p><u><b class="ans">Answer - </b></u>The difference between the ME/MTech degree is in terms of syllabus, practicals, and course materials but both are postgraduate degrees.</p>
-
-                          <p><u><b class="que">Question - </b></u>What can I do after completing a Masters of Technology or M.Tech?</p>
-                          <p><u><b class="ans">Answer - </b></u>Candidates can go for a research degree such as a Ph.D. after completing MTech. You can also find a suitable job or start your own companies like startups, etc.</p>
-
-                          <p><u><b class="que">Question - </b></u>What is the best career option after MTech in CSE?</p>
-                          <p><u><b class="ans">Answer - </b></u>Candidates can find Jobs in private or public sectors or the areas of software industries. Also, they can pursue their higher studies if they have an interest in research work.</p>
-                        </div>
-                     </div>
-
-                     <div>
-                                   <a href="<?=base_url()?>admission-form" target="_blank" > <button class="course_applay" type="button">Apply Now</button></a>
-                             </div>
-                    
-                    </div>
-                </div>
-
-            </section>
-	
-    </div>
-
-
+<!DOCTYPE html>
+<html lang="en" style="overflow-x:hidden">
+
+<head>
+    <title> Masters In Technology (M.Tech) | Birtikendrajit University </title>
+    <link rel="canonical" href="<?=base_url()?>university-courses" />
+    <meta name="author" content="BIR TIKENDRAJIT UNIVERSITY">
+    <meta name="keywords" content="">
+    <meta name="Description" content="Admissions open now atTHE GLOBAL UNIVERSITY, we offer B Tech courses, Engineering | Course Admissions | Top university in Manipur India">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="<?=base_url()?>favicon.ico">
+    <link rel="shortcut icon" href="<?=base_url()?>images/logo/5946920e9234e40ca915a088283a8e5c.png" />
+    <link href="<?=base_url()?>landing_assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?=base_url()?>landing_assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="<?=base_url()?>landing_assets/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="icon" href="<?=base_url()?>favicon.ico">
+
+    <link rel="shortcut icon" href="<?=base_url()?>images/logo/5946920e9234e40ca915a088283a8e5c.png" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <style>
+       body{
+        
+       }
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172017165-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-172017165-1');
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Ads: 595335465 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-595335465"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'AW-595335465');
+    </script>
+
+
+
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg_p1 shadow mob_bg">
+        <div class="container">
+            <a class="navbar-brand" href="<?=base_url()?>"> <img src="<?=base_url()?>landing_assets/logo/btu_new.png" class="logo">
+            </a>
+
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content">
+        <div class="hamburger-toggle">
+          <div class="hamburger">
+<img src="<?=base_url()?>landing_assets/images/menu-button-of-three-horizontal-lines.png" width="16" height="16">
+          </div>
+        </div>
+      </button>
+            <div class="collapse navbar-collapse" id="navbar-content">
+                <h1 class="heading_1">BIR TIKENDRAJIT UNIVERSITY<br><span class="heading_inner_text">Complete Learning Management Solution Process</span> </h1>
+
+                <form class="d-flex ms-auto">
+                    <div class="input-group">
+
+                        <a class="hreftext" href="mailto:info@theglobaluniversity.edu.in"> <i class="fa fa-envelope" style="font-size:18px"></i> info@theglobaluniversity.edu.in</a>
+                        <!-- <input class="form-control border-0 mr-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-primary border-0" type="submit">Search</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <section class="home_banner">
+        <div class="container-fluid overlay">
+            <div class="container">
+                <div class="row ">
+
+                    <div class="col-lg-8">
+                        <div class="hero_content">
+                            <h2 class="herotext">Welcome To <br>THE GLOBAL UNIVERSITY</h2>
+                            <div class="herotext_2">Admission Open For M.Tech 2022-23</div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-lg-4">
+
+                        <div class="enquir_form">
+
+                            <form method="post" name="course_form" id="course_form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control input_lbl" name="name" id="name" placeholder="Full Name*">
+                                </div>
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input_lbl" name="email" id="email" placeholder="Email*">
+                                </div>
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input_lbl" name="mobile" id="mobile" placeholder="Mobile*">
+                                </div>
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <div class="row">
+                                    <div class="form-group col-md-6"> 
+                                        <select name="state" id="state" class="form-control select-arrow-cust widget_input">
+											<option value="">State*</option>
+											<?php if(!empty($state)){ foreach($state as $state_result){?>
+											<option value="<?=$state_result->name?>"><?=$state_result->name?></option>
+											<?php }}?>
+										</select>
+                                    </div> 
+                                    <div class="form-group col-md-6"> 
+                                        <select name="city" id="city" class="form-control select-arrow-cust widget_input">
+											<option value="">City*</option>
+										</select>
+                                    </div> 
+                                </div> 
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <div class="form-group">
+                                    <input type="text" name="course" id="course" placeholder="Course Name*" class="form-control select-arrow-cust widget_input" value="Masters In Technology">
+                                    <!--<select name="course" id="course" class="form-control select-arrow-cust widget_input">
+										<option value="">Select Course*</option>
+										<option value="Certifiction Course">Certifiction Course</option>
+										<option value="Diploma Course">Diploma Course</option>
+										<option value="Bachelor of Arts">Bachelor of Arts</option>
+										<option value="Bachelor of Science">Bachelor of Science</option>
+										<option value="Bachelor of Commerce">Bachelor of Commerce</option>
+										<option value="Bachelor of Business Administration">Bachelor of Business Administration</option>
+										<option value="Bachelor of Pharmacy">Bachelor of Pharmacy</option>
+										<option value="Bachelor of Computer Application">Bachelor of Computer Application</option>
+										<option value="Bachelor of Technology">Bachelor of Technology (B.Tech)</option>
+										<option value="BSC AIRCRAFT MAINTENANCE ENGINEERING ">BSC AIRCRAFT MAINTENANCE ENGINEERING </option>
+										<option value="Bachelor of Law (LLb)">Bachelor of Law (LLb)</option>
+										<option value="Bachelor of fine arts">Bachelor of fine arts</option>
+										<option value="Master of Arts">Master of Arts</option>
+										<option value="Master of Science">Master of Science</option>
+										<option value="Master of Commerce">Master of Commerce</option>
+										<option value="Master of Business Administration">Master of Business Administration</option>
+										<option value="Post Graduate Diploma">Post Graduate Diploma</option>
+										<option value="Master in Pharmacy">Master in Pharmacy</option>
+										<option value="Bachelor of Technology">Bachelor of Technology</option>
+										<option value="Master of Technology">Master of Technology</option>
+										<option value="Master of Education">Master of Education</option>
+										<option value="Master of Law">Master of Law</option>
+										<option value="Master of Computer Application">Master of Computer Application</option>
+									</select>-->
+                                    <!--
+                                    <select name="course_type" id="course_type" class="form-control select-arrow-cust widget_input"> 
+										<option value="">Program Level*</option>
+																				<option value="Certificate">Certificate</option>
+																				<option value="Diploma">Diploma</option>
+																				<option value="Under graduate Course">Under graduate Course</option>
+																				<option value="Post Graduate Course">Post Graduate Course</option>
+																				<option value="PG Diploma">PG Diploma</option>
+																				<option value="Research">Research</option>
+																				<option value="Doctorate">Doctorate</option>
+																			</select>-->
+                                </div>
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <!--<div class="row"> 
+                                    <div class="form-group col-md-6"> 
+                                        <select name="course" id="course" class="form-control select-arrow-cust widget_input">
+											<option value="">Course *</option>
+										</select>
+                                    </div> 
+                                    <div class="form-group col-md-6"> 
+                                        <select name="stream" id="stream"  class="form-control select-arrow-cust widget_input">
+											<option value="">Stream *</option>
+										</select>
+                                    </div>
+                                </div>-->
+                                <div class="clearfix" style="margin-bottom: 5px;"></div>
+                                <div class="checkbox">
+                                    <label><input type="hidden" name="Agree" value="0">
+										<input type="checkbox" class="chkbox_size" checked="checked" name="agree" value="1" id="agree" class="widget_input">
+										<span class="agree-condition">I agree to receive information regarding my submitted application.</span>
+									</label>
+                                </div>
+
+
+                                <div class="form-group" style="text-align: center;">
+                                    <button class="submit_btn" type="submit">Submit</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+    <section class="hero_tabs">
+
+        <div class="container">
+            <center>
+
+                <div class="row mx-auto">
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                        <div class="tabs">
+                            <img src="<?=base_url()?>landing_assets/images/1.png" class="three_img">
+                            <p>Accorded Institution Of Eminence By UGC, AICTE Govt. Of India</p>
+                        </div>
+
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                        <div class="tabs">
+                            <img src="<?=base_url()?>landing_assets/images/2.png" class="three_img">
+                            <p>No. 1 Private University In India By Education World Ranking 2022</p>
+                        </div>
+
+
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <div class="tabs">
+                            <img src="<?=base_url()?>landing_assets/images/3.png" class="three_img">
+                            <p>A Legacy Of The Field Of Higher Education</p>
+                        </div>
+
+                    </div>
+                    <hr class="tabs_hr">
+
+                </div>
+            </center>
+        </div>
+    </section>
+
+     <style>
+.home_banner {
+            min-height: 450px !important;
+            background: url("landing_assets/images/BTU/m_tech_bg1.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+
+
+.d_pharm_img{
+    float: right;
+}
+
+.d_pharm_img img{
+   
+    margin-left: 20px;
+margin-bottom: 20px;
+}
+.course_heading1{color: #3a29a4;
+}
+
+
+ 
+.info_heding{
+    color: #e67b29;
+}
+
+
+
+
+.why_d table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
+
+
+
+
+.pharma_list li{
+    width:33%;
+    float:right;
+    list-style: none;
+}
+
+.pharma_list li:before {
+    content: '>> ';
+}
+
+.pharm_skill{
+    margin-top:100px;
+}
+
+.pharm_skill_ul,li{
+       width:50%
+       float:left;
+}
+
+
+.skilimg {
+    height: 200px;
+    width:400px
+}
+     </style>
+ 
+
+
+    <div class="container info_group_main">
+            <div class="edu_tabs" style="text-align:center">
+                <a class="active showSingle" target="1">
+                    <li> <img src="<?=base_url()?>landing_assets/images/t1.png"> <span class="edu_p">Masters In Technology (M.Tech) 
+                    </span> <span class="edu_p_mob">(M.Tech)</span> </li>
+                </a>
+            </div>
+
+
+            <section>
+                <div class="main">
+                    <div class="container info_group_main">
+                        <h2 class="course_heading">Masters In Technology (M.Tech)</h2>
+                    
+                        <div class="row d_P_main">
+						     <div class="container info_group">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 d_pharm_img">
+                                            <img src="<?=base_url();?>landing_assets/images/M.Tech (Masters in Technology)-1.png">
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 d_pharm_info">
+                                         <p>M.Tech is a two-year professional technical degree course and postgraduate program in engineering. The full form of M.Tech is a master's in Technology. M.Tech degree is awarded to candidates in the field of engineering technology.</p>
+                                        <p>During the duration of two years, students are given exceptional knowledge of technologies. M.Tech enhances the skills of a candidate and makes him or her a specialist in a particular area or field.</p>
+                                        <p>Many times, candidates are found to be confused between the M.Tech and M.E programs. One of the major differences between the two is that M.E is basically a theory-based program, whereas M.Tech is an application-based program.</p>      
+                                  
+                                  </div>
+						     </div>
+					    </div>
+                   
+
+                        <div class="container info_group">    
+                            <div class="about_mtech">
+                                <h3 class="course_heading">M.Tech About The Course</h3>
+                                <ul>
+                                <li>The MTech course prepares the students to be skilled working professionals in diverse fields and to develop a research-oriented mindset with logical and analytical thinking capabilities. </li>
+                                <li>MTech courses train students in various skills in diverse fields and also help them to develop a research mindset and enhance capabilities of analytical and logical thinking.</li>
+                                <li>The MTech degree helps in understanding the topics more deeply than students have studied in their BTech degree.</li>
+                                <li>It also helps in enhancing individual professional qualifications and builds a strong professional as well as Social network so that candidates could get top Jobs easily.</li>
+                            </ul>
+                                                                   
+                            </div>
+                        </div>
+
+               
+                        <div class="container info_group">
+                            <div class="adv_mtech">
+                                        <h3 class="course_heading">Advantages Of M.Tech</h3>
+                                     <ul>
+                                       <li>Seeking an M.Tech degree after B.Tech gives adequate opportunity to acquire inside and out specialized information regarding the matter and have more command over it.</li>
+                                       <li>The M.Tech degree improves a singular's expert capabilities and constructs areas of strength for an expert organization where one could land top positions.</li>
+                                       <li>There are chances to change to the board jobs as one additional higher information in the area of innovation.</li>
+                                    </ul>
+                            </div>
+                        </div>
+
+                        <div class="container info_group">
+                             <div class="eligi_mtech">
+                                    <h3 class="course_heading">M.Tech Eligibility</h3>
+                                  <p>As there is a mad competition for the few seats available in the top institutes of the country, the institutes specify some conditions and requirements to eliminate those who are not fit enough to become engineers or do not have the right attitude. To ensure that only the best and the deserving students get admission into the engineering Institutions to pursue their Master of Technology, it is mandatory for each applicant to meet the eligibility criteria prescribed by the authorities. Ineligible candidates are not offered admission. Candidates must note that the eligibility criteria may vary from institute to institute.</p>
+                                  <ul>
+                                    <li>Candidates must have obtained a Bachelor's degree from the recognized University.</li>
+                                    <li>Candidates who have completed a five-year program and received the Master of Science degree are also eligible to undertake the Master of Technology program. </li>  
+                                </ul>
+
+                            </div>
+                        </div>
+                   
+                      <div class="container info_group">
+                        <div class="curri_mtech">
+                            <h3 class="course_heading">Course Curriculum for ME/MTech</h3>
+                           <p>The course curriculum for every ME/MTech specialization is different. Herein is the syllabus. The course curriculum for some of the popular ME/MTech specializations.</p>
+
+                         <table>
+                            <tr>
+                                <td>Chemical Engineering</td>
+                                <td>Process Control and Instrumentation Engineering</td>
+                            </tr>
+                            <tr>
+                                <td>Computer Science and Engineering</td>
+                                <td>Software Engineering</td>
+                            </tr>
+                            <tr>
+                                <td>Electrical Engineering</td>
+                                <td>Power Systems Engineering</td>
+                            </tr>
+
+                            <tr>
+                                <td>Mechanical Engineering</td>
+                                <td>Thermal Engineering</td>
+                            </tr>
+                            <tr>
+                                <td>Electronics and Communication Engineering</td>
+                                <td>VLSI System Design</td>
+                            </tr>
+                         </table>
+                        </div>
+                      </div>
+
+                        <div class="container info_group">
+                            <div class="job_recruiter_mtech">
+                               <h3 class="course_heading">Types Of Job profiles And Top Recruiters</h3>   
+                               <p>The job opportunities for ME/MTech graduates are huge in technical fields. Any graduate who has successfully pursued the ME/MTech degree can get a job in almost all the sectors in India. Besides being hired as engineers, ME/MTech graduates are also hired as consultants, subject matter experts, researchers, managers, etc. Herein are some of the popular job profiles for ME/MTech graduates.</p>
+                            
+                            <table>
+                                <tr>
+                                    <td>Computer Science Engineer</td>
+                                    <td>Chief Engineer</td>
+                                </tr>
+                                <tr>
+                                    <td>Assistant Engineer</td>
+                                    <td>Lecturer</td>
+                                </tr> 
+                                   <tr>
+                                    <td>Executive Engineer</td>
+                                    <td>Researcher</td>
+                                   </tr>
+                                   <tr>
+                                    <td>Software Engineer</td>
+                                    <td>Ceramic Engineer</td>
+                                   </tr>
+
+                                   <tr>
+                                    <td>Mechanical Engineer</td>
+                                    <td>Software Developer</td>
+                                   </tr>
+                                  <tr>
+                                     <td>Electronics Engineer</td>
+                                    <td>Civil Engineer</td>
+                                  </tr>                       
+                                  <tr>
+                                    <td>Mining Engineer</td>
+                                    <td>Production Engineer</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Electronics And Communication Engineer</td>
+                                    <td>Automobile Engineer</td>
+                                  </tr>   
+                            </table>
+                            <p>As an ME/M.Tech graduate, it’s important to be aware of the choices that you are or you will be making for your future. To make the right decision, you must be aware of all the choices available to you to lead a better career. Some ME/MTech graduates also launch their own start-ups.</p>
+                            
+                            </div>
+                        </div>
+
+
+                        <div class="container info_group">
+                            <div class="scope_mtech">
+                               <h3 class="course_heading">Scope Of M.Tech</h3>   
+                                 <p>M.Tech is a gateway to grab job opportunities at some of the best companies. Candidates who have obtained a Master's degree in Technology have a good hold of technical knowledge. This opens up the way to many good job opportunities. Students will be able to work in various fields depending on their specialization. Career opportunities are ample in the private sector, government sector, and teaching to name a few. If students are interested in specializing further, they can also plan for Ph.D. This provides an edge over others at a later stage. It broadens the career opportunities for students.</p>   
+                                 <p>Getting an M.Tech degree opens up an extensive variety of open positions. Designing is one of the fields whose understudies are consistently popular. Engineers are required all over. The following is the rundown of a portion of the gig positions accessible for M.Tech understudies:</p>
+                                <ul>
+                                    <li>Engineering Technologist</li>
+                                    <li>Mechanical Design Engineer</li>
+                                    <li>Teacher</li>
+                                    <li>Executive Engineer</li>
+                                    <li>Product Development Engineer</li>
+                                    <li>Test Engineer</li>
+                                    <li>Chief Engineer</li>
+                                </ul>    
+                           
+                           
+                           
+                             </div>
+                        </div>
+
+                     
+                     <div class="container info_group">
+                        <div class="mtech_qa">
+                          <h3 class="course_heading">M.Tech: FAQs</h3>
+                          <p><u><b class="que">Question - </b></u>What are the eligibility criteria for M.Tech?</p>
+                          <p><u><b class="ans">Answer - </b></u>Candidates who must have completed their B.Tech (graduation) degree</p>
+
+                          <p><u><b class="que">Question - </b></u>What is the difference between ME and M.Tech?</p>
+                          <p><u><b class="ans">Answer - </b></u>The difference between the ME/MTech degree is in terms of syllabus, practicals, and course materials but both are postgraduate degrees.</p>
+
+                          <p><u><b class="que">Question - </b></u>What can I do after completing a Masters of Technology or M.Tech?</p>
+                          <p><u><b class="ans">Answer - </b></u>Candidates can go for a research degree such as a Ph.D. after completing MTech. You can also find a suitable job or start your own companies like startups, etc.</p>
+
+                          <p><u><b class="que">Question - </b></u>What is the best career option after MTech in CSE?</p>
+                          <p><u><b class="ans">Answer - </b></u>Candidates can find Jobs in private or public sectors or the areas of software industries. Also, they can pursue their higher studies if they have an interest in research work.</p>
+                        </div>
+                     </div>
+
+                     <div>
+                                   <a href="<?=base_url()?>admission-form" target="_blank" > <button class="course_applay" type="button">Apply Now</button></a>
+                             </div>
+                    
+                    </div>
+                </div>
+
+            </section>
+	
+    </div>
+
+
 <?php include('footer.php');?>
