@@ -1084,7 +1084,9 @@ class Center_controller extends CI_Controller{
 			redirect('center_active_admisison');
 		}
 	}
-	public function examination_form(){         
+	public function examination_form(){ 
+	    $this->session->set_flashdata('message', 'Examination not open for you.');
+	   	redirect('center-dashboard');
 		if ($this->input->post('generate') == "Generate") { 
 			$result = $this->Center_details_model->generate_examination_otp(); 
 			if ($result) {
